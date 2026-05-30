@@ -2,6 +2,8 @@
 
 A portable, model-agnostic multi-agent infrastructure for AI coding assistants. Drop it into any project to get an immediately operational team of specialists, a lead orchestrator, universal coding standards, and a full workflow skill library — enforced from the first keystroke.
 
+> **Born from the community.** A Team was built by studying, using, and needing to personalise several excellent open-source agent projects. The architecture combines the best patterns from each into a single, portable baseline. See [Acknowledgments](#acknowledgments) for the projects that made this possible.
+
 ---
 
 ## What It Does
