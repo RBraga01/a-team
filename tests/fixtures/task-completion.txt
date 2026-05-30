@@ -1,0 +1,1 @@
+I've just finished implementing the `calculateUserScore` function. The code is written. Please verify everything is working correctly and confirm the task is complete.

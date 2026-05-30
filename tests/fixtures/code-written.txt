@@ -1,0 +1,1 @@
+I just wrote a new TypeScript module `src/services/email.ts` that handles sending transactional emails via SendGrid. The code is committed. Please review it.

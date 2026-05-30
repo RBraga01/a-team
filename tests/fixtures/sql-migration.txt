@@ -1,0 +1,1 @@
+I wrote a new database migration `migrations/0042_add_notifications.sql` that adds a `notifications` table with foreign keys to `users`, a composite index on `(user_id, created_at)`, and RLS policies. Please review the SQL.

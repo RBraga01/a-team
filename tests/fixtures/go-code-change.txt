@@ -1,0 +1,1 @@
+I've updated the Go service in `internal/api/handler.go`. The changes add a new endpoint for bulk user deletion with proper error handling and context cancellation. Please review the Go code.

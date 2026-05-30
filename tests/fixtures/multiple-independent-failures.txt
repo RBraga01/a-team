@@ -1,0 +1,7 @@
+I have 6 failing tests across 3 unrelated files:
+
+1. src/auth/auth-flow.test.ts (2 failures) - JWT validation timing issues
+2. src/billing/stripe-webhook.test.ts (2 failures) - webhook signature mock wrong
+3. src/reports/csv-export.test.ts (2 failures) - encoding error for special chars
+
+These are completely independent — fixing one won't affect the others. Please fix all of them.

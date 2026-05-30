@@ -1,0 +1,1 @@
+There's a bug: the `paginate()` function in `src/utils/paginate.ts` returns the wrong number of items when `total % pageSize === 0`. Write a failing test that demonstrates the bug, then fix it.

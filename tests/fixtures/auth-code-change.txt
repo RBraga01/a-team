@@ -1,0 +1,1 @@
+I've updated the authentication middleware in `src/middleware/auth.ts`. It now validates JWT tokens, checks user roles, and handles refresh tokens. I also changed the login endpoint in `src/routes/auth.ts` to return a refresh token alongside the access token. Please review these changes.

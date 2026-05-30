@@ -1,0 +1,1 @@
+I've updated the Rust crate in `src/parser.rs`. The changes add a new streaming JSON parser with custom error types and async support. Please review the Rust code.

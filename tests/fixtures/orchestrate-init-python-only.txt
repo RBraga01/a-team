@@ -1,0 +1,1 @@
+Please initialise the A Team for this Python-only project. The INIT.md declares Python as the only language. Run /orchestrate init and prune agents for other languages.

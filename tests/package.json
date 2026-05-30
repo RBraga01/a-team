@@ -1,0 +1,24 @@
+{
+  "name": "a-team-tests",
+  "version": "1.0.0",
+  "description": "Test suite for A Team — parses Claude Code session transcripts to verify behavioral gates are working.",
+  "type": "module",
+  "engines": { "node": ">=18.0.0" },
+  "scripts": {
+    "test":                  "node --test lib/transcript-parser.test.js lib/assertions.test.js",
+    "test:unit":             "node --test lib/transcript-parser.test.js lib/assertions.test.js",
+    "test:integration":      "node runner.js",
+    "test:record":           "node runner.js --record",
+    "test:skill-triggering": "node --test suites/skill-triggering.test.js",
+    "test:verification":     "node --test suites/verification-gate.test.js",
+    "test:agent-routing":    "node --test suites/agent-routing.test.js",
+    "test:tdd":              "node --test suites/tdd-enforcement.test.js",
+    "test:orchestrator":     "node --test suites/orchestrator-init.test.js",
+    "test:session":          "node --test suites/session-start.test.js",
+    "record":                "node runner.js --record",
+    "record:fixture":        "node runner.js --record --fixture",
+    "list":                  "node runner.js --list-transcripts",
+    "parse":                 "node --input-type=module -e \"import('./lib/transcript-parser.js').then(({parseTranscript,toolCallSequence})=>{const t=parseTranscript(process.argv[1]);console.log(JSON.stringify({tools:toolCallSequence(t),cost:t.cost},null,2))})\" --"
+  },
+  "dependencies": {}
+}

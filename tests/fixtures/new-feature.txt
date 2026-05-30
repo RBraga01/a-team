@@ -1,0 +1,1 @@
+I want to add a user notification system to this project. Users should be able to receive email and in-app notifications when certain events happen (new message, task assigned, deadline approaching). Build this feature.

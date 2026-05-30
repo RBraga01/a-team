@@ -1,0 +1,1 @@
+Please initialise the A Team for this project. Run /orchestrate init to read the INIT.md, evaluate which agents and skills apply, prune irrelevant ones, and generate the team roster.

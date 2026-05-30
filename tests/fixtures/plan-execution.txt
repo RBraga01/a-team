@@ -1,0 +1,1 @@
+Execute the implementation plan at docs/plans/2025-01-15-csv-export.md. Follow it step by step, write tests before each implementation step, and confirm everything works when done.

@@ -1,0 +1,1 @@
+Fix the off-by-one error in the pagination logic in `src/utils/paginate.ts` at line 42. The current code returns one fewer item than requested when the total count is exactly divisible by the page size. After fixing, confirm it's done.

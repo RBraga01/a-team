@@ -1,0 +1,1156 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Team — Universal Multi-Agent Infrastructure</title>
+<style>
+/* ── RESET & TOKENS ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:        #080c14;
+  --bg2:       #0e1420;
+  --surface:   #131a26;
+  --border:    rgba(255,255,255,.08);
+  --border2:   rgba(255,255,255,.14);
+  --text:      #e2e8f0;
+  --muted:     #64748b;
+  --blue:      #3b82f6;
+  --blue-d:    #1d4ed8;
+  --purple:    #8b5cf6;
+  --cyan:      #06b6d4;
+  --green:     #10b981;
+  --red:       #ef4444;
+  --amber:     #f59e0b;
+  --white:     #ffffff;
+  --r:         14px;
+  --r-sm:      8px;
+  --shadow:    0 4px 24px rgba(0,0,0,.4);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,.6);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp   { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes shimmer  { 0%,100%{opacity:.6} 50%{opacity:1} }
+@keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes pulse-ring { 0%{box-shadow:0 0 0 0 rgba(59,130,246,.4)} 70%{box-shadow:0 0 0 12px rgba(59,130,246,0)} 100%{box-shadow:0 0 0 0 rgba(59,130,246,0)} }
+@keyframes gradient-x { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+@keyframes star-in  { 0%{transform:scale(0) rotate(-180deg);opacity:0} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+@keyframes count-up { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
+@keyframes line-draw { from{stroke-dashoffset:200} to{stroke-dashoffset:0} }
+@keyframes glow     { 0%,100%{box-shadow:0 0 20px rgba(59,130,246,.2)} 50%{box-shadow:0 0 40px rgba(59,130,246,.5)} }
+
+.reveal { opacity:0; transform:translateY(20px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top:0; left:0; right:0; z-index:100;
+  display: flex; align-items:center; justify-content:space-between;
+  padding: 0 40px; height: 64px;
+  background: rgba(8,12,20,.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.nav-logo-icon {
+  width:32px; height:32px; border-radius:8px;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; color:white; font-size:.9rem; letter-spacing:-.02em;
+}
+.nav-logo-text { font-weight:700; font-size:1rem; color:var(--white); }
+.nav-logo-badge {
+  font-size:.65rem; padding:2px 7px; border-radius:999px;
+  background:rgba(59,130,246,.15); color:var(--blue); border:1px solid rgba(59,130,246,.3);
+  font-weight:600; letter-spacing:.04em;
+}
+.nav-right { display:flex; align-items:center; gap:12px; }
+.btn-github {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 16px; border-radius:8px;
+  background:var(--white); color:#0d1117;
+  font-weight:700; font-size:.85rem; text-decoration:none;
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-github:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(255,255,255,.2); }
+.btn-github svg { width:16px; height:16px; }
+.star-count {
+  background:#f0f6ff; color:#1d4ed8;
+  padding:2px 8px; border-radius:4px;
+  font-size:.75rem; font-weight:700;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height:100vh;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding: 120px 40px 80px;
+  position:relative; overflow:hidden; text-align:center;
+}
+.hero-bg {
+  position:absolute; inset:0; z-index:0;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(59,130,246,.18) 0%, transparent 60%),
+              radial-gradient(ellipse 50% 40% at 80% 80%, rgba(139,92,246,.12) 0%, transparent 50%),
+              radial-gradient(ellipse 40% 40% at 10% 60%, rgba(6,182,212,.08) 0%, transparent 50%);
+}
+.hero-grid {
+  position:absolute; inset:0; z-index:0;
+  background-image: linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black, transparent);
+}
+.hero-content { position:relative; z-index:1; max-width:800px; }
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:6px 16px; border-radius:999px;
+  background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.25);
+  color:var(--blue); font-size:.8rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+  margin-bottom:28px;
+  animation: fadeIn 1s ease both;
+}
+.hero-eyebrow-dot { width:6px;height:6px;border-radius:50%;background:var(--blue); animation:shimmer 2s ease infinite; }
+.hero h1 {
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  font-weight:900; letter-spacing:-.04em; line-height:1.05;
+  margin-bottom:20px;
+  animation: fadeUp .8s ease .1s both;
+}
+.hero h1 .grad {
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 40%, var(--purple) 100%);
+  background-size:200% 200%; animation:gradient-x 4s ease infinite;
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.hero-sub {
+  font-size:1.15rem; color:var(--muted); max-width:560px; margin:0 auto 40px;
+  animation: fadeUp .8s ease .2s both;
+}
+.hero-ctas {
+  display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-bottom:64px;
+  animation: fadeUp .8s ease .3s both;
+}
+.btn-primary {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 24px; border-radius:10px;
+  background: linear-gradient(135deg, var(--blue), var(--blue-d));
+  color:white; font-weight:700; font-size:.95rem; text-decoration:none;
+  animation: glow 3s ease infinite;
+  transition: transform .15s, filter .15s;
+}
+.btn-primary:hover { transform:translateY(-2px); filter:brightness(1.1); }
+.btn-secondary {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 24px; border-radius:10px;
+  background:rgba(255,255,255,.06); border:1px solid var(--border2);
+  color:var(--text); font-weight:600; font-size:.95rem; text-decoration:none;
+  transition: background .15s, transform .15s;
+}
+.btn-secondary:hover { background:rgba(255,255,255,.1); transform:translateY(-2px); }
+.hero-stats {
+  display:flex; gap:0; border:1px solid var(--border); border-radius:var(--r);
+  overflow:hidden; animation: fadeUp .8s ease .4s both;
+}
+.hero-stat {
+  flex:1; padding:20px 28px; text-align:center;
+  border-right:1px solid var(--border);
+  background:var(--surface);
+}
+.hero-stat:last-child { border-right:none; }
+.hero-stat-n { font-size:2rem; font-weight:900; line-height:1; margin-bottom:4px; }
+.hero-stat-l { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+.n-blue   { color:var(--blue); }
+.n-purple { color:var(--purple); }
+.n-cyan   { color:var(--cyan); }
+.n-green  { color:var(--green); }
+
+/* ── SECTIONS ── */
+.section { padding:96px 40px; max-width:1160px; margin:0 auto; }
+.section-tag {
+  display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--blue); margin-bottom:12px;
+}
+.section h2 {
+  font-size:clamp(1.8rem, 3.5vw, 2.6rem); font-weight:800; letter-spacing:-.03em;
+  margin-bottom:8px; color:var(--white);
+}
+.section-sub { color:var(--muted); font-size:1rem; margin-bottom:48px; max-width:560px; }
+hr.sep { border:none; border-top:1px solid var(--border); }
+
+/* ── COMPARE ── */
+.compare { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.cmp {
+  border-radius:var(--r); padding:32px;
+  border:1px solid var(--border);
+  transition: transform .2s, box-shadow .2s;
+}
+.cmp:hover { transform:translateY(-3px); box-shadow:var(--shadow); }
+.cmp.before { background:rgba(239,68,68,.04); border-color:rgba(239,68,68,.2); }
+.cmp.after  { background:rgba(16,185,129,.04); border-color:rgba(16,185,129,.2); }
+.cmp h3 { font-size:.9rem; font-weight:700; margin-bottom:20px; }
+.cmp.before h3 { color:var(--red); }
+.cmp.after  h3 { color:var(--green); }
+.cmp-row { display:flex; gap:10px; align-items:flex-start; margin-bottom:13px; font-size:.88rem; color:var(--text); }
+.cmp-row .ic { flex-shrink:0; font-size:.9rem; margin-top:1px; }
+
+/* ── PIPELINE ── */
+.pipeline-wrap { overflow-x:auto; padding-bottom:8px; }
+.pipeline {
+  display:flex; align-items:stretch; gap:0; min-width:900px;
+}
+.pipe {
+  flex:1; background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:22px 14px; text-align:center;
+  position:relative; transition:transform .2s, border-color .2s, box-shadow .2s;
+  cursor:default;
+}
+.pipe:hover { transform:translateY(-4px); border-color:var(--border2); box-shadow:var(--shadow); }
+.pipe:not(:last-child) { margin-right:20px; }
+.pipe:not(:last-child)::after {
+  content:'→';
+  position:absolute; right:-18px; top:50%; transform:translateY(-50%);
+  color:var(--muted); font-size:1.1rem; z-index:1;
+}
+.pipe.gate { background:rgba(239,68,68,.06); border-color:rgba(239,68,68,.3); }
+.pipe.gate:hover { border-color:var(--red); box-shadow:0 8px 24px rgba(239,68,68,.15); }
+.pipe-icon { font-size:1.8rem; margin-bottom:10px; display:block; }
+.pipe-title { font-size:.78rem; font-weight:700; color:var(--white); margin-bottom:4px; }
+.pipe-sub   { font-size:.68rem; color:var(--muted); line-height:1.4; }
+.pipe.gate .pipe-title { color:var(--red); }
+
+/* ── TEAM CARDS ── */
+.team-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; }
+.team-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:24px;
+  transition:transform .2s, border-color .2s, box-shadow .2s;
+}
+.team-card:hover { transform:translateY(-4px); border-color:var(--border2); box-shadow:var(--shadow); }
+.tc-icon {
+  width:44px; height:44px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.4rem; margin-bottom:16px;
+}
+.tc-blue   .tc-icon { background:rgba(59,130,246,.12); }
+.tc-purple .tc-icon { background:rgba(139,92,246,.12); }
+.tc-red    .tc-icon { background:rgba(239,68,68,.12); }
+.tc-green  .tc-icon { background:rgba(16,185,129,.12); }
+.tc-amber  .tc-icon { background:rgba(245,158,11,.12); }
+.team-card h3 { font-size:.9rem; font-weight:700; color:var(--white); margin-bottom:6px; }
+.team-card p  { font-size:.78rem; color:var(--muted); margin-bottom:14px; line-height:1.5; }
+.tags { display:flex; flex-wrap:wrap; gap:5px; }
+.tag {
+  font-size:.65rem; font-weight:600; padding:3px 8px;
+  border-radius:999px; border:1px solid;
+}
+.tc-blue   .tag { background:rgba(59,130,246,.1);  color:#60a5fa; border-color:rgba(59,130,246,.25); }
+.tc-purple .tag { background:rgba(139,92,246,.1);  color:#a78bfa; border-color:rgba(139,92,246,.25); }
+.tc-red    .tag { background:rgba(239,68,68,.1);   color:#f87171; border-color:rgba(239,68,68,.25); }
+.tc-green  .tag { background:rgba(16,185,129,.1);  color:#34d399; border-color:rgba(16,185,129,.25); }
+.tc-amber  .tag { background:rgba(245,158,11,.1);  color:#fbbf24; border-color:rgba(245,158,11,.25); }
+
+/* ── GATES ── */
+.gates-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px; }
+.gate-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:20px; display:flex; gap:16px;
+  align-items:flex-start; border-left-width:3px;
+  transition:transform .2s, box-shadow .2s;
+}
+.gate-card:hover { transform:translateX(3px); box-shadow:var(--shadow); }
+.gate-card h3   { font-size:.85rem; font-weight:700; color:var(--white); margin-bottom:4px; }
+.gate-card p    { font-size:.78rem; color:var(--muted); line-height:1.5; }
+.gate-card .gi  { font-size:1.4rem; flex-shrink:0; margin-top:2px; }
+.g-red    { border-left-color:var(--red); }
+.g-blue   { border-left-color:var(--blue); }
+.g-purple { border-left-color:var(--purple); }
+.g-green  { border-left-color:var(--green); }
+.g-amber  { border-left-color:var(--amber); }
+
+/* ── PLATFORMS ── */
+.platforms-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.platform-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:28px 20px; text-align:center;
+  transition:transform .2s, border-color .2s, box-shadow .2s;
+  position:relative; overflow:hidden;
+}
+.platform-card::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 60% 40% at 50% 0%, var(--glow-color,rgba(59,130,246,.08)), transparent);
+  opacity:0; transition:opacity .3s;
+}
+.platform-card:hover { transform:translateY(-5px); border-color:var(--border2); box-shadow:var(--shadow-lg); }
+.platform-card:hover::before { opacity:1; }
+.plat-logo {
+  width:56px; height:56px; border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px; position:relative; z-index:1;
+}
+.platform-card h3  { font-size:.95rem; font-weight:700; color:var(--white); margin-bottom:6px; position:relative; z-index:1; }
+.platform-card p   { font-size:.75rem; color:var(--muted); line-height:1.5; position:relative; z-index:1; }
+.plat-badge {
+  display:inline-block; margin-top:10px;
+  font-size:.65rem; font-weight:700; padding:3px 8px;
+  border-radius:999px; text-transform:uppercase; letter-spacing:.06em;
+  position:relative; z-index:1;
+}
+.badge-full   { background:rgba(16,185,129,.12); color:var(--green); border:1px solid rgba(16,185,129,.25); }
+.badge-strong { background:rgba(59,130,246,.12); color:var(--blue);  border:1px solid rgba(59,130,246,.25); }
+.badge-good   { background:rgba(245,158,11,.12); color:var(--amber); border:1px solid rgba(245,158,11,.25); }
+
+/* Anthropic/Claude Code */
+.plat-anthropic .plat-logo { background:rgba(255,127,80,.1); border:1px solid rgba(255,127,80,.2); --glow-color:rgba(255,127,80,.1); }
+.plat-openai   .plat-logo { background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2); --glow-color:rgba(16,163,127,.1); }
+.plat-cursor   .plat-logo { background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.2); --glow-color:rgba(99,102,241,.1); }
+.plat-opencode .plat-logo { background:rgba(148,163,184,.1); border:1px solid rgba(148,163,184,.2); --glow-color:rgba(148,163,184,.1); }
+.plat-anthropic { --glow-color:rgba(255,127,80,.08); }
+.plat-openai   { --glow-color:rgba(16,163,127,.08); }
+.plat-cursor   { --glow-color:rgba(99,102,241,.08); }
+.plat-opencode { --glow-color:rgba(148,163,184,.08); }
+
+/* ── STEPS ── */
+.steps { display:flex; flex-direction:column; gap:0; }
+.step { display:flex; gap:24px; padding:28px 0; border-bottom:1px solid var(--border); }
+.step:last-child { border-bottom:none; }
+.step-n {
+  width:40px; height:40px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; font-size:.9rem; color:white;
+  box-shadow:0 4px 12px rgba(59,130,246,.3);
+}
+.step-body h3 { font-size:1rem; font-weight:700; color:var(--white); margin-bottom:5px; }
+.step-body p  { font-size:.875rem; color:var(--muted); }
+code {
+  background:rgba(255,255,255,.07); border:1px solid var(--border);
+  padding:2px 7px; border-radius:5px; font-family:monospace; font-size:.85em; color:var(--cyan);
+}
+
+/* ── CTA ── */
+.cta-section {
+  background:linear-gradient(135deg, #0f1d35, #161030);
+  border-top:1px solid var(--border); border-bottom:1px solid var(--border);
+  padding:80px 40px; text-align:center;
+}
+.cta-section h2 { font-size:2rem; font-weight:800; color:var(--white); margin-bottom:8px; letter-spacing:-.02em; }
+.cta-section p  { color:var(--muted); margin-bottom:32px; }
+.star-cta {
+  display:inline-flex; align-items:center; gap:12px;
+  padding:14px 28px; border-radius:12px;
+  background:var(--white); color:#0d1117;
+  font-weight:800; font-size:1rem; text-decoration:none;
+  animation:glow 3s ease infinite; transition:transform .2s, filter .2s;
+}
+.star-cta:hover { transform:scale(1.04); filter:brightness(1.05); }
+.star-cta .star-icon { animation:star-in .4s ease both; font-size:1.2rem; }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--bg); padding:40px;
+  border-top:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:16px;
+}
+.footer-logo { display:flex; align-items:center; gap:10px; }
+.footer-logo .licon {
+  width:28px; height:28px; border-radius:7px;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; color:white; font-size:.8rem;
+}
+.footer-logo span { font-weight:700; font-size:.9rem; color:var(--white); }
+footer p { font-size:.8rem; color:var(--muted); }
+.footer-links { display:flex; gap:20px; }
+.footer-links a { font-size:.8rem; color:var(--muted); text-decoration:none; transition:color .15s; }
+.footer-links a:hover { color:var(--text); }
+
+/* ── INSTALL TABS ── */
+.install-block {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); overflow:hidden; margin-bottom:8px;
+}
+.install-step-label {
+  display:flex; align-items:center; gap:12px;
+  padding:16px 20px; border-bottom:1px solid var(--border);
+  font-weight:700; font-size:.9rem; color:var(--white);
+}
+.install-n {
+  width:28px; height:28px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,var(--blue),var(--purple));
+  display:flex; align-items:center; justify-content:center;
+  font-weight:900; font-size:.8rem; color:white;
+}
+.tab-bar {
+  display:flex; gap:0; border-bottom:1px solid var(--border);
+  background:rgba(0,0,0,.2); overflow-x:auto;
+}
+.tab-btn {
+  padding:10px 18px; background:none; border:none; border-bottom:2px solid transparent;
+  color:var(--muted); font-size:.8rem; font-weight:600; cursor:pointer;
+  white-space:nowrap; transition:color .15s, border-color .15s;
+}
+.tab-btn:hover { color:var(--text); }
+.tab-btn.active { color:var(--blue); border-bottom-color:var(--blue); }
+.tab-pane { display:none; padding:20px; }
+.tab-pane.active { display:block; }
+.os-row { margin-bottom:16px; }
+.os-row:last-of-type { margin-bottom:0; }
+.os-label {
+  display:inline-block; font-size:.7rem; font-weight:700;
+  text-transform:uppercase; letter-spacing:.08em; color:var(--muted);
+  margin-bottom:8px;
+}
+.code-block {
+  position:relative; background:#0a0f1a; border:1px solid rgba(255,255,255,.08);
+  border-radius:8px; overflow:hidden;
+}
+.code-block pre { margin:0; padding:14px 48px 14px 16px; overflow-x:auto; }
+.code-block code { font-family:'Fira Code','Cascadia Code','Consolas',monospace; font-size:.78rem; color:#a5d8ff; white-space:pre; }
+.copy-btn {
+  position:absolute; top:8px; right:8px;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+  color:var(--muted); font-size:.65rem; font-weight:600; padding:4px 10px;
+  border-radius:5px; cursor:pointer; transition:background .15s, color .15s;
+}
+.copy-btn:hover { background:rgba(255,255,255,.14); color:var(--text); }
+.copy-btn.copied { background:rgba(16,185,129,.15); color:var(--green); border-color:rgba(16,185,129,.3); }
+.install-note { font-size:.78rem; color:var(--muted); margin-top:14px; line-height:1.6; }
+.install-note code { font-size:.75em; }
+.zip-steps { padding-left:20px; }
+.zip-steps li { font-size:.85rem; color:var(--text); margin-bottom:8px; line-height:1.5; }
+.zip-steps li code { font-size:.8em; }
+
+/* ── FAQ ── */
+.faq-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(480px, 1fr)); gap:32px; align-items:start; }
+.faq-group-label {
+  font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.1em;
+  color:var(--blue); margin-bottom:16px; padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+.faq-item {
+  border:1px solid var(--border); border-radius:var(--r-sm);
+  background:var(--surface); margin-bottom:8px; overflow:hidden;
+  transition:border-color .2s;
+}
+.faq-item:hover { border-color:var(--border2); }
+.faq-item[open] { border-color:rgba(59,130,246,.35); }
+.faq-item summary {
+  padding:16px 20px; font-weight:600; font-size:.9rem; color:var(--white);
+  cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:center;
+  gap:12px; user-select:none;
+}
+.faq-item summary::-webkit-details-marker { display:none; }
+.faq-item summary::after {
+  content:'+'; flex-shrink:0; width:20px; height:20px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.06); border-radius:50%;
+  font-size:1rem; line-height:1; color:var(--muted);
+  transition:transform .25s ease, background .2s;
+}
+.faq-item[open] summary::after { content:'−'; transform:rotate(180deg); background:rgba(59,130,246,.15); color:var(--blue); }
+.faq-item[open] summary { color:var(--blue); }
+.faq-body {
+  padding:0 20px 18px; font-size:.85rem; color:var(--muted); line-height:1.7;
+  animation:fadeUp .2s ease both;
+}
+.faq-body p { margin-bottom:10px; }
+.faq-body p:last-child { margin-bottom:0; }
+.faq-body ul, .faq-body ol { padding-left:18px; margin-bottom:10px; }
+.faq-body li { margin-bottom:5px; }
+.faq-body strong { color:var(--text); }
+.faq-body code {
+  background:rgba(255,255,255,.07); border:1px solid var(--border);
+  padding:1px 6px; border-radius:4px; font-family:monospace; font-size:.82em; color:var(--cyan);
+}
+@media(max-width:900px) { .faq-grid { grid-template-columns:1fr; } }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  nav { padding:0 20px; }
+  .hero { padding:100px 24px 60px; }
+  .section { padding:64px 24px; }
+  .compare { grid-template-columns:1fr; }
+  .platforms-grid { grid-template-columns:repeat(2,1fr); }
+  .hero-stats { flex-direction:column; border-radius:var(--r); }
+  .hero-stat { border-right:none; border-bottom:1px solid var(--border); }
+  .hero-stat:last-child { border-bottom:none; }
+  footer { flex-direction:column; text-align:center; }
+  .footer-links { justify-content:center; }
+}
+@media(max-width:600px) {
+  .hero h1 { font-size:2.4rem; }
+  .nav-right .btn-secondary-sm { display:none; }
+  .platforms-grid { grid-template-columns:1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ NAV ══════════ -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon">AT</div>
+    <span class="nav-logo-text">A Team</span>
+    <span class="nav-logo-badge">v1.0.0</span>
+  </a>
+  <div class="nav-right">
+    <a class="btn-github" href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      Star on GitHub
+      <span class="star-count">⭐</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Universal Multi-Agent Infrastructure
+    </div>
+    <h1>Your AI coding assistant<br>deserves a <span class="grad">real team</span></h1>
+    <p class="hero-sub">Drop one folder into any project. Instantly get 25 specialist agents, 16 enforced workflows, and quality gates that can't be bypassed — on every AI platform.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://github.com/RBraga01/a-team" target="_blank">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        Get A Team — Free
+      </a>
+      <a class="btn-secondary" href="#how">See how it works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-n n-blue">25</div><div class="hero-stat-l">Specialist Agents</div></div>
+      <div class="hero-stat"><div class="hero-stat-n n-purple">16</div><div class="hero-stat-l">Workflow Skills</div></div>
+      <div class="hero-stat"><div class="hero-stat-n n-cyan">4</div><div class="hero-stat-l">AI Platforms</div></div>
+      <div class="hero-stat"><div class="hero-stat-n n-green">0</div><div class="hero-stat-l">Config Drift</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ COMPARE ══════════ -->
+<section class="section reveal">
+  <div class="section-tag">The Problem</div>
+  <h2>One model doing everything isn't a team</h2>
+  <p class="section-sub">Without structure, AI assistants cut corners, forget standards, and drift. A Team fixes that.</p>
+  <div class="compare">
+    <div class="cmp before">
+      <h3>❌ Without A Team</h3>
+      <div class="cmp-row"><span class="ic">😕</span><span>One model trying to do everything at once</span></div>
+      <div class="cmp-row"><span class="ic">😕</span><span>Forgets coding standards from the previous session</span></div>
+      <div class="cmp-row"><span class="ic">😕</span><span>Claims "it works" without actually running the code</span></div>
+      <div class="cmp-row"><span class="ic">😕</span><span>Nobody reviews security, compliance, or performance</span></div>
+      <div class="cmp-row"><span class="ic">😕</span><span>Changes more than needed — adds noise to every PR</span></div>
+      <div class="cmp-row"><span class="ic">😕</span><span>No record of the decisions made along the way</span></div>
+    </div>
+    <div class="cmp after">
+      <h3>✅ With A Team</h3>
+      <div class="cmp-row"><span class="ic">🎯</span><span>25 specialists — each with one clear responsibility</span></div>
+      <div class="cmp-row"><span class="ic">🎯</span><span>Standards injected automatically at every session start</span></div>
+      <div class="cmp-row"><span class="ic">🎯</span><span>Hard gate: must run and read real output before claiming done</span></div>
+      <div class="cmp-row"><span class="ic">🎯</span><span>Dedicated reviewers for security, compliance, and performance</span></div>
+      <div class="cmp-row"><span class="ic">🎯</span><span>Surgical changes only — every diff line traces to the task</span></div>
+      <div class="cmp-row"><span class="ic">🎯</span><span>DAILY.md + Veto Buffer — full audit trail of every decision</span></div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ PIPELINE ══════════ -->
+<section class="section reveal" id="how">
+  <div class="section-tag">The Pipeline</div>
+  <h2>Every feature follows the same path</h2>
+  <p class="section-sub">A fixed sequence from idea to production. No shortcuts. No skipped steps.</p>
+  <div class="pipeline-wrap">
+    <div class="pipeline">
+      <div class="pipe"><span class="pipe-icon">🧠</span><div class="pipe-title">Design First</div><div class="pipe-sub">Brainstorm — explore requirements, define approach</div></div>
+      <div class="pipe"><span class="pipe-icon">📋</span><div class="pipe-title">Plan It</div><div class="pipe-sub">Planner — phased plan with exact file paths</div></div>
+      <div class="pipe"><span class="pipe-icon">🌿</span><div class="pipe-title">Isolate</div><div class="pipe-sub">Git Worktree — work in a separate sandbox</div></div>
+      <div class="pipe"><span class="pipe-icon">🔴</span><div class="pipe-title">Test First</div><div class="pipe-sub">Write the failing test before writing code</div></div>
+      <div class="pipe"><span class="pipe-icon">⚙️</span><div class="pipe-title">Build</div><div class="pipe-sub">Parallel subagents — one task at a time</div></div>
+      <div class="pipe gate"><span class="pipe-icon">🔒</span><div class="pipe-title">Quality Gate</div><div class="pipe-sub">Code + security + language reviews</div></div>
+      <div class="pipe"><span class="pipe-icon">✅</span><div class="pipe-title">Prove It</div><div class="pipe-sub">Run real command, read real output</div></div>
+      <div class="pipe"><span class="pipe-icon">🚀</span><div class="pipe-title">Ship</div><div class="pipe-sub">Human approves — branch finalized</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ TEAM ══════════ -->
+<section class="section reveal">
+  <div class="section-tag">The Roster</div>
+  <h2>25 specialists. One team.</h2>
+  <p class="section-sub">Each agent has a single job. Irrelevant specialists are pruned automatically at setup — you only get what your project needs.</p>
+  <div class="team-grid">
+    <div class="team-card tc-blue reveal">
+      <div class="tc-icon">🧭</div>
+      <h3>Leadership</h3>
+      <p>Plans the day, dispatches work, manages state. Never writes product code.</p>
+      <div class="tags">
+        <span class="tag">Orchestrator</span><span class="tag">Architect</span><span class="tag">Planner</span>
+      </div>
+    </div>
+    <div class="team-card tc-purple reveal">
+      <div class="tc-icon">🏗️</div>
+      <h3>Builders</h3>
+      <p>Tests first, implements second, debugs root causes before touching code.</p>
+      <div class="tags">
+        <span class="tag">TDD Guide</span><span class="tag">Debugger</span><span class="tag">Build Fixer</span><span class="tag">Refactorer</span>
+      </div>
+    </div>
+    <div class="team-card tc-red reveal">
+      <div class="tc-icon">🛡️</div>
+      <h3>Guards</h3>
+      <p>Inspect every change before merge. Code quality, security, compliance, audit trail.</p>
+      <div class="tags">
+        <span class="tag">Code Reviewer</span><span class="tag">Security</span><span class="tag">Compliance</span><span class="tag">Auditor</span>
+      </div>
+    </div>
+    <div class="team-card tc-green reveal">
+      <div class="tc-icon">🔬</div>
+      <h3>Language Experts</h3>
+      <p>Specialist reviewers who know the idioms, patterns, and pitfalls of each stack.</p>
+      <div class="tags">
+        <span class="tag">Go</span><span class="tag">Python</span><span class="tag">Rust</span>
+        <span class="tag">Kotlin</span><span class="tag">Swift</span><span class="tag">Flutter</span>
+        <span class="tag">SQL</span><span class="tag">Infra</span><span class="tag">AI Code</span>
+      </div>
+    </div>
+    <div class="team-card tc-amber reveal">
+      <div class="tc-icon">⚡</div>
+      <h3>Operations</h3>
+      <p>E2E tests, documentation, performance profiling, loop safety, communications.</p>
+      <div class="tags">
+        <span class="tag">E2E Runner</span><span class="tag">Doc Updater</span>
+        <span class="tag">Perf Profiler</span><span class="tag">Loop Operator</span><span class="tag">Chief of Staff</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ GATES ══════════ -->
+<section class="section reveal">
+  <div class="section-tag">The Rules</div>
+  <h2>Gates that cannot be bypassed</h2>
+  <p class="section-sub">Not suggestions. Every gate fires automatically. The Pipeline Auditor catches any agent that skips one.</p>
+  <div class="gates-grid">
+    <div class="gate-card g-red reveal"><div class="gi">✅</div><div><h3>Prove It Before Claiming Done</h3><p>Run the actual command. Read the actual output. "It should work" is not evidence.</p></div></div>
+    <div class="gate-card g-blue reveal"><div class="gi">🔴</div><div><h3>Test Before Code</h3><p>Write the failing test first. Then write the code that makes it pass. No exceptions.</p></div></div>
+    <div class="gate-card g-purple reveal"><div class="gi">🔍</div><div><h3>Root Cause Before Fix</h3><p>No patches without understanding why. Three failed fixes = deeper problem — stop and talk.</p></div></div>
+    <div class="gate-card g-green reveal"><div class="gi">🧠</div><div><h3>Design Before Code</h3><p>Every new feature starts with a brainstorm. No code until the approach is agreed.</p></div></div>
+    <div class="gate-card g-amber reveal"><div class="gi">📄</div><div><h3>Contract Before API</h3><p>Write what the API accepts, returns, and can fail — before writing a single line of code.</p></div></div>
+    <div class="gate-card g-red reveal"><div class="gi">🗄️</div><div><h3>Rollback Plan Before Migration</h3><p>Every database change needs a tested undo step. No migration without a way back.</p></div></div>
+    <div class="gate-card g-blue reveal"><div class="gi">✂️</div><div><h3>Only Change What Was Asked</h3><p>Every diff line traces to the task. No "while I'm here" improvements allowed.</p></div></div>
+    <div class="gate-card g-purple reveal"><div class="gi">📊</div><div><h3>Measure Before Optimising</h3><p>"I think it's faster" is not a result. Numbers or it didn't happen.</p></div></div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ PLATFORMS ══════════ -->
+<section class="section reveal">
+  <div class="section-tag">Compatibility</div>
+  <h2>Works on every major AI coding platform</h2>
+  <p class="section-sub">Same agents. Same rules. Same standards. Your whole team, whatever tool they use.</p>
+  <div class="platforms-grid">
+
+    <!-- Claude Code / Anthropic -->
+    <div class="platform-card plat-anthropic reveal">
+      <div class="plat-logo">
+        <!--
+          Anthropic official logomark — two thick angled beams forming the letter A.
+          Brand colour: #CC785C (terracotta). No crossbar. Sharp apex. Flat-cut base.
+          Source: Anthropic brand assets (public press kit).
+        -->
+        <svg width="38" height="38" viewBox="0 0 46 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M26.042 0h-6.084L7.625 33.999h6.417l2.834-7.776h11.249l2.833 7.776H37.375L26.042 0zm-7.498 20.624 3.456-9.498 3.457 9.498h-6.913z" fill="#CC785C"/>
+        </svg>
+      </div>
+      <h3>Claude Code</h3>
+      <p>Full support — hooks, slash commands, native sub-agent dispatch, worktrees</p>
+      <span class="plat-badge badge-full">Full Support</span>
+    </div>
+
+    <!-- Codex CLI / OpenAI -->
+    <div class="platform-card plat-openai reveal">
+      <div class="plat-logo">
+        <!--
+          OpenAI official logomark — interlocking hexagonal bloom / asterisk.
+          Brand colour: #000000 on white context, #fff on dark. We use white on dark bg.
+          Source: OpenAI brand assets (public press kit).
+        -->
+        <svg width="36" height="36" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-7.504-3.366 10.079 10.079 0 0 0-9.612 6.977 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 7.504 3.366 10.08 10.08 0 0 0 9.617-6.981 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.813zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zM6.392 31.006a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L7.044 23.86a7.504 7.504 0 0 1-2.747-10.24zm27.658 6.437-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943 4.33-2.501 4.332 2.498v4.998l-4.331 2.5-4.331-2.5V18z" fill="white"/>
+        </svg>
+      </div>
+      <h3>Codex CLI</h3>
+      <p>All agents and skills load via plugin manifest — rules and session hook included</p>
+      <span class="plat-badge badge-full">Full Support</span>
+    </div>
+
+    <!-- Cursor -->
+    <div class="platform-card plat-cursor reveal">
+      <div class="plat-logo">
+        <!--
+          Cursor official logomark — two interlocked squares rotated 45°, forming a diamond/cursor shape.
+          Brand colours: #000000 body, #fff fill, #1a1a1a stroke. App icon uses black rounded square.
+          Source: Cursor brand assets (public website favicon / app icon).
+        -->
+        <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Black rounded square background -->
+          <rect width="32" height="32" rx="7" fill="#111"/>
+          <!-- Outer rotated square (diamond) — white stroke -->
+          <rect x="9.17" y="9.17" width="13.66" height="13.66" rx="1.5" transform="rotate(45 16 16)" stroke="white" stroke-width="1.8" fill="none"/>
+          <!-- Inner fill square — solid white -->
+          <rect x="11.76" y="11.76" width="8.48" height="8.48" rx="1" transform="rotate(45 16 16)" fill="white"/>
+        </svg>
+      </div>
+      <h3>Cursor</h3>
+      <p>Skills and rules loaded via plugin; agents available on demand across projects</p>
+      <span class="plat-badge badge-strong">Strong Support</span>
+    </div>
+
+    <!-- OpenCode -->
+    <div class="platform-card plat-opencode reveal">
+      <div class="plat-logo">
+        <!--
+          OpenCode official logomark — stylised "O" glyph inside a dark rounded square.
+          Brand colours: #09090B background, white glyph. Minimal terminal aesthetic.
+          Source: opencode.ai public assets / GitHub repo icon.
+        -->
+        <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Dark rounded square background -->
+          <rect width="32" height="32" rx="7" fill="#09090B"/>
+          <!-- Outer O ring -->
+          <circle cx="16" cy="16" r="8" stroke="white" stroke-width="2.2" fill="none"/>
+          <!-- Inner dot — terminal cursor feel -->
+          <circle cx="16" cy="16" r="2.8" fill="white"/>
+        </svg>
+      </div>
+      <h3>OpenCode</h3>
+      <p>All 10 command aliases available; open-source and self-hostable</p>
+      <span class="plat-badge badge-good">Good Support</span>
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ SETUP ══════════ -->
+<section class="section reveal" id="setup">
+  <div class="section-tag">Installation</div>
+  <h2>From zero to a full team in 3 steps</h2>
+  <p class="section-sub">Pick your install method, declare your project scope, run one command.</p>
+
+  <!-- Step 1: Install tabs -->
+  <div class="install-block reveal">
+    <div class="install-step-label"><span class="install-n">1</span> Install — pick your method</div>
+    <div class="tab-bar" role="tablist">
+      <button class="tab-btn active" onclick="switchTab(this,'oneliner')" role="tab">⚡ One-liner</button>
+      <button class="tab-btn" onclick="switchTab(this,'ghcli')" role="tab">GitHub CLI</button>
+      <button class="tab-btn" onclick="switchTab(this,'gitcmd')" role="tab">Git</button>
+      <button class="tab-btn" onclick="switchTab(this,'zip')" role="tab">Download ZIP</button>
+    </div>
+
+    <div class="tab-pane active" id="tab-oneliner">
+      <div class="os-row"><span class="os-label">Mac / Linux / WSL</span>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><code>bash &lt;(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install.sh)</code></pre></div></div>
+      <div class="os-row"><span class="os-label">Windows PowerShell</span>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><code>irm https://raw.githubusercontent.com/RBraga01/a-team/main/install.ps1 | iex</code></pre></div></div>
+      <p class="install-note">Installs <code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, and <code>INIT.md</code> into the current directory. Skips files that already exist. No build step, no dependencies.</p>
+    </div>
+
+    <div class="tab-pane" id="tab-ghcli">
+      <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>gh repo clone RBraga01/a-team -- --depth 1
+cp -r a-team/.claude a-team/skills a-team/hooks a-team/templates ./
+cp a-team/INIT_TEMPLATE.md INIT.md
+rm -rf a-team</code></pre></div>
+      <p class="install-note">Requires the <a href="https://cli.github.com" target="_blank" rel="noopener" style="color:var(--blue)">GitHub CLI</a>. Shallow clone — only the latest commit.</p>
+    </div>
+
+    <div class="tab-pane" id="tab-gitcmd">
+      <div class="os-row"><span class="os-label">Mac / Linux / WSL</span>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><code>git clone --filter=blob:none --sparse --depth 1 \
+  https://github.com/RBraga01/a-team.git
+cd a-team
+git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
+cp -r .claude skills hooks templates ../
+cp INIT_TEMPLATE.md ../INIT.md
+cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
+      <div class="os-row"><span class="os-label">Windows PowerShell</span>
+        <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
+          <pre><code>git clone --filter=blob:none --sparse --depth 1 `
+  https://github.com/RBraga01/a-team.git
+cd a-team
+git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
+Copy-Item -Recurse .claude,skills,hooks,templates ..\
+Copy-Item INIT_TEMPLATE.md ..\INIT.md
+cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
+      <p class="install-note">Sparse checkout — downloads only the required directories, not the full repo history.</p>
+    </div>
+
+    <div class="tab-pane" id="tab-zip">
+      <ol class="zip-steps">
+        <li>Go to <a href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener" style="color:var(--blue)">github.com/RBraga01/a-team</a></li>
+        <li>Click <strong>Code → Download ZIP</strong></li>
+        <li>Extract the archive</li>
+        <li>Copy <code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code> into your project root</li>
+        <li>Rename <code>INIT_TEMPLATE.md</code> to <code>INIT.md</code></li>
+      </ol>
+      <p class="install-note">No git or command line required. Works on any OS.</p>
+    </div>
+  </div>
+
+  <!-- Steps 2 & 3 -->
+  <div class="steps" style="margin-top:32px">
+    <div class="step reveal">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <h3>Fill out <code>INIT.md</code> — your project's scope</h3>
+        <p>Tick the checkboxes: languages, stack, compliance requirements, AI platforms. Plain markdown. Takes 5 minutes. The orchestrator reads this file once and deletes every agent and skill that doesn't apply to your project.</p>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <h3>Run <code>/orchestrate init</code></h3>
+        <p>The Lead Orchestrator prunes the team, generates the routing table, and writes the active roster. Every subsequent session starts automatically — no manual setup needed per session.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FAQ ══════════ -->
+<section class="section reveal" id="faq">
+  <div class="section-tag">FAQ</div>
+  <h2>Frequently asked questions</h2>
+  <p class="section-sub">Everything you need to know before you start.</p>
+  <div class="faq-grid">
+
+    <div class="faq-group reveal">
+      <div class="faq-group-label">Getting Started</div>
+
+      <details class="faq-item">
+        <summary>What exactly is A Team?</summary>
+        <div class="faq-body">
+          <p>A Team is a folder you drop into any project. It installs 25 specialist AI agents, 16 enforced workflow skills, and a lead orchestrator that manages a daily task cycle. Every session starts with your coding standards automatically re-injected — standards that can't be bypassed.</p>
+          <p>Think of it as the difference between one AI assistant trying to do everything and a coordinated engineering team with clear roles, quality gates, and an audit trail.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Is this just another prompt library?</summary>
+        <div class="faq-body">
+          <p>No. A prompt library gives you text to paste. A Team gives you <strong>enforced structure</strong>: hooks that fire at every session start, hard gates that block completion unless evidence is produced, an orchestrator that audits whether agents actually ran their checks, and a file-locking system that prevents parallel agents from colliding.</p>
+          <p>The key word is <em>enforce</em>. An agent that skips a mandatory gate gets flagged and blocked from merging — it's not optional.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>How long does setup take?</summary>
+        <div class="faq-body">
+          <p>About 10 minutes for a new project:</p>
+          <ol>
+            <li>Copy three folders into your project root (~1 min)</li>
+            <li>Fill out <code>INIT.md</code> — tick checkboxes for your languages and stack (~5 min)</li>
+            <li>Run <code>/orchestrate init</code> — the team configures itself (~3 min)</li>
+          </ol>
+          <p>After that, every session starts automatically. No daily configuration needed.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Do I need to be a senior developer to use this?</summary>
+        <div class="faq-body">
+          <p>No. A Team is designed to bring senior-level standards to any developer. The agents enforce TDD, surgical changes, security reviews, and proper root-cause debugging automatically — you don't need to know why each rule exists to benefit from it.</p>
+          <p>That said, senior developers will recognise the patterns (Clean Architecture, OWASP, TDD) and may want to customise the rules for their specific context.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-group reveal">
+      <div class="faq-group-label">Technical Questions</div>
+
+      <details class="faq-item">
+        <summary>Which AI models does A Team require?</summary>
+        <div class="faq-body">
+          <p>None specifically. A Team is model-agnostic infrastructure — it's markdown files and JSON. It works with any model your chosen platform supports.</p>
+          <p>Agents are organised into three capability tiers. Use the model that matches the tier on your platform:</p>
+          <table style="width:100%;border-collapse:collapse;font-size:.78rem;margin:10px 0">
+            <thead><tr style="border-bottom:1px solid rgba(255,255,255,.1)">
+              <th style="text-align:left;padding:6px 8px;color:var(--text)">Tier</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text)">Claude</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text)">OpenAI / Codex</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text)">Google / Gemini</th>
+              <th style="text-align:left;padding:6px 8px;color:var(--text)">Used by</th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+                <td style="padding:6px 8px;color:#60a5fa;font-weight:600">Tier 1</td>
+                <td style="padding:6px 8px;color:var(--muted)">Opus 4.8</td>
+                <td style="padding:6px 8px;color:var(--muted)">o3 / GPT-5.5</td>
+                <td style="padding:6px 8px;color:var(--muted)">Gemini 2.5 Pro</td>
+                <td style="padding:6px 8px;color:var(--muted)">Orchestrator, Architect</td>
+              </tr>
+              <tr style="border-bottom:1px solid rgba(255,255,255,.06)">
+                <td style="padding:6px 8px;color:#a78bfa;font-weight:600">Tier 2</td>
+                <td style="padding:6px 8px;color:var(--muted)">Sonnet 4.6</td>
+                <td style="padding:6px 8px;color:var(--muted)">GPT-4.1</td>
+                <td style="padding:6px 8px;color:var(--muted)">Gemini 2.5 Flash</td>
+                <td style="padding:6px 8px;color:var(--muted)">Most specialist agents</td>
+              </tr>
+              <tr>
+                <td style="padding:6px 8px;color:#34d399;font-weight:600">Tier 3</td>
+                <td style="padding:6px 8px;color:var(--muted)">Haiku 4.5</td>
+                <td style="padding:6px 8px;color:var(--muted)">GPT-4.1-mini</td>
+                <td style="padding:6px 8px;color:var(--muted)">Gemini Flash-Lite</td>
+                <td style="padding:6px 8px;color:var(--muted)">Docs, audit, profiling</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>On <strong>Claude Code</strong>, the <code>model:</code> frontmatter in each agent file sets the default automatically. On <strong>Codex, Cursor, and OpenCode</strong>, select the equivalent tier in your platform's model settings — the frontmatter is a Claude Code-specific field and may be ignored by other platforms.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can I run multiple AI platforms simultaneously on the same project?</summary>
+        <div class="faq-body">
+          <p>Yes. All platforms share the same <code>.agent-sync/</code> directory (DAILY.md, ROUTING.md, TEAM.md), so orchestrator state is visible regardless of which CLI triggered it.</p>
+          <p>Important: session-start hooks are <strong>not</strong> propagated between platforms. Each platform's plugin manifest configures its own <code>onSessionStart</code> hook independently — the files are already pre-configured for Claude Code, Codex, and Cursor.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Does it work on Windows, Mac, and Linux?</summary>
+        <div class="faq-body">
+          <p>Yes. A Team is platform-agnostic — it's markdown files and JSON, with no compiled code or OS-specific scripts. The path normalisation for git worktrees uses standard POSIX-style paths that work across all systems via the git CLI.</p>
+          <p>The bash commands in agent files (for running tests, linting, etc.) are standard shell commands that work on all three platforms.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What is the File Lock Protocol and why does it matter?</summary>
+        <div class="faq-body">
+          <p>When multiple agents work in parallel on isolated git worktrees, they can both try to modify the same source file at the same time — even though they're physically in separate directories. Git worktrees prevent <em>physical</em> conflicts, but not <em>logical</em> ones that appear at merge time.</p>
+          <p>The File Lock Protocol solves this: before dispatching any agent, the orchestrator registers which files it will touch in <code>ROUTING.md</code>. If a second agent tries to claim a file already marked <code>in-progress</code>, it's queued with a <code>depends_on</code> instead of dispatched. All paths are normalised to repo-relative form so worktree-local paths never cause false negatives.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-group reveal">
+      <div class="faq-group-label">Agents &amp; Skills</div>
+
+      <details class="faq-item">
+        <summary>What's the difference between an agent and a skill?</summary>
+        <div class="faq-body">
+          <p><strong>Agents</strong> are specialists with a defined role, model, and tool set. They run as sub-agents dispatched by the orchestrator or triggered directly. Each has a single responsibility — <code>debugger</code> investigates root causes, <code>code-reviewer</code> reviews code, <code>planner</code> creates implementation plans.</p>
+          <p><strong>Skills</strong> are enforced workflow instructions. Some are <em>hard gates</em> — the <code>verification-before-completion</code> skill literally blocks any agent from claiming "done" without running a real command and reading the output. Skills are consulted by agents before acting; they cannot be opted out of.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Do I need all 25 agents? My project is small.</summary>
+        <div class="faq-body">
+          <p>No. The orchestrator prunes automatically at <code>/orchestrate init</code> based on your <code>INIT.md</code>. A small Python API project, for example, ends up with roughly 12–14 active agents after pruning — all the mobile reviewers, the Rust specialist, the chief of staff, and other irrelevant agents are deleted from the workspace.</p>
+          <p>The team that runs is exactly the team your project needs. Nothing more.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>Can I add my own custom agents or skills?</summary>
+        <div class="faq-body">
+          <p>Yes, both:</p>
+          <ul>
+            <li><strong>New agent</strong>: create a <code>.md</code> file in <code>.claude/agents/</code> with the standard frontmatter (<code>name</code>, <code>description</code>, <code>allowedTools</code>, <code>model</code>), add it to <code>.agent-sync/TEAM.md</code>, and register its trigger in <code>skills/using-a-team/SKILL.md</code>.</li>
+            <li><strong>New skill</strong>: use the <code>/writing-skills</code> meta-skill — it walks you through spec, TDD, and validation of the new skill before adding it to the library. After creation, register the trigger in <code>using-a-team/SKILL.md</code>.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>What happens if an agent lies — claims it ran a check it didn't?</summary>
+        <div class="faq-body">
+          <p>The <code>harness-optimizer</code> agent acts as a pipeline auditor before every merge. It reads the bash command history (<code>~/.claude/bash-commands.log</code>) and task result files to verify that:</p>
+          <ul>
+            <li>A real test or build command was run after the last code change</li>
+            <li>A <code>code-reviewer</code> result exists for every task that modified source files</li>
+            <li>File Claims in <code>ROUTING.md</code> were released after task completion</li>
+          </ul>
+          <p>If it detects evasion, it writes a <code>BLOCK MERGE</code> verdict to <code>.agent-sync/AUDIT.md</code>. The orchestrator reads this file before dispatching <code>finishing-a-development-branch</code> — if blocked, the failing tasks are routed back for re-execution.</p>
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-group reveal">
+      <div class="faq-group-label">Contributing &amp; License</div>
+
+      <details class="faq-item">
+        <summary>Is A Team free to use in commercial projects?</summary>
+        <div class="faq-body">
+          <p>Yes. A Team is released under the <strong>MIT License</strong>. You can use it, modify it, distribute it, and include it in commercial projects — the only requirement is keeping the copyright notice in any distribution.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>How can I contribute?</summary>
+        <div class="faq-body">
+          <p>Standard GitHub flow:</p>
+          <ol>
+            <li>Fork the repository</li>
+            <li>Create a branch: <code>feat/your-agent-name</code> or <code>fix/description</code></li>
+            <li>Follow the conventions — new agents need a <code>SKILL.md</code> trigger registered, new skills need TDD validation via <code>/writing-skills</code></li>
+            <li>Open a pull request with a clear description of what the agent or skill does and why it belongs in a universal baseline</li>
+          </ol>
+          <p>The most valuable contributions are new specialist agents for languages or domains not yet covered, and improvements to the hard gate skills.</p>
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary>I found a bug or have a feature request. Where do I report it?</summary>
+        <div class="faq-body">
+          <p>Open a GitHub Issue in the repository. Include:</p>
+          <ul>
+            <li>Which agent or skill is affected</li>
+            <li>What you expected to happen vs. what actually happened</li>
+            <li>Which AI platform you're using (Claude Code, Codex, Cursor, OpenCode)</li>
+          </ul>
+          <p>For security-related issues, please use GitHub's private vulnerability reporting rather than a public issue.</p>
+        </div>
+      </details>
+
+    </div>
+
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ══════════ STAR CTA ══════════ -->
+<div class="cta-section">
+  <h2>Help us reach more developers ⭐</h2>
+  <p>A Team is free and open source. A GitHub star helps others discover it.</p>
+  <a class="star-cta" href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener">
+    <span class="star-icon">⭐</span>
+    Star A Team on GitHub
+  </a>
+</div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-logo">
+    <div class="licon">AT</div>
+    <span>A Team v1.0.0 — Universal Multi-Agent Baseline</span>
+  </div>
+  <p>MIT License · v1.0.0 · 25 agents · 16 skills · 4 platforms</p>
+  <div class="footer-links">
+    <a href="https://github.com/RBraga01/a-team" target="_blank">GitHub</a>
+    <a href="https://github.com/RBraga01/a-team/blob/main/docs/decision-tree.md" target="_blank">Decision Tree</a>
+    <a href="https://github.com/RBraga01/a-team/blob/main/docs/overview.md" target="_blank">Architecture</a>
+  </div>
+</footer>
+
+<script>
+// Scroll-triggered reveal animations
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      // Stagger children inside each section
+      const delay = entry.target.dataset.delay || 0;
+      setTimeout(() => entry.target.classList.add('visible'), delay);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+// Stagger cards within grids
+document.querySelectorAll('.team-grid, .gates-grid, .platforms-grid, .compare').forEach(grid => {
+  [...grid.children].forEach((child, i) => {
+    child.style.transitionDelay = `${i * 60}ms`;
+  });
+});
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Animate pipeline on scroll
+const pipelineObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      [...entry.target.querySelectorAll('.pipe')].forEach((p, i) => {
+        setTimeout(() => {
+          p.style.opacity = '1';
+          p.style.transform = 'translateY(0)';
+        }, i * 80);
+      });
+      pipelineObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.2 });
+
+document.querySelectorAll('.pipeline').forEach(p => {
+  [...p.querySelectorAll('.pipe')].forEach(step => {
+    step.style.opacity = '0';
+    step.style.transform = 'translateY(16px)';
+    step.style.transition = 'opacity .4s ease, transform .4s ease';
+  });
+  pipelineObserver.observe(p);
+});
+
+// Animate hero stats numbers
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.hero-stat-n').forEach((el, i) => {
+        el.style.animation = `count-up .5s ease ${i * 100}ms both`;
+      });
+      statsObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.hero-stats').forEach(s => statsObserver.observe(s));
+
+// Tab switcher for install section
+function switchTab(btn, tabId) {
+  const block = btn.closest('.install-block');
+  block.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  block.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  const pane = document.getElementById('tab-' + tabId);
+  if (pane) pane.classList.add('active');
+}
+
+// Copy button for code blocks
+function copyCode(btn) {
+  const code = btn.nextElementSibling.querySelector('code');
+  const text = code.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>

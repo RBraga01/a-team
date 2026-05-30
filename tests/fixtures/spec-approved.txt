@@ -1,0 +1,10 @@
+The spec for the CSV export feature has been approved. Here it is:
+
+APPROVED SPEC: Add CSV export to the reports page.
+- Export button on the reports list page
+- Generates CSV with columns: date, report_name, status, created_by
+- File named "reports-YYYY-MM-DD.csv"
+- Works for up to 10,000 rows
+- Shows loading state during generation
+
+Please create an implementation plan for this.

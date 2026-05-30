@@ -1,0 +1,32 @@
+{
+  "name": "a-team",
+  "version": "1.0.0",
+  "description": "A Team — universal multi-agent infrastructure with 18 specialist agents, 12 skills, 9 commands, and an orchestrator that prunes itself to fit any project.",
+  "skills": [
+    "using-a-team",
+    "verification-before-completion",
+    "brainstorming",
+    "writing-plans",
+    "executing-plans",
+    "subagent-driven-development",
+    "dispatching-parallel-agents",
+    "systematic-debugging",
+    "test-driven-development",
+    "using-git-worktrees",
+    "finishing-a-development-branch",
+    "writing-skills",
+    "api-contract-first",
+    "incident-response",
+    "data-migration",
+    "performance-audit"
+  ],
+  "skillsPath": "../skills",
+  "agentsPath": "../.claude/agents",
+  "rulesPath": "../.claude/rules",
+  "hooks": {
+    "onSessionStart": "../hooks/session-start.md"
+  },
+  "platforms": ["cursor"],
+  "author": "A Team Baseline",
+  "license": "MIT"
+}

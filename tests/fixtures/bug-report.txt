@@ -1,0 +1,1 @@
+There's a bug in the authentication module. Users are being logged out randomly after about 30 minutes even though their session should last 24 hours. The JWT tokens appear to be expiring too early. Please investigate and fix this.

@@ -1,0 +1,1 @@
+Implement a function called `calculateUserScore` that takes a user object and returns a score from 0-100 based on: profile completeness (40 points), number of completed tasks (30 points), and days active (30 points). Write tests first, then the implementation.
