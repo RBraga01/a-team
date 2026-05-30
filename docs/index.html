@@ -375,6 +375,21 @@ footer p { font-size:.8rem; color:var(--muted); }
 .footer-links a { font-size:.8rem; color:var(--muted); text-decoration:none; transition:color .15s; }
 .footer-links a:hover { color:var(--text); }
 
+/* ── ACKNOWLEDGMENTS ── */
+.ack-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+.ack-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:20px; text-decoration:none; display:block;
+  transition:transform .2s, border-color .2s, box-shadow .2s;
+}
+.ack-card:hover { transform:translateY(-3px); border-color:var(--border2); box-shadow:var(--shadow); }
+.ack-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+.ack-name { font-size:.9rem; font-weight:700; color:var(--white); }
+.ack-arrow { font-size:.9rem; color:var(--muted); transition:color .15s, transform .15s; }
+.ack-card:hover .ack-arrow { color:var(--blue); transform:translate(2px,-2px); }
+.ack-card p { font-size:.78rem; color:var(--muted); line-height:1.5; }
+@media(max-width:600px) { .ack-grid { grid-template-columns:1fr; } }
+
 /* ── INSTALL TABS ── */
 .install-block {
   background:var(--surface); border:1px solid var(--border);
@@ -1048,6 +1063,50 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
 
 <hr class="sep">
 
+<!-- ══════════ ACKNOWLEDGMENTS ══════════ -->
+<section class="section reveal" id="acknowledgments">
+  <div class="section-tag">Acknowledgments</div>
+  <h2>Born from the community</h2>
+  <p class="section-sub">A Team was built by studying, using, and needing to personalise several excellent open-source projects. The architecture combines the best patterns from each into a single, portable baseline.</p>
+
+  <div class="ack-grid">
+    <a class="ack-card reveal" href="https://github.com/obra/superpowers" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">Superpowers</span><span class="ack-arrow">↗</span></div>
+      <p>Skill-based methodology, TDD enforcement, subagent-driven development, and Git Worktree isolation</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/Purple-Horizons/tick-md" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">tick-md</span><span class="ack-arrow">↗</span></div>
+      <p>Logical task-state management using Markdown files and atomic Git commits as the state machine</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/switchman-dev/switchman" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">Switchman</span><span class="ack-arrow">↗</span></div>
+      <p>Concurrent agent coordination and file-level conflict detection across parallel agent workspaces</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/Mathews-Tom/armory" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">Armory</span><span class="ack-arrow">↗</span></div>
+      <p>Headless automated test suite for validating the semantic effectiveness of rules and prompts</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/BuildSomethingAI/cursor-custom-agents-rules-generator" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">BMad Rules</span><span class="ack-arrow">↗</span></div>
+      <p>Short, density-focused rule files with mandatory [VALID]/[INVALID] examples for LLM pattern replication</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/alirezarezvani/claude-skills" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">claude-skills</span><span class="ack-arrow">↗</span></div>
+      <p>Modular skill library architecture with native tool integrations</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/PSU3D0/pi-dcp" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">Pi-DCP</span><span class="ack-arrow">↗</span></div>
+      <p>Token optimisation via hooks that prune redundant command history and debug logs from agent context</p>
+    </a>
+    <a class="ack-card reveal" href="https://github.com/open-gitagent/opengap" target="_blank" rel="noopener">
+      <div class="ack-top"><span class="ack-name">GitAgent (OpenGAP)</span><span class="ack-arrow">↗</span></div>
+      <p>Agent identity standardisation through structured files and framework-agnostic state contracts</p>
+    </a>
+  </div>
+</section>
+
+<hr class="sep">
+
 <!-- ══════════ STAR CTA ══════════ -->
 <div class="cta-section">
   <h2>Help us reach more developers ⭐</h2>
@@ -1069,6 +1128,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
     <a href="https://github.com/RBraga01/a-team" target="_blank">GitHub</a>
     <a href="https://github.com/RBraga01/a-team/blob/main/docs/decision-tree.md" target="_blank">Decision Tree</a>
     <a href="https://github.com/RBraga01/a-team/blob/main/docs/overview.md" target="_blank">Architecture</a>
+    <a href="#acknowledgments">Acknowledgments</a>
   </div>
 </footer>
 
