@@ -1,4 +1,4 @@
-﻿{
+{
   "model": "claude-sonnet-4-6",
   "permissions": {
     "allow": [
@@ -57,6 +57,8 @@
       "Bash(npx tsx *)",
       "Bash(agent-browser *)",
       "Bash(npm audit *)",
+      "Bash(python .agent-sync/watcher.py*)",
+      "Bash(python3 .agent-sync/watcher.py*)",
       "Read(*)",
       "Write(*)",
       "Edit(*)",
@@ -113,6 +115,10 @@
           {
             "type": "command",
             "command": "cat \"skills/using-a-team/SKILL.md\" 2>/dev/null || cat \"hooks/session-start.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if INIT.md and .agent-sync/TEAM.md are missing.'"
+          },
+          {
+            "type": "command",
+            "command": "python .agent-sync/watcher.py & 2>/dev/null || python3 .agent-sync/watcher.py & 2>/dev/null || true"
           }
         ]
       }
