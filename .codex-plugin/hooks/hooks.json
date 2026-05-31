@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cat \"../hooks/session-start.md\" 2>/dev/null || cat \"../skills/using-a-team/SKILL.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if .agent-sync/TEAM.md is missing.'",
+            "async": false
+          }
+        ]
+      }
+    ]
+  }
+}
