@@ -135,21 +135,56 @@ Files older than 30 days are compressed to `.log.gz` when `metrics-report.py` ru
 
 ## Delivery 2 — Smart Init
 
+### Context: the natural workflow
+
+The user's workflow before A Team is: **Idea → LLM conversation → ROADMAP.md → coding begins**. The ROADMAP contains what the A Team most needs — project identity, real users, non-negotiable constraints, current state, pending decisions. The old INIT_TEMPLATE.md ignored this and asked technical questions that duplicated what already existed.
+
+Smart Init reads the ROADMAP first. Questions are only asked for what is missing.
+
 ### Where the logic lives
 
-Smart Init is implemented as a modification to the **orchestrator agent** (`agents/orchestrator.md`), not a new skill. The orchestrator already owns the init flow. Adding the interview to it keeps the entry point consistent: users still run `/orchestrate init`.
+Smart Init is implemented as a modification to the **orchestrator agent** (`agents/orchestrator.md`), not a new skill. The orchestrator already owns the init flow. Users still run `/orchestrate init`.
 
-A new file `skills/smart-init/SKILL.md` contains the interview script and INIT.md generation template — the orchestrator reads it as a reference during the interview.
+A new file `skills/smart-init/SKILL.md` contains the ROADMAP extraction rules, interview script, and INIT.md generation template.
 
-### Trigger
+### Trigger and detection sequence
 
-`/orchestrate init` checks for `INIT.md`:
-- **Exists** → current flow unchanged. No disruption for existing users.
-- **Missing** → interview starts automatically.
+`/orchestrate init` checks in this order:
 
-For new projects there is no git history, so stack inference is skipped. Questions 2 and 3 cover this case explicitly.
+```
+1. INIT.md exists?          → current flow unchanged (existing users unaffected)
+2. ROADMAP.md exists?       → extract context, ask only what's missing (≤2 questions)
+3. ROADMAP_*.md exists?     → same as above (e.g. ROADMAP_icd10.md)
+4. None of the above?       → full 5-question interview
+```
 
-### Interview flow
+### Path A — ROADMAP exists (most common for the user's projects)
+
+The orchestrator reads the ROADMAP and extracts:
+
+| Extracted from ROADMAP | Maps to INIT.md field |
+|------------------------|----------------------|
+| Project name / description | Project overview |
+| Stack table or mentioned technologies | Languages & stack |
+| Non-negotiable principles | Immutable rules section |
+| "Próximo" / next items | Active work context |
+| Compliance mentions (GDPR, local-first, etc.) | Compliance scope |
+| Current state (Feito / Done) | Existing coverage baseline |
+
+After extraction, the orchestrator asks **only**:
+1. "Que ferramentas de IA estás a usar?" (cannot be inferred from ROADMAP)
+
+Then generates INIT.md and shows the review summary.
+
+### Path B — No ROADMAP, project has existing code
+
+Stack inference runs silently (`git ls-files`), then 5-question interview. After approval, the orchestrator **also offers** to create a ROADMAP.md template pre-filled from the interview answers — so the user has one for future sessions.
+
+### Path C — No ROADMAP, new project (nothing exists)
+
+Full 5-question interview. Same ROADMAP offer at the end.
+
+### Interview flow (Paths B and C)
 
 Five questions, one at a time. Non-technical language throughout.
 
