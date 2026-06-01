@@ -133,6 +133,16 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .agent-sync/metrics.py session_end 2>/dev/null || python3 .agent-sync/metrics.py session_end 2>/dev/null || true"
+          }
+        ]
+      }
     ]
   }
 }
