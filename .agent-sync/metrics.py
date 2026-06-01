@@ -8,11 +8,18 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+import threading as _threading
+
 try:
     import fcntl as _fcntl
     _HAS_FCNTL = True
 except ImportError:
     _HAS_FCNTL = False
+
+# Per-process in-process lock: prevents data loss when multiple threads call
+# append_metric() concurrently in the same process (the common case on Windows
+# where fcntl is unavailable).
+_write_lock = _threading.Lock()
 
 
 def append_metric(event: str, base_dir: Path = None) -> None:
@@ -23,15 +30,14 @@ def append_metric(event: str, base_dir: Path = None) -> None:
     metrics_dir.mkdir(parents=True, exist_ok=True)
     log_file = metrics_dir / f"{date.today()}.log"
     line = f"{datetime.now().isoformat(timespec='seconds')} {event}\n"
-    with open(log_file, "a", encoding="utf-8") as f:
-        if _HAS_FCNTL:
-            _fcntl.flock(f, _fcntl.LOCK_EX)
-            f.write(line)
-            _fcntl.flock(f, _fcntl.LOCK_UN)
-        else:
-            # Lines are <200 bytes; concurrent write collisions are unlikely in
-            # single-process use. True cross-process locking is not available here.
-            f.write(line)
+    with _write_lock:
+        with open(log_file, "a", encoding="utf-8") as f:
+            if _HAS_FCNTL:
+                _fcntl.flock(f, _fcntl.LOCK_EX)
+                f.write(line)
+                _fcntl.flock(f, _fcntl.LOCK_UN)
+            else:
+                f.write(line)
 
 
 def read_events(days: int, base_dir: Path = None) -> list[str]:
