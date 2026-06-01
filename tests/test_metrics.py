@@ -59,3 +59,20 @@ def test_append_creates_metrics_dir_if_missing(tmp_path):
     assert not (tmp_path / "metrics").exists()
     m.append_metric("session_start", base_dir=tmp_path)
     assert (tmp_path / "metrics").exists()
+
+
+def test_read_events_spans_multiple_days(tmp_path):
+    from datetime import date, timedelta
+    # Write a log for yesterday manually
+    yesterday = date.today() - timedelta(days=1)
+    log_dir = tmp_path / "metrics"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    (log_dir / f"{yesterday}.log").write_text(
+        f"{yesterday}T10:00:00 session_start\n"
+    )
+    # Write today's event via append_metric
+    m.append_metric("task_complete TASK-001 agent", base_dir=tmp_path)
+    events = m.read_events(2, base_dir=tmp_path)
+    assert len(events) == 2
+    assert any("session_start" in e for e in events)
+    assert any("task_complete" in e for e in events)

@@ -8,6 +8,12 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
+try:
+    import fcntl as _fcntl
+    _HAS_FCNTL = True
+except ImportError:
+    _HAS_FCNTL = False
+
 
 def append_metric(event: str, base_dir: Path = None) -> None:
     """Append a metric event to today's log file."""
@@ -18,18 +24,25 @@ def append_metric(event: str, base_dir: Path = None) -> None:
     log_file = metrics_dir / f"{date.today()}.log"
     line = f"{datetime.now().isoformat(timespec='seconds')} {event}\n"
     with open(log_file, "a", encoding="utf-8") as f:
-        if sys.platform != "win32":
-            import fcntl
-            fcntl.flock(f, fcntl.LOCK_EX)
+        if _HAS_FCNTL:
+            _fcntl.flock(f, _fcntl.LOCK_EX)
             f.write(line)
-            fcntl.flock(f, fcntl.LOCK_UN)
+            _fcntl.flock(f, _fcntl.LOCK_UN)
         else:
-            # NTFS atomic append is safe for writes < 4KB (our lines are <200 bytes)
+            # Lines are <200 bytes; concurrent write collisions are unlikely in
+            # single-process use. True cross-process locking is not available here.
             f.write(line)
 
 
-def read_events(days: int, base_dir: Path = None) -> list:
-    """Read all events from the last N days. Returns list of raw log lines."""
+def read_events(days: int, base_dir: Path = None) -> list[str]:
+    """Read events from today and the N-1 days before it.
+
+    ``days=1`` returns today only; ``days=7`` returns today plus the 6 prior
+    days.  Events are returned in reverse-chronological order (most recent day
+    first).
+
+    Returns list of raw log lines.
+    """
     if base_dir is None:
         base_dir = Path(__file__).parent
     metrics_dir = base_dir / "metrics"
