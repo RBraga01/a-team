@@ -29,3 +29,10 @@ tests/transcripts/
 # Logs
 *.log
 bash-commands.log
+
+# A Team runtime files — not committed
+.agent-sync/metrics/
+.agent-sync/current-task.json
+.agent-sync/queue/stale/
+.agent-sync/watcher.pid
+.agent-sync/watcher.log

@@ -3,6 +3,9 @@
   "hooks": {
     "sessionStart": [
       {
+        "command": "python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'"
+      },
+      {
         "command": "cat \"../hooks/session-start.md\" 2>/dev/null || cat \"../skills/using-a-team/SKILL.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if .agent-sync/TEAM.md is missing.'"
       }
     ]
