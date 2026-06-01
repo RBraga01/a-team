@@ -6,14 +6,20 @@
   <polygon points="256,72 152,420 196,420 256,228 316,420 360,420" fill="#e2e8f0"/>
 
   <!-- Crossbar cutout (carves out the middle of the A to form crossbar zone) -->
-  <rect x="180" y="268" width="152" height="44" fill="#0f172a"/>
+  <rect x="182" y="266" width="154" height="48" fill="#0f172a"/>
 
-  <!-- Agent dots along crossbar — 5 circles representing team members -->
-  <circle cx="196" cy="290" r="14" fill="#6366f1"/>
-  <circle cx="226" cy="290" r="14" fill="#818cf8"/>
-  <circle cx="256" cy="290" r="14" fill="#a5b4fc"/>
-  <circle cx="286" cy="290" r="14" fill="#818cf8"/>
-  <circle cx="316" cy="290" r="14" fill="#6366f1"/>
+  <!-- Agent dots along crossbar — 4 circles spelling TEAM -->
+  <circle cx="206" cy="290" r="16" fill="#6366f1"/>
+  <text x="206" y="295" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fff">T</text>
+
+  <circle cx="238" cy="290" r="16" fill="#818cf8"/>
+  <text x="238" y="295" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fff">E</text>
+
+  <circle cx="270" cy="290" r="16" fill="#818cf8"/>
+  <text x="270" y="295" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fff">A</text>
+
+  <circle cx="302" cy="290" r="16" fill="#6366f1"/>
+  <text x="302" y="295" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#fff">M</text>
 
   <!-- Subtle outer ring -->
   <circle cx="256" cy="256" r="240" fill="none" stroke="#334155" stroke-width="6"/>
