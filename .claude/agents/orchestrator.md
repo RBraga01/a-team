@@ -24,8 +24,20 @@ Run when the user invokes `/orchestrate init` or when `.agent-sync/TEAM.md` does
 
 ### INIT Workflow
 
-1. **Read INIT.md** — the project-specific scope document. If missing, stop and instruct
-   the user to fill out INIT_TEMPLATE.md and save it as INIT.md.
+1. **Smart Init — check for INIT.md and ROADMAP**
+
+   Check in this order:
+
+   a. **`INIT.md` exists** → proceed directly to step 2 (standard flow). Do NOT run the interview.
+
+   b. **`INIT.md` missing, ROADMAP exists** → read `skills/smart-init/SKILL.md` and follow **Path A** (ROADMAP extraction). The ROADMAP file to read is the first match of: `ROADMAP.md`, then any `ROADMAP_*.md`.
+
+   c. **`INIT.md` missing, no ROADMAP** → read `skills/smart-init/SKILL.md` and follow **Path B** (full 5-question interview).
+
+   After Path A or B: generate `INIT.md`, show the `## O que entendi` summary, wait for user approval, then continue to step 2.
+
+   After successful init, record the metric:
+   `python .agent-sync/metrics.py "task_complete INIT orchestrator smart-init" 2>/dev/null || true`
 
 2. **Inventory the workspace** — Glob for all agent files in `.claude/agents/` and all
    skill files in `skills/*/SKILL.md`.
