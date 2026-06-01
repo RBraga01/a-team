@@ -1,5 +1,8 @@
 {
   "model": "claude-sonnet-4-6",
+  "statusLine": {
+    "command": "python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '⚡ A Team'"
+  },
   "permissions": {
     "allow": [
       "Bash(git status)",
