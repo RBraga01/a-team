@@ -111,6 +111,11 @@ def rotate_logs(base_dir: Path = None) -> None:
 
 
 def main() -> None:
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except AttributeError:
+        pass  # Python < 3.7 or stdout not reconfigurable (e.g. redirected)
+
     parser = argparse.ArgumentParser(description="A Team metrics report")
     parser.add_argument("--days", type=int, default=7, help="Number of days to report")
     args = parser.parse_args()
@@ -118,23 +123,20 @@ def main() -> None:
     rotate_logs()
     stats = parse_events(args.days)
 
-    # Use a stdout that always speaks UTF-8, even on Windows cp1252 terminals.
-    import io
-    out = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
-
     sep = "━" * 35
     rate = f" ({stats['success_rate']}%)" if stats["dispatched"] else ""
-    avg = f"\nTempo medio por tarefa: {stats['avg_time']}" if stats["avg_time"] else ""
 
-    out.write(f"\nA Team — ultimos {args.days} dias\n")
-    out.write(sep + "\n")
-    out.write(f"Sessoes:              {stats['sessions']}\n")
-    out.write(
+    print(f"\nA Team — últimos {args.days} dias")
+    print(sep)
+    print(f"Sessões:              {stats['sessions']}")
+    print(
         f"Tarefas:              {stats['dispatched']} despachadas · "
-        f"{stats['complete']} concluidas · {stats['failed']} falhadas{rate}\n"
+        f"{stats['complete']} concluídas · {stats['failed']} falhadas{rate}"
     )
-    out.write(f"Intervencoes humanas: {stats['interventions']}{avg}\n\n")
-    out.flush()
+    print(f"Intervenções humanas: {stats['interventions']}")
+    if stats["avg_time"]:
+        print(f"Tempo médio por tarefa: {stats['avg_time']}")
+    print()
 
 
 if __name__ == "__main__":
