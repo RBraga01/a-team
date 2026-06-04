@@ -9,6 +9,9 @@
   "homepage": "https://rbraga01.github.io/a-team/",
   "repository": "https://github.com/RBraga01/a-team",
   "license": "MIT",
+  "websiteURL": "https://rbraga01.github.io/a-team/",
+  "privacyPolicyURL": "https://github.com/RBraga01/a-team/blob/main/SECURITY.md",
+  "termsOfServiceURL": "https://github.com/RBraga01/a-team/blob/main/LICENSE",
   "keywords": [
     "multi-agent",
     "ai-agents",

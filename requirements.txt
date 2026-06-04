@@ -1,0 +1,10 @@
+# A Team — Python dependencies
+#
+# Runtime scripts (.agent-sync/, hooks/, skills/) depend on the Python
+# standard library only (json, sys, pathlib, datetime, subprocess, etc.).
+# No third-party runtime packages are required.
+#
+# The entries below are for development and testing.
+
+# Testing
+pytest==9.0.3
