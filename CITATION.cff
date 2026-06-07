@@ -1,0 +1,73 @@
+cff-version: 1.2.0
+
+message: >-
+  If you use A Team in your research, teaching, or published work,
+  please cite it using the metadata below.
+
+title: "A Team: Universal Multi-Agent Infrastructure for AI Coding Assistants"
+
+abstract: >-
+  A Team is an open-source package of specialist agents, workflow skills, and
+  enforcement hooks that turns any AI coding assistant into a structured engineering
+  team. It provides 25 specialist agents across five categories (leadership, quality,
+  language specialists, domain, and operations), 18 enforced workflow skills including
+  hard gates that cannot be bypassed, and a lead orchestrator that manages daily task
+  flow. The infrastructure is stateless by design — every agent derives its context
+  from files. Compatible with Claude Code, Codex CLI, Cursor, and OpenCode.
+
+authors:
+  - family-names: Braga
+    given-names: Ricardo Romão Marques
+    alias: RBraga01
+    email: qessupport@gmail.com
+
+  - alias: migmcc
+    # Full name intentionally omitted — contributor prefers GitHub alias in citations.
+
+version: "1.1.0"
+
+date-released: "2026-06-02"
+
+license: MIT
+
+repository-code: "https://github.com/RBraga01/a-team"
+
+url: "https://rbraga01.github.io/a-team/"
+
+keywords:
+  - multi-agent
+  - ai-agents
+  - workflow-automation
+  - tdd
+  - code-review
+  - orchestration
+  - claude-code
+  - codex-cli
+  - cursor
+  - opencode
+  - software-engineering
+  - quality-gates
+  - llm-agents
+  - developer-tools
+  - structured-prompts
+
+type: software
+
+identifiers:
+  - type: url
+    value: "https://github.com/RBraga01/a-team"
+    description: "GitHub repository"
+
+preferred-citation:
+  type: software
+  title: "A Team: Universal Multi-Agent Infrastructure for AI Coding Assistants"
+  authors:
+    - family-names: Braga
+      given-names: Ricardo Romão Marques
+      alias: RBraga01
+    - alias: migmcc
+  version: "1.1.0"
+  date-released: "2026-06-02"
+  license: MIT
+  repository-code: "https://github.com/RBraga01/a-team"
+  url: "https://rbraga01.github.io/a-team/"
