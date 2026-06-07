@@ -66,7 +66,7 @@ jobs:
         run: node runner.js
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-reports-${{ github.sha }}
@@ -98,7 +98,7 @@ jobs:
         run: node runner.js --record
 
       - name: Upload recorded transcripts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: transcripts-${{ github.sha }}
@@ -106,7 +106,7 @@ jobs:
           retention-days: 90
 
       - name: Upload test reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: always()
         with:
           name: test-reports-record-${{ github.sha }}
