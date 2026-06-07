@@ -1,0 +1,148 @@
+name: Welcome Fork
+
+on:
+  fork:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: 'GitHub username to welcome (for forks that pre-date this workflow)'
+        required: true
+
+jobs:
+  welcome:
+    name: Welcome new forker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create community label if missing
+        run: |
+          gh label create "community" \
+            --color "0e8a16" \
+            --description "Community forks and builder showcases" \
+            --force 2>/dev/null || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - name: Send welcome message and update registry
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // ── Resolve username ────────────────────────────────────────────
+            let username;
+            if (context.eventName === 'fork') {
+              username = context.payload.forkee.owner.login;
+            } else {
+              username = context.payload.inputs.username.trim();
+            }
+
+            if (!username || username === context.repo.owner) {
+              console.log('Skipping — no username or owner fork.');
+              return;
+            }
+
+            // ── Load registry ───────────────────────────────────────────────
+            const registryPath = '.github/forks-registry.json';
+            let registry = [];
+            let registrySha;
+            try {
+              const { data } = await github.rest.repos.getContent({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                path: registryPath,
+              });
+              registrySha = data.sha;
+              registry = JSON.parse(Buffer.from(data.content, 'base64').toString('utf8'));
+            } catch {}
+
+            // ── Skip if already welcomed ────────────────────────────────────
+            const existing = registry.find(e => e.username === username);
+            if (existing?.welcome_issue_number) {
+              console.log(`@${username} already welcomed in issue #${existing.welcome_issue_number}.`);
+              return;
+            }
+
+            // ── Check if starred ────────────────────────────────────────────
+            let hasStarred = false;
+            try {
+              const stargazers = await github.paginate(
+                github.rest.activity.listStargazersForRepo,
+                { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+              );
+              hasStarred = stargazers.some(s => s.login === username);
+            } catch {}
+
+            // ── Build message ───────────────────────────────────────────────
+            const repoUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}`;
+            const starLine = hasStarred
+              ? `Thanks for the ⭐ too — that helps a lot with discoverability.`
+              : `If A Team saves you time, a ⭐ [star](${repoUrl}) helps others find it — I check who starred to understand what kind of teams are adopting it.`;
+
+            const body = [
+              `Hey @${username} 👋 — thanks for forking A Team!`,
+              ``,
+              `A Team works best when you adapt it to match how your team already operates. If you run into anything unclear, want to discuss adapting it for your stack, or just want to share what you're building — drop a note here.`,
+              ``,
+              `**Quick pointers to get started:**`,
+              `- [\`CLAUDE.md\`](${repoUrl}/blob/main/CLAUDE.md) — session entry point; every agent reads this at startup`,
+              `- [Decision tree](${repoUrl}/blob/main/docs/decision-tree.md) — which agent or skill to reach for in each situation`,
+              `- [Open an issue](${repoUrl}/issues/new?labels=bug) for anything broken or missing`,
+              ``,
+              starLine,
+              ``,
+              `Looking forward to seeing what you build with it.`,
+              `— Ricardo (@${context.repo.owner})`,
+            ].join('\n');
+
+            // ── Create issue ────────────────────────────────────────────────
+            const { data: issue } = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `👋 Welcome, @${username}!`,
+              body,
+              labels: ['community'],
+            });
+
+            console.log(`Created issue #${issue.number} for @${username} (starred: ${hasStarred})`);
+
+            // ── Update registry ─────────────────────────────────────────────
+            const forkedAt = existing?.forked_at
+              || (context.eventName === 'fork' ? context.payload.forkee.created_at : new Date().toISOString());
+
+            const entry = {
+              username,
+              forked_at: forkedAt,
+              welcomed_at: new Date().toISOString(),
+              welcome_issue_number: issue.number,
+              starred_at_welcome: hasStarred,
+              followup_sent: false,
+              followup_sent_at: null,
+              featured: false,
+            };
+
+            if (existing) {
+              Object.assign(existing, entry);
+            } else {
+              registry.push(entry);
+            }
+
+            const updatedContent = Buffer.from(
+              JSON.stringify(registry, null, 2) + '\n'
+            ).toString('base64');
+
+            await github.rest.repos.createOrUpdateFileContents({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              path: registryPath,
+              message: `chore: record fork welcome for @${username}`,
+              content: updatedContent,
+              sha: registrySha,
+            });
+
+            console.log('Registry updated.');
