@@ -3,11 +3,6 @@ name: A Team Tests
 on:
   push:
     branches: [main, master]
-    paths:
-      - 'skills/**'
-      - '.claude/agents/**'
-      - '.claude/rules/**'
-      - 'tests/**'
   pull_request:
     paths:
       - 'skills/**'
@@ -49,8 +44,6 @@ jobs:
     name: Integration Tests (replay)
     runs-on: ubuntu-latest
     needs: unit-tests
-    # Only run if transcripts/ has committed files
-    if: hashFiles('tests/transcripts/*.jsonl') != ''
     steps:
       - uses: actions/checkout@v4
 
@@ -59,7 +52,14 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Check for saved transcripts
+        id: check
+        run: |
+          count=$(find tests/transcripts -name '*.jsonl' 2>/dev/null | wc -l | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+
       - name: Run all suites in replay mode
+        if: steps.check.outputs.count != '0'
         working-directory: tests
         env:
           TEST_MODE: replay
