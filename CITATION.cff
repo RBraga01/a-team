@@ -19,10 +19,7 @@ authors:
   - family-names: Braga
     given-names: Ricardo Romão Marques
     alias: RBraga01
-    email: qessupport@gmail.com
-
-  - alias: migmcc
-    # Full name intentionally omitted — contributor prefers GitHub alias in citations.
+    email: ricardormbraga@hotmail.com
 
 version: "1.1.0"
 
@@ -65,7 +62,6 @@ preferred-citation:
     - family-names: Braga
       given-names: Ricardo Romão Marques
       alias: RBraga01
-    - alias: migmcc
   version: "1.1.0"
   date-released: "2026-06-02"
   license: MIT
