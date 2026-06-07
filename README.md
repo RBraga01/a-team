@@ -2,9 +2,9 @@
   <img src="assets/ATeam_full.png" alt="A Team logo" width="200">
 </p>
 
- # A Team — Universal Multi-Agent Baseline v1.1.0
+ # A Team — A Complete Engineering Team in One Folder v1.1.0
 
-A portable, model-agnostic multi-agent infrastructure for AI coding assistants. Drop it into any project to get an immediately operational team of specialists, a lead orchestrator, universal coding standards, and a full workflow skill library — enforced from the first keystroke.
+Not a marketplace of agents you configure. A pre-configured, pre-enforced engineering team of 25 specialists — with a lead orchestrator, hard quality gates, and a Pipeline Auditor that verifies work was actually done, not just reported. Drop one folder into any project and it's operational from the first keystroke. Works on Claude Code, Codex CLI, Cursor, and OpenCode.
 
 > **Born from the community.** A Team was built by studying, using, and needing to personalise several excellent open-source agent projects. The architecture combines the best patterns from each into a single, portable baseline. See [Acknowledgments](#acknowledgments) for the projects that made this possible.
 

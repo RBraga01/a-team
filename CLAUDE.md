@@ -1,8 +1,8 @@
-# A Team — Universal Multi-Agent Baseline v1.1.0
+# A Team — A Complete Engineering Team in One Folder v1.1.0
 
-A portable, model-agnostic multi-agent infrastructure for AI coding assistants. Drop this folder
-into any project to get an immediately operational team of specialists, a lead orchestrator,
-universal coding standards, and a full skill library enforced from the first keystroke.
+Not a marketplace of agents you configure — a pre-configured, pre-enforced team of 25 specialists
+with a lead orchestrator, hard quality gates, and a Pipeline Auditor that verifies work was done,
+not just reported. Drop this folder into any project and it's operational from the first keystroke.
 Works on Claude Code, Codex CLI, Cursor, and OpenCode.
 
 ## Quick Start
