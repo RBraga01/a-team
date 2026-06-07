@@ -1,6 +1,6 @@
 {
   "name": "a-team",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Universal multi-agent infrastructure. 25 specialist agents, 18 enforced workflow skills, and a lead orchestrator — for Claude Code, Codex CLI, Cursor, and OpenCode.",
   "author": {
     "name": "RBraga01",

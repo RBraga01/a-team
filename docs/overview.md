@@ -63,7 +63,7 @@ graph TB
         end
     end
 
-    subgraph S["🔒  SKILL LAYER — 16 skills"]
+    subgraph S["🔒  SKILL LAYER — 18 skills"]
         direction LR
         subgraph HARD["Hard Gates\n(cannot skip)"]
             HG["verification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]

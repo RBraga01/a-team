@@ -1,4 +1,4 @@
-# A Team — Universal Multi-Agent Baseline v1.0.0
+# A Team — Universal Multi-Agent Baseline v1.1.0
 
 A portable, model-agnostic multi-agent infrastructure for AI coding assistants. Drop this folder
 into any project to get an immediately operational team of specialists, a lead orchestrator,

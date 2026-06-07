@@ -2,7 +2,7 @@
   <img src="assets/ATeam_full.png" alt="A Team logo" width="200">
 </p>
 
- # A Team — Universal Multi-Agent Baseline v1.0.0
+ # A Team — Universal Multi-Agent Baseline v1.1.0
 
 A portable, model-agnostic multi-agent infrastructure for AI coding assistants. Drop it into any project to get an immediately operational team of specialists, a lead orchestrator, universal coding standards, and a full workflow skill library — enforced from the first keystroke.
 
