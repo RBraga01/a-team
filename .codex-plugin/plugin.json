@@ -1,7 +1,7 @@
 {
   "name": "a-team",
   "version": "1.0.0",
-  "description": "Universal multi-agent infrastructure. 25 specialist agents, 16 enforced workflow skills, and a lead orchestrator — for Claude Code, Codex CLI, Cursor, and OpenCode.",
+  "description": "Universal multi-agent infrastructure. 25 specialist agents, 18 enforced workflow skills, and a lead orchestrator — for Claude Code, Codex CLI, Cursor, and OpenCode.",
   "author": {
     "name": "RBraga01",
     "url": "https://github.com/RBraga01"
@@ -26,7 +26,7 @@
   "interface": {
     "composerIcon": "../assets/ATeam.png",
     "displayName": "A Team",
-    "shortDescription": "25 specialist agents and 16 enforced workflow skills",
+    "shortDescription": "25 specialist agents and 18 enforced workflow skills",
     "longDescription": "A Team enforces structured development workflows: design before code, TDD before implementation, code review after every change, and hard gates that block completion without verified evidence. Drop it into any project to get an immediately operational team of specialists.",
     "developerName": "RBraga01",
     "category": "Coding",

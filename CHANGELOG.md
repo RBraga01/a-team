@@ -6,6 +6,24 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.1.0] — 2026-06-02
+
+### Added
+
+**2 new workflow skills** (total: 16 → 18):
+- `five-whys` — Root cause analysis skill for structured 5-Why chains; guides agents to escalate through causal layers before proposing a fix
+- `smart-init` — ROADMAP-aware session initialisation; reads ROADMAP.md at session start to set context, runs an interview script when none exists, and writes INIT.md
+
+**Observability stack:**
+- `scripts/metrics.py` — Shared module with `append_metric` and `read_events` for structured event logging
+- `scripts/metrics-report.py` — CLI with `parse`, `report`, and log rotation subcommands
+- `scripts/status.py` — Cross-platform status line script with staleness detection; wired into Claude Code `statusLine` and all platform `SessionStart` hooks
+
+**Safety guard:**
+- Pre-tool-use hook with session export — prevents silent failures on tool calls (merged from imports-v1)
+
+---
+
 ## [1.0.0] — 2026-05-30
 
 ### First public release
@@ -17,9 +35,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Domain: infra-reviewer (IaC), compliance-reviewer (GDPR/COPPA/PCI/SOC2/HIPAA), ai-reviewer (LLM code), performance-profiler
 - Operations: e2e-runner, doc-updater, chief-of-staff, loop-operator, harness-optimizer
 
-**16 workflow skills** — 6 hard gates + 10 workflow skills:
+**18 workflow skills** — 6 hard gates + 12 workflow skills:
 - Hard gates: verification-before-completion, test-driven-development, brainstorming, systematic-debugging, api-contract-first, data-migration
-- Workflow: using-git-worktrees, subagent-driven-development, executing-plans, writing-plans, dispatching-parallel-agents, finishing-a-development-branch, incident-response, performance-audit, writing-skills, using-a-team (meta)
+- Workflow: using-git-worktrees, subagent-driven-development, executing-plans, writing-plans, dispatching-parallel-agents, finishing-a-development-branch, incident-response, performance-audit, writing-skills, using-a-team (meta), five-whys, smart-init
 
 **Key capabilities:**
 - Orchestrator init + prune protocol (INIT.md → automatic team sizing)

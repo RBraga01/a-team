@@ -17,7 +17,7 @@ A portable, model-agnostic multi-agent infrastructure for AI coding assistants. 
 A Team turns any AI coding assistant into a structured, self-enforcing engineering team. Instead of one general-purpose model trying to do everything, you get:
 
 - **25 specialist agents**, each with a defined scope, model tier, and tool set
-- **16 workflow skills** that gate what can happen and when
+- **18 workflow skills** that gate what can happen and when
 - **A lead orchestrator** that manages daily task flow, dispatch, and state
 - **Hard enforcement hooks** that inject mandatory checks at session start and after every file edit
 - **A pipeline auditor** that verifies agents actually ran required checks — not just claimed they did
@@ -177,7 +177,7 @@ A Team/
 │   ├── commands/              ← Slash commands (/orchestrate, /plan, /quality-gate, …)
 │   └── rules/                 ← Coding and workflow standards loaded by all agents
 │
-├── skills/                    ← 16 workflow skill modules
+├── skills/                    ← 18 workflow skill modules
 │   ├── using-a-team/          ← Meta-skill: mandatory trigger map
 │   ├── verification-before-completion/
 │   ├── test-driven-development/
@@ -293,7 +293,7 @@ All language specialists run at **T2 · sonnet-4-6** (or platform equivalent).
 
 ---
 
-## Skill Library (16)
+## Skill Library (18)
 
 Skills are instruction modules that agents must consult before acting. Hard-gate skills cannot be skipped. Workflow skills define process.
 
