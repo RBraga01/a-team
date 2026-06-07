@@ -111,6 +111,15 @@ jobs:
 
             console.log(`Created issue #${issue.number} for @${username} (starred: ${hasStarred})`);
 
+            // ── Close immediately — keeps open issues list clean ────────────
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              state: 'closed',
+              state_reason: 'completed',
+            });
+
             // ── Update registry ─────────────────────────────────────────────
             const forkedAt = existing?.forked_at
               || (context.eventName === 'fork' ? context.payload.forkee.created_at : new Date().toISOString());
