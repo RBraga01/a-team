@@ -1,0 +1,42 @@
+name: Cleanup Merged Branches
+
+on:
+  schedule:
+    - cron: '0 3 * * 1'  # Every Monday at 03:00 UTC
+  workflow_dispatch:
+
+jobs:
+  cleanup:
+    name: Delete merged remote branches
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete merged branches
+        run: |
+          git fetch --prune
+          merged=$(git branch -r --merged origin/main \
+            | grep -vE 'origin/(main|master|HEAD)' \
+            | sed 's|origin/||' \
+            | tr -d ' ')
+
+          if [ -z "$merged" ]; then
+            echo "No merged branches to delete."
+            exit 0
+          fi
+
+          echo "Branches to delete:"
+          echo "$merged"
+
+          while IFS= read -r branch; do
+            [ -z "$branch" ] && continue
+            git push origin --delete "$branch" \
+              && echo "  ✓ deleted: $branch" \
+              || echo "  ✗ failed:  $branch (may already be gone)"
+          done <<< "$merged"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

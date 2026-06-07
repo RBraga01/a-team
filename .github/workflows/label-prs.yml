@@ -1,0 +1,36 @@
+name: Label PRs
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  label:
+    name: Apply labels by changed paths
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Create labels if missing
+        run: |
+          declare -A labels=(
+            ["agents"]="0075ca:Agent files (.claude/agents/)"
+            ["skills"]="2ea44f:Skill files (skills/)"
+            ["tests"]="e4e669:Test files (tests/)"
+            ["docs"]="d876e3:Documentation (docs/, *.md)"
+            ["ci"]="fc8a26:CI/CD (.github/)"
+            ["plugins"]="1d76db:Plugin manifests (.codex-plugin/, .cursor-plugin/)"
+          )
+          for name in "${!labels[@]}"; do
+            IFS=':' read -r color description <<< "${labels[$name]}"
+            gh label create "$name" --color "$color" --description "$description" --force 2>/dev/null || true
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+
+      - uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          configuration-path: .github/labeler.yml

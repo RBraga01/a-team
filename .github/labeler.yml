@@ -1,0 +1,27 @@
+agents:
+  - changed-files:
+    - any-glob-to-any-file: '.claude/agents/**'
+
+skills:
+  - changed-files:
+    - any-glob-to-any-file: 'skills/**'
+
+tests:
+  - changed-files:
+    - any-glob-to-any-file: 'tests/**'
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docs/**'
+      - '*.md'
+
+ci:
+  - changed-files:
+    - any-glob-to-any-file: '.github/**'
+
+plugins:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '.codex-plugin/**'
+      - '.cursor-plugin/**'
