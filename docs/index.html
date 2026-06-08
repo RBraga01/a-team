@@ -28,6 +28,47 @@
   --shadow:    0 4px 24px rgba(0,0,0,.4);
   --shadow-lg: 0 12px 48px rgba(0,0,0,.6);
 }
+/* ── LIGHT MODE ── */
+[data-theme="light"] {
+  --bg:        #f8fafc;
+  --bg2:       #f1f5f9;
+  --surface:   #ffffff;
+  --border:    rgba(0,0,0,.08);
+  --border2:   rgba(0,0,0,.14);
+  --text:      #1e293b;
+  --shadow:    0 4px 24px rgba(0,0,0,.08);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,.15);
+}
+[data-theme="light"] nav {
+  background: rgba(248,250,252,.92);
+  border-bottom-color: rgba(0,0,0,.1);
+}
+[data-theme="light"] .nav-logo-text { color: #0f172a; }
+[data-theme="light"] .section h2    { color: #0f172a; }
+[data-theme="light"] .hero-bg       { opacity: .5; }
+[data-theme="light"] .hero-grid     { opacity: .3; }
+[data-theme="light"] .btn-github    { background: #0f172a; color: #fff; }
+[data-theme="light"] .cmp.before { background: rgba(239,68,68,.06); border-color: rgba(239,68,68,.3); }
+[data-theme="light"] .cmp.after  { background: rgba(16,185,129,.06); border-color: rgba(16,185,129,.3); }
+[data-theme="light"] .faq-item  { background: var(--surface); border-color: var(--border); }
+[data-theme="light"] .skill-card,
+[data-theme="light"] .agent-card,
+[data-theme="light"] .gate-card,
+[data-theme="light"] .ack-card   { background: var(--surface); border-color: var(--border); }
+[data-theme="light"] .hero-stat  { background: var(--surface); }
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+  font-size: .9rem;
+  line-height: 1;
+  transition: background .15s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,.08); }
+[data-theme="light"] .theme-toggle:hover { background: rgba(0,0,0,.06); }
+
 
 html { scroll-behavior: smooth; }
 body {
@@ -509,6 +550,9 @@ footer p { font-size:.8rem; color:var(--muted); }
   .platforms-grid { grid-template-columns:1fr 1fr; }
 }
 </style>
+<script>
+(function(){var s=localStorage.getItem('theme'),d=window.matchMedia('(prefers-color-scheme:dark)').matches;document.documentElement.setAttribute('data-theme',s||(d?'dark':'light'));})();
+</script>
 </head>
 <body>
 
@@ -520,6 +564,8 @@ footer p { font-size:.8rem; color:var(--muted); }
     <span class="nav-logo-badge">v1.1.0</span>
   </a>
   <div class="nav-right">
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+    
     <a class="btn-github" href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener">
       <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
@@ -1255,14 +1301,27 @@ function copyCode(btn) {
 }
 </script>
 <script>
-fetch("https://api.github.com/repos/RBraga01/a-team")
+fetch('https://api.github.com/repos/RBraga01/a-team')
   .then(r => r.json())
   .then(data => {
-    document.querySelectorAll(".star-count").forEach(el => {
-      el.textContent = data.stargazers_count + " ⭐";
+    document.querySelectorAll('.star-count').forEach(el => {
+      el.textContent = data.stargazers_count + ' ⭐';
     });
   })
   .catch(() => {});
+document.addEventListener('DOMContentLoaded', function() {
+  var btn = document.getElementById('themeToggle');
+  function upd() {
+    btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  }
+  upd();
+  btn.addEventListener('click', function() {
+    var t = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('theme', t);
+    upd();
+  });
+});
 </script>
 </body>
 </html>
