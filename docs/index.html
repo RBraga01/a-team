@@ -338,6 +338,9 @@ hr.sep { border:none; border-top:1px solid var(--border); }
   display:flex; align-items:center; justify-content:center;
   margin:0 auto 16px; position:relative; z-index:1;
 }
+.plat-logo img {
+  width:36px; height:36px; object-fit:contain; display:block;
+}
 .platform-card h3  { font-size:.95rem; font-weight:700; color:var(--white); margin-bottom:6px; position:relative; z-index:1; }
 .platform-card p   { font-size:.75rem; color:var(--muted); line-height:1.5; position:relative; z-index:1; }
 .plat-badge {
@@ -736,14 +739,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <!-- Claude Code / Anthropic -->
     <div class="platform-card plat-anthropic reveal">
       <div class="plat-logo">
-        <!--
-          Anthropic official logomark — two thick angled beams forming the letter A.
-          Brand colour: #CC785C (terracotta). No crossbar. Sharp apex. Flat-cut base.
-          Source: Anthropic brand assets (public press kit).
-        -->
-        <svg width="38" height="38" viewBox="0 0 46 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M26.042 0h-6.084L7.625 33.999h6.417l2.834-7.776h11.249l2.833 7.776H37.375L26.042 0zm-7.498 20.624 3.456-9.498 3.457 9.498h-6.913z" fill="#CC785C"/>
-        </svg>
+        <img src="https://cdn.simpleicons.org/anthropic/CC785C" width="38" height="38" alt="Anthropic">
       </div>
       <h3>Claude Code</h3>
       <p>Full support — hooks, slash commands, native sub-agent dispatch, worktrees</p>
@@ -753,14 +749,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <!-- Codex CLI / OpenAI -->
     <div class="platform-card plat-openai reveal">
       <div class="plat-logo">
-        <!--
-          OpenAI official logomark — interlocking hexagonal bloom / asterisk.
-          Brand colour: #000000 on white context, #fff on dark. We use white on dark bg.
-          Source: OpenAI brand assets (public press kit).
-        -->
-        <svg width="36" height="36" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M37.532 16.87a9.963 9.963 0 0 0-.856-8.184 10.078 10.078 0 0 0-10.855-4.835 9.964 9.964 0 0 0-7.504-3.366 10.079 10.079 0 0 0-9.612 6.977 9.967 9.967 0 0 0-6.664 4.834 10.08 10.08 0 0 0 1.24 11.817 9.965 9.965 0 0 0 .856 8.185 10.079 10.079 0 0 0 10.855 4.835 9.965 9.965 0 0 0 7.504 3.366 10.08 10.08 0 0 0 9.617-6.981 9.967 9.967 0 0 0 6.663-4.834 10.079 10.079 0 0 0-1.243-11.813zM22.498 37.886a7.474 7.474 0 0 1-4.799-1.735c.061-.033.168-.091.237-.134l7.964-4.6a1.294 1.294 0 0 0 .655-1.134V19.054l3.366 1.944a.12.12 0 0 1 .066.092v9.299a7.505 7.505 0 0 1-7.49 7.496zM6.392 31.006a7.471 7.471 0 0 1-.894-5.023c.06.036.162.099.237.141l7.964 4.6a1.297 1.297 0 0 0 1.308 0l9.724-5.614v3.888a.12.12 0 0 1-.048.103l-8.051 4.649a7.504 7.504 0 0 1-10.24-2.744zM4.297 13.62A7.469 7.469 0 0 1 8.2 10.333c0 .068-.004.19-.004.274v9.201a1.294 1.294 0 0 0 .654 1.132l9.723 5.614-3.366 1.944a.12.12 0 0 1-.114.012L7.044 23.86a7.504 7.504 0 0 1-2.747-10.24zm27.658 6.437-9.724-5.615 3.367-1.943a.121.121 0 0 1 .114-.012l8.048 4.648a7.498 7.498 0 0 1-1.158 13.528v-9.476a1.293 1.293 0 0 0-.647-1.13zm3.35-5.043c-.059-.037-.162-.099-.236-.141l-7.965-4.6a1.298 1.298 0 0 0-1.308 0l-9.723 5.614v-3.888a.12.12 0 0 1 .048-.103l8.05-4.645a7.497 7.497 0 0 1 11.135 7.763zm-21.063 6.929-3.367-1.944a.12.12 0 0 1-.065-.092v-9.299a7.497 7.497 0 0 1 12.293-5.756 6.94 6.94 0 0 0-.236.134l-7.965 4.6a1.294 1.294 0 0 0-.654 1.132l-.006 11.225zm1.829-3.943 4.33-2.501 4.332 2.498v4.998l-4.331 2.5-4.331-2.5V18z" fill="white"/>
-        </svg>
+        <img src="https://cdn.simpleicons.org/openai/ffffff" width="36" height="36" alt="OpenAI">
       </div>
       <h3>Codex CLI</h3>
       <p>All agents and skills load via plugin manifest — rules and session hook included</p>
@@ -770,19 +759,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <!-- Cursor -->
     <div class="platform-card plat-cursor reveal">
       <div class="plat-logo">
-        <!--
-          Cursor official logomark — two interlocked squares rotated 45°, forming a diamond/cursor shape.
-          Brand colours: #000000 body, #fff fill, #1a1a1a stroke. App icon uses black rounded square.
-          Source: Cursor brand assets (public website favicon / app icon).
-        -->
-        <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <!-- Black rounded square background -->
-          <rect width="32" height="32" rx="7" fill="#111"/>
-          <!-- Outer rotated square (diamond) — white stroke -->
-          <rect x="9.17" y="9.17" width="13.66" height="13.66" rx="1.5" transform="rotate(45 16 16)" stroke="white" stroke-width="1.8" fill="none"/>
-          <!-- Inner fill square — solid white -->
-          <rect x="11.76" y="11.76" width="8.48" height="8.48" rx="1" transform="rotate(45 16 16)" fill="white"/>
-        </svg>
+        <img src="https://cdn.simpleicons.org/cursor/ffffff" width="36" height="36" alt="Cursor">
       </div>
       <h3>Cursor</h3>
       <p>Skills and rules loaded via plugin; agents available on demand across projects</p>
@@ -792,11 +769,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <!-- OpenCode -->
     <div class="platform-card plat-opencode reveal">
       <div class="plat-logo">
-        <!--
-          OpenCode official logomark — stylised "O" glyph inside a dark rounded square.
-          Brand colours: #09090B background, white glyph. Minimal terminal aesthetic.
-          Source: opencode.ai public assets / GitHub repo icon.
-        -->
+        <!-- OpenCode — representative icon, no official asset available -->
         <svg width="36" height="36" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
           <!-- Dark rounded square background -->
           <rect width="32" height="32" rx="7" fill="#09090B"/>
