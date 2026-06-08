@@ -8,5 +8,15 @@
     "followup_sent": false,
     "followup_sent_at": null,
     "featured": false
+  },
+  {
+    "username": "rbr1brg-design",
+    "forked_at": "2026-06-08T09:47:02Z",
+    "welcomed_at": "2026-06-08T09:47:15.686Z",
+    "welcome_issue_number": 12,
+    "starred_at_welcome": true,
+    "followup_sent": false,
+    "followup_sent_at": null,
+    "featured": false
   }
 ]
