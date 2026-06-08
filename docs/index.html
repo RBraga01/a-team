@@ -1254,5 +1254,15 @@ function copyCode(btn) {
   });
 }
 </script>
+<script>
+fetch("https://api.github.com/repos/RBraga01/a-team")
+  .then(r => r.json())
+  .then(data => {
+    document.querySelectorAll(".star-count").forEach(el => {
+      el.textContent = data.stargazers_count + " ⭐";
+    });
+  })
+  .catch(() => {});
+</script>
 </body>
 </html>
