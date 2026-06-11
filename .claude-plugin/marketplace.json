@@ -1,0 +1,105 @@
+{
+  "name": "rbraga01",
+  "description": "RBraga01 plugin registry \u2014 A Team multi-agent infrastructure and four domain builder packs for Claude Code and Codex",
+  "owner": {
+    "name": "RBraga01",
+    "url": "https://github.com/RBraga01"
+  },
+  "plugins": [
+    {
+      "name": "a-team",
+      "description": "Universal multi-agent infrastructure: 25 specialist agents, 17 enforced workflow skills, and a lead orchestrator",
+      "version": "1.1.0",
+      "source": "./",
+      "author": {
+        "name": "RBraga01",
+        "url": "https://github.com/RBraga01"
+      },
+      "homepage": "https://rbraga01.github.io/a-team/",
+      "repository": "https://github.com/RBraga01/a-team",
+      "keywords": [
+        "multi-agent",
+        "orchestration",
+        "workflow",
+        "tdd",
+        "code-review"
+      ]
+    },
+    {
+      "name": "builder-ai",
+      "description": "AI product quality enforcement: 8 skills and 5 agents for LLM product teams",
+      "version": "1.0.0",
+      "source": "https://github.com/RBraga01/builder-ai",
+      "author": {
+        "name": "RBraga01",
+        "url": "https://github.com/RBraga01"
+      },
+      "homepage": "https://github.com/RBraga01/builder-ai",
+      "repository": "https://github.com/RBraga01/builder-ai",
+      "keywords": [
+        "ai-product",
+        "eval",
+        "safety",
+        "rag",
+        "llm"
+      ]
+    },
+    {
+      "name": "builder-product",
+      "description": "AI product quality enforcement: 6 skills and 3 agents for product teams",
+      "version": "1.0.0",
+      "source": "https://github.com/RBraga01/builder-product",
+      "author": {
+        "name": "RBraga01",
+        "url": "https://github.com/RBraga01"
+      },
+      "homepage": "https://github.com/RBraga01/builder-product",
+      "repository": "https://github.com/RBraga01/builder-product",
+      "keywords": [
+        "product",
+        "prd",
+        "feature",
+        "ab-testing",
+        "metrics"
+      ]
+    },
+    {
+      "name": "builder-design",
+      "description": "AI UI design quality enforcement: 8 skills and 5 agents for UI design teams",
+      "version": "1.0.0",
+      "source": "https://github.com/RBraga01/builder-design",
+      "author": {
+        "name": "RBraga01",
+        "url": "https://github.com/RBraga01"
+      },
+      "homepage": "https://github.com/RBraga01/builder-design",
+      "repository": "https://github.com/RBraga01/builder-design",
+      "keywords": [
+        "ui-design",
+        "accessibility",
+        "design-tokens",
+        "ai-states",
+        "prompt-ux"
+      ]
+    },
+    {
+      "name": "builder-growth",
+      "description": "AI growth quality enforcement: 6 skills and 3 agents for growth teams",
+      "version": "1.0.0",
+      "source": "https://github.com/RBraga01/builder-growth",
+      "author": {
+        "name": "RBraga01",
+        "url": "https://github.com/RBraga01"
+      },
+      "homepage": "https://github.com/RBraga01/builder-growth",
+      "repository": "https://github.com/RBraga01/builder-growth",
+      "keywords": [
+        "growth",
+        "experiment",
+        "funnel",
+        "retention",
+        "copy"
+      ]
+    }
+  ]
+}
