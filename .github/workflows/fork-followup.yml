@@ -18,7 +18,7 @@ jobs:
       contents: write
       issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Send follow-ups and update registry
         uses: actions/github-script@v7
