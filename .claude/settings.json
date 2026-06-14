@@ -1,7 +1,7 @@
 {
   "model": "claude-sonnet-4-6",
   "statusLine": {
-    "command": "python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '⚡ A Team'"
+    "command": "python scripts/status.py 2>/dev/null || python3 scripts/status.py 2>/dev/null || py scripts/status.py 2>/dev/null || echo '⚡ A Team'"
   },
   "permissions": {
     "allow": [
@@ -60,8 +60,8 @@
       "Bash(npx tsx *)",
       "Bash(agent-browser *)",
       "Bash(npm audit *)",
-      "Bash(python .agent-sync/watcher.py*)",
-      "Bash(python3 .agent-sync/watcher.py*)",
+      "Bash(python scripts/*)",
+      "Bash(python3 scripts/*)",
       "Read(*)",
       "Write(*)",
       "Edit(*)",
@@ -118,7 +118,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .agent-sync/pre_tool_use.py 2>/dev/null || python3 .agent-sync/pre_tool_use.py 2>/dev/null || true"
+            "command": "if test -f scripts/pre_tool_use.py; then python scripts/pre_tool_use.py 2>/dev/null || python3 scripts/pre_tool_use.py 2>/dev/null; else echo '[A Team] WARNING: security gate inactive (scripts/pre_tool_use.py missing — re-run installer)'; fi"
           }
         ]
       }
@@ -132,7 +132,11 @@
           },
           {
             "type": "command",
-            "command": "python .agent-sync/watcher.py & 2>/dev/null || python3 .agent-sync/watcher.py & 2>/dev/null || true"
+            "command": "for f in scripts/pre_tool_use.py scripts/watcher.py scripts/status.py scripts/metrics.py scripts/session_export.py; do test -f \"$f\" || echo \"[A Team] WARNING: $f not found — enforcement inactive. Re-run the installer.\"; done"
+          },
+          {
+            "type": "command",
+            "command": "if test -f scripts/watcher.py; then (python scripts/watcher.py >/dev/null 2>&1 || python3 scripts/watcher.py >/dev/null 2>&1) & fi"
           }
         ]
       }
@@ -153,11 +157,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python .agent-sync/metrics.py session_end 2>/dev/null || python3 .agent-sync/metrics.py session_end 2>/dev/null || true"
+            "command": "test -f scripts/metrics.py && (python scripts/metrics.py session_end 2>/dev/null || python3 scripts/metrics.py session_end 2>/dev/null) || true"
           },
           {
             "type": "command",
-            "command": "python .agent-sync/session_export.py 2>/dev/null || python3 .agent-sync/session_export.py 2>/dev/null || true"
+            "command": "test -f scripts/session_export.py && (python scripts/session_export.py 2>/dev/null || python3 scripts/session_export.py 2>/dev/null) || true"
           }
         ]
       }

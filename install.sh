@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_URL="https://github.com/RBraga01/a-team.git"
 DEST="${1:-$PWD}"
-DIRS=(".claude" "skills" "hooks" "templates")
+DIRS=(".claude" "skills" "hooks" "templates" "scripts")
 
 RESET="\033[0m"; BOLD="\033[1m"; GREEN="\033[32m"; BLUE="\033[34m"; RED="\033[31m"; DIM="\033[2m"
 
@@ -59,6 +59,25 @@ if [ ! -f "$DEST/INIT.md" ]; then
 else
   echo -e "  ${DIM}↩ INIT.md already exists — skipped${RESET}"
   SKIPPED=$((SKIPPED + 1))
+fi
+
+# -- Smoke check: verify hook scripts are present --
+echo ""
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py")
+MISSING_COUNT=0
+for script in "${HOOK_SCRIPTS[@]}"; do
+  if [ ! -f "$DEST/$script" ]; then
+    echo -e "  ${RED}✗ $script — not found${RESET}"
+    MISSING_COUNT=$((MISSING_COUNT + 1))
+  fi
+done
+if [ $MISSING_COUNT -gt 0 ]; then
+  echo ""
+  echo -e "  ${RED}${BOLD}Error:${RESET} $MISSING_COUNT enforcement script(s) missing."
+  echo -e "  Security gate, watcher, metrics, and status line will be ${RED}inactive${RESET}."
+  echo -e "  This is a bug — please report at github.com/RBraga01/a-team/issues"
+else
+  echo -e "  ${GREEN}✓${RESET} All enforcement scripts present"
 fi
 
 # -- Done --

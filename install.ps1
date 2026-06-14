@@ -9,7 +9,7 @@ param(
 )
 
 $RepoUrl  = "https://github.com/RBraga01/a-team.git"
-$Dirs     = @(".claude", "skills", "hooks", "templates")
+$Dirs     = @(".claude", "skills", "hooks", "templates", "scripts")
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
@@ -78,6 +78,26 @@ if (-not (Test-Path $initDest)) {
 # -- Cleanup --
 Set-Location $Destination
 Remove-Item $Tmp -Recurse -Force
+
+# -- Smoke check: verify hook scripts are present --
+Write-Host ""
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py")
+$MissingCount = 0
+foreach ($script in $HookScripts) {
+    $scriptPath = Join-Path $Destination $script
+    if (-not (Test-Path $scriptPath)) {
+        Write-Host "  x $script — not found" -ForegroundColor Red
+        $MissingCount++
+    }
+}
+if ($MissingCount -gt 0) {
+    Write-Host ""
+    Write-Host "  Error: $MissingCount enforcement script(s) missing." -ForegroundColor Red
+    Write-Host "  Security gate, watcher, metrics, and status line will be inactive."
+    Write-Host "  This is a bug — please report at github.com/RBraga01/a-team/issues"
+} else {
+    Write-Host "  v All enforcement scripts present" -ForegroundColor Green
+}
 
 # -- Done --
 Write-Host ""
