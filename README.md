@@ -300,7 +300,7 @@ All language specialists run at **T2 · sonnet-4-6** (or platform equivalent).
 
 ---
 
-## Skill Library (18)
+## Skill Library (19)
 
 Skills are instruction modules that agents must consult before acting. Hard-gate skills cannot be skipped. Workflow skills define process.
 

@@ -63,7 +63,7 @@ A Team/
 | **ai-reviewer** | LLM code — prompt injection, token cost, tool safety | Any LLM API calls |
 | **performance-profiler** | Systematic profiling — measure before optimising | Performance regressions |
 
-## Skill Library (17)
+## Skill Library (19)
 
 | Skill | Use Case | Gate Type |
 |-------|---------|-----------|
