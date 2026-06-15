@@ -23,7 +23,7 @@ Not a marketplace of agents you configure. A pre-configured, pre-enforced engine
 A Team turns any AI coding assistant into a structured, self-enforcing engineering team. Instead of one general-purpose model trying to do everything, you get:
 
 - **25 specialist agents**, each with a defined scope, model tier, and tool set
-- **18 workflow skills** that gate what can happen and when
+- **19 workflow skills** that gate what can happen and when
 - **A lead orchestrator** that manages daily task flow, dispatch, and state
 - **Hard enforcement hooks** that inject mandatory checks at session start and after every file edit
 - **A pipeline auditor** that verifies agents actually ran required checks — not just claimed they did
@@ -184,7 +184,7 @@ A Team/
 │   ├── commands/              ← Slash commands (/orchestrate, /plan, /quality-gate, …)
 │   └── rules/                 ← Coding and workflow standards loaded by all agents
 │
-├── skills/                    ← 18 workflow skill modules
+├── skills/                    ← 19 workflow skill modules
 │   ├── using-a-team/          ← Meta-skill: mandatory trigger map
 │   ├── verification-before-completion/
 │   ├── test-driven-development/
