@@ -63,7 +63,7 @@ A Team/
 | **ai-reviewer** | LLM code — prompt injection, token cost, tool safety | Any LLM API calls |
 | **performance-profiler** | Systematic profiling — measure before optimising | Performance regressions |
 
-## Skill Library (16)
+## Skill Library (17)
 
 | Skill | Use Case | Gate Type |
 |-------|---------|-----------|
@@ -79,6 +79,7 @@ A Team/
 | **writing-plans** | Create structured implementation plans | Workflow |
 | **finishing-a-development-branch** | Wrap up a branch before merge | Workflow |
 | **writing-skills** | Create new A Team skills via TDD | Meta |
+| **skill-duplication-audit** | Detect overlapping skills across packs — classify pairs as duplicate / partial overlap / complementary / false positive | Workflow |
 | **api-contract-first** | Design API contract before writing any endpoint | Hard gate |
 | **incident-response** | Production incident playbook (detect → contain → resolve → post-mortem) | Workflow |
 | **data-migration** | Safe schema changes with rollback strategy | Hard gate |
