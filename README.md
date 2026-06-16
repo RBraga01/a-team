@@ -254,7 +254,7 @@ The `PostToolUse` hook fires after every `Write` or `Edit`, reminding: use `code
 
 ---
 
-## Agent Roster (25)
+## Agent Roster (26)
 
 ### Core Engineering
 

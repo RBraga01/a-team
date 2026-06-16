@@ -9,8 +9,8 @@ title: "A Team: Universal Multi-Agent Infrastructure for AI Coding Assistants"
 abstract: >-
   A Team is an open-source package of specialist agents, workflow skills, and
   enforcement hooks that turns any AI coding assistant into a structured engineering
-  team. It provides 25 specialist agents across five categories (leadership, quality,
-  language specialists, domain, and operations), 18 enforced workflow skills including
+  team. It provides 26 specialist agents across five categories (leadership, quality,
+  language specialists, domain, and operations), 19 enforced workflow skills including
   hard gates that cannot be bypassed, and a lead orchestrator that manages daily task
   flow. The infrastructure is stateless by design — every agent derives its context
   from files. Compatible with Claude Code, Codex CLI, Cursor, and OpenCode.
@@ -21,7 +21,7 @@ authors:
     alias: RBraga01
     email: ricardormbraga@hotmail.com
 
-version: "1.1.0"
+version: "1.2.0"
 
 date-released: "2026-06-02"
 
@@ -62,7 +62,7 @@ preferred-citation:
     - family-names: Braga
       given-names: Ricardo Romão Marques
       alias: RBraga01
-  version: "1.1.0"
+  version: "1.2.0"
   date-released: "2026-06-02"
   license: MIT
   repository-code: "https://github.com/RBraga01/a-team"

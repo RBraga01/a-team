@@ -8,7 +8,7 @@
   "plugins": [
     {
       "name": "a-team",
-      "description": "Universal multi-agent infrastructure: 26 specialist agents, 17 enforced workflow skills, and a lead orchestrator",
+      "description": "Universal multi-agent infrastructure: 26 specialist agents, 19 enforced workflow skills, and a lead orchestrator",
       "version": "1.2.0",
       "source": "./",
       "author": {
@@ -46,7 +46,7 @@
     },
     {
       "name": "builder-product",
-      "description": "AI product quality enforcement: 6 skills and 3 agents for product teams",
+      "description": "AI product quality enforcement: 7 skills and 3 agents for product teams",
       "version": "1.0.0",
       "source": "https://github.com/RBraga01/builder-product",
       "author": {

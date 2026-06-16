@@ -50,7 +50,7 @@ graph TB
         ORCH <--> ROUTING
     end
 
-    subgraph A["👥  SPECIALIST AGENTS — 25 total"]
+    subgraph A["👥  SPECIALIST AGENTS — 26 total"]
         direction LR
         subgraph QUALITY["Quality"]
             QA["code-reviewer\narchitect\nplanner\nsecurity-reviewer\ntdd-guide\nrefactor-cleaner\nbuild-error-resolver\ndebugger"]
@@ -122,11 +122,11 @@ sequenceDiagram
 
 ---
 
-## The 25 Agents at a Glance
+## The 26 Agents at a Glance
 
 ```mermaid
 mindmap
-  root((A Team\n25 Agents))
+  root((A Team\n26 Agents))
     Orchestration
       orchestrator
     Planning
