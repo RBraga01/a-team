@@ -25,7 +25,7 @@ A Team/
 │   ├── agents/                ← 25 agent profiles
 │   ├── commands/              ← Slash commands
 │   └── rules/                 ← Enforced coding & workflow standards
-├── skills/                    ← 12 workflow skill modules
+├── skills/                    ← 19 workflow skill modules
 ├── hooks/
 │   └── session-start.md       ← Injected at every session start
 ├── .cursor-plugin/            ← Cursor IDE integration
