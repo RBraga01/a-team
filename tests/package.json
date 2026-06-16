@@ -5,8 +5,9 @@
   "type": "module",
   "engines": { "node": ">=18.0.0" },
   "scripts": {
-    "test":                  "node --test lib/transcript-parser.test.js lib/assertions.test.js",
-    "test:unit":             "node --test lib/transcript-parser.test.js lib/assertions.test.js",
+    "test":                  "node --test lib/transcript-parser.test.js lib/assertions.test.js lib/plugin-manifests.test.js",
+    "test:unit":             "node --test lib/transcript-parser.test.js lib/assertions.test.js lib/plugin-manifests.test.js",
+    "test:manifests":        "node --test lib/plugin-manifests.test.js",
     "test:integration":      "node runner.js",
     "test:record":           "node runner.js --record",
     "test:skill-triggering": "node --test suites/skill-triggering.test.js",
