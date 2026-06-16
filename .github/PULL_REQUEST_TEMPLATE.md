@@ -21,6 +21,7 @@
 - [ ] Codex CLI
 - [ ] Cursor
 - [ ] OpenCode
+- [ ] GitHub Copilot CLI
 
 ## Checklist
 
