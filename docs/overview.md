@@ -11,7 +11,7 @@ A Team is a **portable multi-agent infrastructure** for AI coding assistants. It
 ```
 Without A Team                        With A Team
 ─────────────────────────────────     ─────────────────────────────────────
-One model                             25 specialist agents
+One model                             26 specialist agents
 Does everything                       Each has one responsibility
 No enforcement                        Hard gates that can't be bypassed
 Forgets standards between sessions    Standards re-injected every session

@@ -1,7 +1,7 @@
 {
   "name": "a-team",
-  "description": "Universal multi-agent infrastructure: 25 specialist agents, 17 enforced workflow skills, and a lead orchestrator",
-  "version": "1.1.0",
+  "description": "Universal multi-agent infrastructure: 26 specialist agents, 17 enforced workflow skills, and a lead orchestrator",
+  "version": "1.2.0",
   "author": {
     "name": "RBraga01",
     "url": "https://github.com/RBraga01"
