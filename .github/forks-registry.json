@@ -28,5 +28,15 @@
     "followup_sent": false,
     "followup_sent_at": null,
     "featured": false
+  },
+  {
+    "username": "thejesh23",
+    "forked_at": "2026-06-16T11:29:23Z",
+    "welcomed_at": "2026-06-16T11:29:41.388Z",
+    "welcome_issue_number": 16,
+    "starred_at_welcome": false,
+    "followup_sent": false,
+    "followup_sent_at": null,
+    "featured": false
   }
 ]
