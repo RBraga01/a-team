@@ -3,7 +3,7 @@
 Not a marketplace of agents you configure — a pre-configured, pre-enforced team of 26 specialists
 with a lead orchestrator, hard quality gates, and a Pipeline Auditor that verifies work was done,
 not just reported. Drop this folder into any project and it's operational from the first keystroke.
-Works on Claude Code, Codex CLI, Cursor, and OpenCode.
+Works on Claude Code, Codex CLI, Cursor, OpenCode, and GitHub Copilot CLI.
 
 ## Quick Start
 
@@ -30,6 +30,7 @@ A Team/
 │   └── session-start.md       ← Injected at every session start
 ├── .cursor-plugin/            ← Cursor IDE integration
 ├── .codex-plugin/             ← Codex CLI integration
+├── .copilot-plugin/           ← GitHub Copilot CLI integration
 └── .opencode/                 ← OpenCode integration
 ```
 
@@ -127,4 +128,5 @@ All agents enforce the rules in `.claude/rules/`:
 | Claude Code | `.claude/` (native) |
 | Cursor | `.cursor-plugin/plugin.json` |
 | Codex CLI | `.codex-plugin/plugin.json` |
+| GitHub Copilot CLI | `.copilot-plugin/plugin.json` |
 | OpenCode | `.opencode/commands/` |
