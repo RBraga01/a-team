@@ -1,0 +1,24 @@
+{
+  "name": "a-team",
+  "description": "A complete engineering team in one folder. 26 pre-configured specialists, 19 enforced workflow skills, a lead orchestrator, and a Pipeline Auditor.",
+  "version": "1.3.0",
+  "author": {
+    "name": "RBraga01",
+    "url": "https://github.com/RBraga01"
+  },
+  "homepage": "https://rbraga01.github.io/a-team/",
+  "repository": "https://github.com/RBraga01/a-team",
+  "license": "MIT",
+  "keywords": [
+    "multi-agent",
+    "ai-agents",
+    "workflow",
+    "tdd",
+    "code-review",
+    "orchestration",
+    "copilot-cli"
+  ],
+  "skills": "../skills/",
+  "agents": "../.claude/agents/",
+  "hooks": "./hooks/hooks.json"
+}
