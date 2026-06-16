@@ -6,6 +6,21 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.2.0] — 2026-06-16
+
+### Added
+
+**1 new agent** (total: 25 → 26):
+- `typescript-reviewer` — TypeScript / React / frontend review specialist. Covers TS strictness
+  (`strict`, no `any`/`@ts-ignore`), React idioms (no state mutation, effect deps, focused
+  components), design-state completeness (loading/empty/error/partial/uncertain/success/streaming),
+  accessibility, PWA/service-worker correctness, and client-side security (XSS, token handling).
+  Enforces the full TS gate (`tsc --noEmit && eslint . && vitest run`), never a subset. Tier 2.
+  Fills a real gap: A Team shipped Go/Python/Rust/Kotlin/Swift/Flutter reviewers but no
+  TypeScript/JS specialist — the most common web stack.
+
+---
+
 ## [1.1.0] — 2026-06-02
 
 ### Added

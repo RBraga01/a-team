@@ -1,6 +1,6 @@
-# A Team — A Complete Engineering Team in One Folder v1.1.0
+# A Team — A Complete Engineering Team in One Folder v1.2.0
 
-Not a marketplace of agents you configure — a pre-configured, pre-enforced team of 25 specialists
+Not a marketplace of agents you configure — a pre-configured, pre-enforced team of 26 specialists
 with a lead orchestrator, hard quality gates, and a Pipeline Auditor that verifies work was done,
 not just reported. Drop this folder into any project and it's operational from the first keystroke.
 Works on Claude Code, Codex CLI, Cursor, and OpenCode.
@@ -22,7 +22,7 @@ A Team/
 ├── INIT_TEMPLATE.md           ← Template for project-specific init doc
 ├── .claude/
 │   ├── settings.json          ← Universal permissions, hooks, MCP stubs
-│   ├── agents/                ← 25 agent profiles
+│   ├── agents/                ← 26 agent profiles
 │   ├── commands/              ← Slash commands
 │   └── rules/                 ← Enforced coding & workflow standards
 ├── skills/                    ← 19 workflow skill modules
@@ -33,7 +33,7 @@ A Team/
 └── .opencode/                 ← OpenCode integration
 ```
 
-## Agent Roster (25)
+## Agent Roster (26)
 
 | Agent | Role | Trigger |
 |-------|------|---------|
@@ -51,6 +51,7 @@ A Team/
 | **go-reviewer** | Idiomatic Go | Go code changes |
 | **python-reviewer** | Pythonic & PEP 8 | Python code changes |
 | **rust-reviewer** | Rust idioms & safety | Rust code changes |
+| **typescript-reviewer** | TypeScript/React/frontend | All `.ts`/`.tsx` changes |
 | **debugger** | Root-cause investigation | Any bug |
 | **chief-of-staff** | Communication triage | Email/Slack workflows |
 | **loop-operator** | Autonomous loop safety | Agent loops |
