@@ -4,8 +4,8 @@
 Consistency checker for A Team.
 
 Truth sources:
-  Skill count — number of SKILL.md files in skills/*/
-  Version     — latest ## [x.y.z] entry in CHANGELOG.md
+  Skill count - number of SKILL.md files in skills/*/
+  Version     - latest ## [x.y.z] entry in CHANGELOG.md
 
 Run: python scripts/check_consistency.py
 Exit 0 = all checks passed. Exit 1 = at least one mismatch.
@@ -14,7 +14,6 @@ Exit 0 = all checks passed. Exit 1 = at least one mismatch.
 import io
 import re
 import sys
-import json
 from pathlib import Path
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
@@ -36,27 +35,34 @@ def changelog_version() -> str:
 
 # (relative_path, regex_with_one_capture_group, human_label)
 SKILL_COUNT_CHECKS = [
-    ("README.md",                  r"\*\*(\d+) workflow skills\*\* that gate",   "README — bullet list"),
-    ("README.md",                  r"← (\d+) workflow skill modules",             "README — directory tree"),
-    ("README.md",                  r"## Skill Library \((\d+)\)",                 "README — section heading"),
-    ("docs/index.html",            r"(\d+) enforced workflows",                   "index.html — hero paragraph"),
-    ("docs/index.html",            r"(\d+) enforced workflow skills",             "index.html — FAQ answer"),
-    ("docs/index.html",            r"· (\d+) skills ·",                          "index.html — footer"),
-    (".codex-plugin/plugin.json",  r"(\d+) enforced workflow skills",             "codex plugin.json — description"),
-    (".cursor-plugin/plugin.json", r"(\d+) enforced workflow skills",             "cursor plugin.json — description"),
-    ("docs/overview.md",           r"SKILL LAYER — (\d+) skills",                "overview.md — diagram label"),
+    ("README.md", r"\*\*(\d+) workflow skills\*\* that gate", "README bullet list"),
+    ("README.md", r"← (\d+) workflow skill modules", "README directory tree"),
+    ("README.md", r"## Skill Library \((\d+)\)", "README section heading"),
+    ("docs/index.html", r"(\d+) enforced workflows", "index.html hero paragraph"),
+    ("docs/index.html", r"(\d+) enforced workflow skills", "index.html FAQ answer"),
+    ("docs/index.html", r"· (\d+) skills ·", "index.html footer"),
+    (".codex-plugin/plugin.json", r"(\d+) enforced workflow skills", "codex plugin.json description"),
+    (".cursor-plugin/plugin.json", r"(\d+) enforced workflow skills", "cursor plugin.json description"),
+    (".copilot-plugin/plugin.json", r"(\d+) enforced workflow skills", "copilot plugin.json description"),
+    ("docs/overview.md", r"SKILL LAYER — (\d+) skills", "overview.md diagram label"),
 ]
 
 VERSION_CHECKS = [
-    ("README.md",                  r"# A Team[^\n]*v(\d+\.\d+\.\d+)",            "README — title heading"),
-    ("AGENTS.md",                  r"# A Team[^\n]*v(\d+\.\d+\.\d+)",            "AGENTS.md — title heading"),
-    ("CLAUDE.md",                  r"# A Team[^\n]*v(\d+\.\d+\.\d+)",            "CLAUDE.md — title heading"),
-    ("docs/index.html",            r'nav-logo-badge">v(\d+\.\d+\.\d+)<',         "index.html — nav badge"),
-    ("docs/index.html",            r"A Team v(\d+\.\d+\.\d+) —",                 "index.html — footer span"),
-    ("docs/index.html",            r"MIT License · v(\d+\.\d+\.\d+) ·",          "index.html — footer MIT line"),
-    (".codex-plugin/plugin.json",  r'"version":\s*"(\d+\.\d+\.\d+)"',            "codex plugin.json — version field"),
-    (".cursor-plugin/plugin.json", r'"version":\s*"(\d+\.\d+\.\d+)"',            "cursor plugin.json — version field"),
-    ("CITATION.cff",               r'^version:\s*"(\d+\.\d+\.\d+)"',             "CITATION.cff — version field"),
+    ("README.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "README title heading"),
+    ("AGENTS.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "AGENTS.md title heading"),
+    ("CLAUDE.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "CLAUDE.md title heading"),
+    ("docs/index.html", r'nav-logo-badge">v(\d+\.\d+\.\d+)<', "index.html nav badge"),
+    ("docs/index.html", r"A Team v(\d+\.\d+\.\d+) —", "index.html footer span"),
+    ("docs/index.html", r"MIT License · v(\d+\.\d+\.\d+) ·", "index.html footer MIT line"),
+    (".codex-plugin/plugin.json", r'"version":\s*"(\d+\.\d+\.\d+)"', "codex plugin.json version field"),
+    (".cursor-plugin/plugin.json", r'"version":\s*"(\d+\.\d+\.\d+)"', "cursor plugin.json version field"),
+    (".copilot-plugin/plugin.json", r'"version":\s*"(\d+\.\d+\.\d+)"', "copilot plugin.json version field"),
+    ("CITATION.cff", r'^version:\s*"(\d+\.\d+\.\d+)"', "CITATION.cff version field"),
+]
+
+PLATFORM_COUNT_CHECKS = [
+    ("docs/index.html", r'hero-stat-n n-cyan">(\d+)<', "index.html hero platform count"),
+    ("docs/index.html", r"· (\d+) platforms", "index.html footer platform count"),
 ]
 
 
@@ -90,8 +96,9 @@ def main() -> int:
 
     skill_errors = run_checks(SKILL_COUNT_CHECKS, str(actual_skills))
     version_errors = run_checks(VERSION_CHECKS, actual_version)
+    platform_errors = run_checks(PLATFORM_COUNT_CHECKS, "5")
 
-    all_errors = skill_errors + version_errors
+    all_errors = skill_errors + version_errors + platform_errors
 
     if all_errors:
         print(f"Found {len(all_errors)} consistency error(s):\n")
@@ -101,8 +108,8 @@ def main() -> int:
         print("Fix the mismatches above and re-run.")
         return 1
 
-    total = len(SKILL_COUNT_CHECKS) + len(VERSION_CHECKS)
-    print(f"✓ All {total} checks passed")
+    total = len(SKILL_COUNT_CHECKS) + len(VERSION_CHECKS) + len(PLATFORM_COUNT_CHECKS)
+    print(f"All {total} checks passed")
     return 0
 
 

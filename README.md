@@ -147,7 +147,7 @@ Open `INIT.md` and tick the checkboxes for your project:
 - Primary languages (Go, Python, Kotlin, Swift, etc.)
 - Tech stack (database, infra, CI/CD)
 - Compliance scope (GDPR, PCI-DSS, etc.)
-- Which AI platforms are active (Claude Code, Codex, Cursor, OpenCode)
+- Which AI platforms are active (Claude Code, Codex, Cursor, OpenCode, GitHub Copilot CLI)
 
 Takes about 5 minutes.
 
@@ -489,7 +489,7 @@ A Team is designed to run on one CLI or several simultaneously. Each platform re
 | **Claude Code** | `.claude/agents/` | `skills/` | `.claude/rules/` | `settings.json` hooks | `.claude/commands/` |
 | **Codex CLI** | `.claude/agents/` (via agentsPath) | `skills/` | `.claude/rules/` | `onSessionStart` hook | — |
 | **Cursor** | `.claude/agents/` (via agentsPath) | `skills/` | `.claude/rules/` | `onSessionStart` hook | — |
-| **GitHub Copilot CLI** | `.claude/agents/` (via `agents` path) | `skills/` | `.claude/rules/` | `SessionStart` / `PreToolUse` / `PostToolUse` / `Stop` hooks | — |
+| **GitHub Copilot CLI** | `.claude/agents/` (via `agents` path) | `skills/` | `.claude/rules/` | `SessionStart` / `PreToolUse` / `PostToolUse` / `SessionEnd` hooks | — |
 | **OpenCode** | — | `skills/` | — | — | `.opencode/commands/` |
 
 ### Running multiple CLIs on the same project
@@ -510,12 +510,12 @@ All CLIs share `.agent-sync/` (DAILY.md, ROUTING.md, TEAM.md, results/). This me
 
 **OpenCode** has command aliases in `.opencode/commands/` mapping to the same workflows. It does not have native agent or hook support — skills are invoked manually.
 
-**GitHub Copilot CLI** loads agents, skills, and hooks via the `.copilot-plugin/plugin.json` manifest. It supports the same hook events as Claude Code (`SessionStart`, `PreToolUse`, `PostToolUse`, `Stop`), so enforcement parity is full — not partial.
+**GitHub Copilot CLI** loads agents, skills, and hooks via the `.copilot-plugin/plugin.json` manifest. It supports the A Team session, tool-use, post-edit, and session-end gates through Copilot CLI hooks, so enforcement parity is full — not partial.
 
 Install:
 
 ```bash
-copilot plugin install RBraga01/a-team:a-team
+copilot plugin install RBraga01/a-team:.copilot-plugin
 ```
 
 ---

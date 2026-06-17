@@ -1,70 +1,46 @@
 {
+  "version": 1,
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "startup|clear|compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '⚡ A Team · install Python to see state'",
-            "async": false
-          },
-          {
-            "type": "command",
-            "command": "cat \"hooks/session-start.md\" 2>/dev/null || cat \"skills/using-a-team/SKILL.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if .agent-sync/TEAM.md is missing.'",
-            "async": false
-          },
-          {
-            "type": "command",
-            "command": "for f in scripts/pre_tool_use.py scripts/watcher.py scripts/status.py scripts/metrics.py scripts/session_export.py; do test -f \"$f\" || echo \"[A Team] WARNING: $f not found — enforcement inactive. Re-run the installer.\"; done",
-            "async": false
-          },
-          {
-            "type": "command",
-            "command": "if test -f scripts/watcher.py; then (python scripts/watcher.py >/dev/null 2>&1 || python3 scripts/watcher.py >/dev/null 2>&1) & fi",
-            "async": false
-          }
-        ]
+        "type": "command",
+        "command": "python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '[A Team] install Python to see state'"
+      },
+      {
+        "type": "command",
+        "command": "cat \"hooks/session-start.md\" 2>/dev/null || cat \"skills/using-a-team/SKILL.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if .agent-sync/TEAM.md is missing.'"
+      },
+      {
+        "type": "command",
+        "command": "for f in scripts/pre_tool_use.py scripts/watcher.py scripts/status.py scripts/metrics.py scripts/session_export.py; do test -f \"$f\" || echo \"[A Team] WARNING: $f not found - enforcement inactive. Re-run the installer.\"; done"
+      },
+      {
+        "type": "command",
+        "command": "if test -f scripts/watcher.py; then (python scripts/watcher.py >/dev/null 2>&1 || python3 scripts/watcher.py >/dev/null 2>&1) & fi"
       }
     ],
     "PreToolUse": [
       {
         "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "if test -f scripts/pre_tool_use.py; then python scripts/pre_tool_use.py 2>/dev/null || python3 scripts/pre_tool_use.py 2>/dev/null; else echo '[A Team] WARNING: security gate inactive (scripts/pre_tool_use.py missing — re-run installer)'; fi",
-            "async": false
-          }
-        ]
+        "type": "command",
+        "command": "if test -f scripts/pre_tool_use.py; then python scripts/pre_tool_use.py 2>/dev/null || python3 scripts/pre_tool_use.py 2>/dev/null; else echo '[A Team] WARNING: security gate inactive (scripts/pre_tool_use.py missing - re-run installer)'; fi"
       }
     ],
     "PostToolUse": [
       {
         "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '[A Team] File modified. Use code-reviewer agent before committing. Use verification-before-completion before claiming done.'",
-            "async": false
-          }
-        ]
+        "type": "command",
+        "command": "echo '[A Team] File modified. Use code-reviewer agent before committing. Use verification-before-completion before claiming done.'"
       }
     ],
-    "Stop": [
+    "SessionEnd": [
       {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "test -f scripts/metrics.py && (python scripts/metrics.py session_end 2>/dev/null || python3 scripts/metrics.py session_end 2>/dev/null) || true",
-            "async": false
-          },
-          {
-            "type": "command",
-            "command": "test -f scripts/session_export.py && (python scripts/session_export.py 2>/dev/null || python3 scripts/session_export.py 2>/dev/null) || true",
-            "async": false
-          }
-        ]
+        "type": "command",
+        "command": "test -f scripts/metrics.py && (python scripts/metrics.py session_end 2>/dev/null || python3 scripts/metrics.py session_end 2>/dev/null) || true"
+      },
+      {
+        "type": "command",
+        "command": "test -f scripts/session_export.py && (python scripts/session_export.py 2>/dev/null || python3 scripts/session_export.py 2>/dev/null) || true"
       }
     ]
   }

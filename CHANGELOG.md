@@ -15,9 +15,9 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - New `.copilot-plugin/plugin.json` declaring A Team's agents (`../.claude/agents/`)
   and skills (`../skills/`) for Copilot CLI auto-install.
 - New `.copilot-plugin/hooks/hooks.json` carrying `SessionStart`, `PreToolUse`,
-  `PostToolUse`, and `Stop` hooks — full enforcement parity with Claude Code's
+  `PostToolUse`, and `SessionEnd` hooks — full enforcement parity with Claude Code's
   `.claude/settings.json` (not just SessionStart like Codex CLI today).
-- Install command: `copilot plugin install RBraga01/a-team:a-team`.
+- Install command: `copilot plugin install RBraga01/a-team:.copilot-plugin`.
 - No new agents, skills, or rules — purely additive platform plumbing.
 
 ### Changed
