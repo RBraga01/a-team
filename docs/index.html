@@ -319,7 +319,7 @@ hr.sep { border:none; border-top:1px solid var(--border); }
 .g-amber  { border-left-color:var(--amber); }
 
 /* ── PLATFORMS ── */
-.platforms-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+.platforms-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; }
 .platform-card {
   background:var(--surface); border:1px solid var(--border);
   border-radius:var(--r); padding:28px 20px; text-align:center;
@@ -358,10 +358,12 @@ hr.sep { border:none; border-top:1px solid var(--border); }
 .plat-openai   .plat-logo { background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2); --glow-color:rgba(16,163,127,.1); }
 .plat-cursor   .plat-logo { background:rgba(99,102,241,.1); border:1px solid rgba(99,102,241,.2); --glow-color:rgba(99,102,241,.1); }
 .plat-opencode .plat-logo { background:rgba(148,163,184,.1); border:1px solid rgba(148,163,184,.2); --glow-color:rgba(148,163,184,.1); }
+.plat-github   .plat-logo { background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18); --glow-color:rgba(255,255,255,.08); }
 .plat-anthropic { --glow-color:rgba(255,127,80,.08); }
 .plat-openai   { --glow-color:rgba(16,163,127,.08); }
 .plat-cursor   { --glow-color:rgba(99,102,241,.08); }
 .plat-opencode { --glow-color:rgba(148,163,184,.08); }
+.plat-github   { --glow-color:rgba(255,255,255,.06); }
 
 /* ── STEPS ── */
 .steps { display:flex; flex-direction:column; gap:0; }
@@ -564,7 +566,7 @@ footer p { font-size:.8rem; color:var(--muted); }
   <a class="nav-logo" href="#">
     <div class="nav-logo-icon">AT</div>
     <span class="nav-logo-text">A Team</span>
-    <span class="nav-logo-badge">v1.2.0</span>
+    <span class="nav-logo-badge">v1.3.0</span>
   </a>
   <div class="nav-right">
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
@@ -600,7 +602,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <div class="hero-stats">
       <div class="hero-stat"><div class="hero-stat-n n-blue">26</div><div class="hero-stat-l">Specialist Agents</div></div>
       <div class="hero-stat"><div class="hero-stat-n n-purple">19</div><div class="hero-stat-l">Workflow Skills</div></div>
-      <div class="hero-stat"><div class="hero-stat-n n-cyan">4</div><div class="hero-stat-l">AI Platforms</div></div>
+      <div class="hero-stat"><div class="hero-stat-n n-cyan">5</div><div class="hero-stat-l">AI Platforms</div></div>
       <div class="hero-stat"><div class="hero-stat-n n-green">0</div><div class="hero-stat-l">Config Drift</div></div>
     </div>
   </div>
@@ -764,6 +766,16 @@ footer p { font-size:.8rem; color:var(--muted); }
       <h3>Cursor</h3>
       <p>Skills and rules loaded via plugin; agents available on demand across projects</p>
       <span class="plat-badge badge-strong">Strong Support</span>
+    </div>
+
+    <!-- GitHub Copilot CLI -->
+    <div class="platform-card plat-github reveal">
+      <div class="plat-logo">
+        <img src="https://cdn.simpleicons.org/github/ffffff" width="36" height="36" alt="GitHub">
+      </div>
+      <h3>Copilot CLI</h3>
+      <p>Agents, skills, and hooks load through the Copilot CLI plugin manifest</p>
+      <span class="plat-badge badge-full">Full Support</span>
     </div>
 
     <!-- OpenCode -->
@@ -979,7 +991,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
               </tr>
             </tbody>
           </table>
-          <p>On <strong>Claude Code</strong>, the <code>model:</code> frontmatter in each agent file sets the default automatically. On <strong>Codex, Cursor, and OpenCode</strong>, select the equivalent tier in your platform's model settings — the frontmatter is a Claude Code-specific field and may be ignored by other platforms.</p>
+          <p>On <strong>Claude Code</strong>, the <code>model:</code> frontmatter in each agent file sets the default automatically. On <strong>Codex, Cursor, OpenCode, and GitHub Copilot CLI</strong>, select the equivalent tier in your platform's model settings — the frontmatter is a Claude Code-specific field and may be ignored by other platforms.</p>
         </div>
       </details>
 
@@ -987,7 +999,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <summary>Can I run multiple AI platforms simultaneously on the same project?</summary>
         <div class="faq-body">
           <p>Yes. All platforms share the same <code>.agent-sync/</code> directory (DAILY.md, ROUTING.md, TEAM.md), so orchestrator state is visible regardless of which CLI triggered it.</p>
-          <p>Important: session-start hooks are <strong>not</strong> propagated between platforms. Each platform's plugin manifest configures its own <code>onSessionStart</code> hook independently — the files are already pre-configured for Claude Code, Codex, and Cursor.</p>
+          <p>Important: session-start hooks are <strong>not</strong> propagated between platforms. Each platform's plugin manifest configures its own session-start hook independently — the files are already pre-configured for Claude Code, Codex, Cursor, and GitHub Copilot CLI.</p>
         </div>
       </details>
 
@@ -995,7 +1007,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <summary>Does it work on Windows, Mac, and Linux?</summary>
         <div class="faq-body">
           <p>Yes. A Team is platform-agnostic — it's markdown files and JSON, with no compiled code or OS-specific scripts. The path normalisation for git worktrees uses standard POSIX-style paths that work across all systems via the git CLI.</p>
-          <p>The bash commands in agent files (for running tests, linting, etc.) are standard shell commands that work on all three platforms.</p>
+          <p>The bash commands in agent files (for running tests, linting, etc.) are standard shell commands that work across the supported platforms.</p>
         </div>
       </details>
 
@@ -1182,9 +1194,9 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
 <footer>
   <div class="footer-logo">
     <div class="licon">AT</div>
-    <span>A Team v1.2.0 — Universal Multi-Agent Baseline</span>
+    <span>A Team v1.3.0 — Universal Multi-Agent Baseline</span>
   </div>
-  <p>MIT License · v1.2.0 · 26 agents · 19 skills · 4 platforms</p>
+  <p>MIT License · v1.3.0 · 26 agents · 19 skills · 5 platforms</p>
   <div class="footer-links">
     <a href="https://github.com/RBraga01/a-team" target="_blank">GitHub</a>
     <a href="https://github.com/RBraga01/a-team/blob/main/docs/decision-tree.md" target="_blank">Decision Tree</a>

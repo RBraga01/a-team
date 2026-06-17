@@ -13,7 +13,7 @@ abstract: >-
   language specialists, domain, and operations), 19 enforced workflow skills including
   hard gates that cannot be bypassed, and a lead orchestrator that manages daily task
   flow. The infrastructure is stateless by design — every agent derives its context
-  from files. Compatible with Claude Code, Codex CLI, Cursor, and OpenCode.
+  from files. Compatible with Claude Code, Codex CLI, Cursor, OpenCode, and GitHub Copilot CLI.
 
 authors:
   - family-names: Braga
@@ -21,7 +21,7 @@ authors:
     alias: RBraga01
     email: ricardormbraga@hotmail.com
 
-version: "1.2.0"
+version: "1.3.0"
 
 date-released: "2026-06-02"
 
@@ -62,7 +62,7 @@ preferred-citation:
     - family-names: Braga
       given-names: Ricardo Romão Marques
       alias: RBraga01
-  version: "1.2.0"
+  version: "1.3.0"
   date-released: "2026-06-02"
   license: MIT
   repository-code: "https://github.com/RBraga01/a-team"

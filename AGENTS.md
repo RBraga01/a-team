@@ -1,6 +1,6 @@
-# A Team — Agent & Skill Roster v1.2.0
+# A Team — Agent & Skill Roster v1.3.0
 
-> **Model values below are Claude Code defaults** (`model:` frontmatter). On other platforms (Codex, Cursor, OpenCode), select the equivalent tier in your platform's model settings: Tier 1 = o3/GPT-4o/Gemini 2.5 Pro · Tier 2 = GPT-4o/Gemini Flash · Tier 3 = GPT-4o-mini/Gemini Flash-Lite.
+> **Model values below are Claude Code defaults** (`model:` frontmatter). On other platforms (Codex, Cursor, OpenCode, GitHub Copilot CLI), select the equivalent tier in your platform's model settings: Tier 1 = o3/GPT-4o/Gemini 2.5 Pro · Tier 2 = GPT-4o/Gemini Flash · Tier 3 = GPT-4o-mini/Gemini Flash-Lite.
 
 ## Core Engineering Agents
 
@@ -111,4 +111,5 @@ For independent problems, dispatch in parallel:
 | Claude Code | `.claude/` (native) |
 | Cursor | `.cursor-plugin/plugin.json` |
 | Codex | `.codex-plugin/plugin.json` |
+| GitHub Copilot CLI | `.copilot-plugin/plugin.json` |
 | OpenCode | `.opencode/commands/` |

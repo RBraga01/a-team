@@ -41,7 +41,7 @@ git checkout -b fix/brief-description
 - Use `/writing-skills` meta-skill to walk through spec, TDD, and validation
 - Create `skills/<name>/SKILL.md`
 - Register trigger in `skills/using-a-team/SKILL.md`
-- Add to plugin manifests (`.codex-plugin/`, `.cursor-plugin/`)
+- Add to plugin manifests (`.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`)
 - Add `Skill(<name>)` and `Skill(<name>:*)` to `settings.json`
 
 **Rules changes:**
