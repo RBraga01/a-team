@@ -38,5 +38,15 @@
     "followup_sent": false,
     "followup_sent_at": null,
     "featured": false
+  },
+  {
+    "username": "RuiRC",
+    "forked_at": "2026-06-28T19:32:36Z",
+    "welcomed_at": "2026-06-28T19:32:46.899Z",
+    "welcome_issue_number": 20,
+    "starred_at_welcome": false,
+    "followup_sent": false,
+    "followup_sent_at": null,
+    "featured": false
   }
 ]
