@@ -2,7 +2,8 @@
 
 Common problems and how to resolve them. Each entry below is derived from A Team's documented behavior; the symptoms map to specific mechanisms in the system.
 
-> **Maintainer note:** this page is a starting set based on how the system is documented to work. Issues reported by real users should be folded in here over time so it becomes the first place people look.
+<!-- Maintainer note: this page is a starting set based on how the system is documented to work.
+     Fold in issues reported by real users over time so it becomes the first place people look. -->
 
 ---
 

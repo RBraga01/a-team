@@ -33,7 +33,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 ## Install methods
 
-All methods install the same files into your project directory. Pick one.
+All methods install the same core files into your project directory: `.claude/`, `skills/`, `hooks/`, `templates/`, and `scripts/`. **None of them install the platform plugin directories** (`.codex-plugin/`, `.cursor-plugin/`, `.opencode/`, `.copilot-plugin/`) — see [Platform plugin directories](#platform-plugin-directories) below if you're on Codex CLI, Cursor, OpenCode, or Copilot. Pick one method.
 
 ### Option A — One-liner (recommended)
 
@@ -61,6 +61,7 @@ cp -r a-team/.claude      your-project/
 cp -r a-team/skills       your-project/
 cp -r a-team/hooks        your-project/
 cp -r a-team/templates    your-project/
+cp -r a-team/scripts      your-project/
 cp    a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
@@ -71,8 +72,8 @@ rm -rf a-team
 git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
-cp -r .claude skills hooks templates ../your-project/
+git sparse-checkout set .claude skills hooks templates scripts INIT_TEMPLATE.md
+cp -r .claude skills hooks templates scripts ../your-project/
 cp INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
@@ -83,8 +84,8 @@ PowerShell equivalent:
 git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
-Copy-Item -Recurse .claude,skills,hooks,templates ..\your-project\
+git sparse-checkout set .claude skills hooks templates scripts INIT_TEMPLATE.md
+Copy-Item -Recurse .claude,skills,hooks,templates,scripts ..\your-project\
 Copy-Item INIT_TEMPLATE.md ..\your-project\INIT.md
 cd .. ; Remove-Item a-team -Recurse -Force
 ```
@@ -93,8 +94,20 @@ cd .. ; Remove-Item a-team -Recurse -Force
 
 1. Go to the [repository](https://github.com/RBraga01/a-team).
 2. **Code → Download ZIP**.
-3. Extract and copy `.claude/`, `skills/`, `hooks/`, and `templates/` into your project root.
+3. Extract and copy `.claude/`, `skills/`, `hooks/`, `templates/`, and `scripts/` into your project root.
 4. Copy `INIT_TEMPLATE.md` as `INIT.md`.
+
+### Platform plugin directories
+
+Codex CLI, Cursor, OpenCode, and GitHub Copilot each read their hooks and manifest from a dedicated plugin directory in the project root (`.codex-plugin/`, `.cursor-plugin/`, `.opencode/`, `.copilot-plugin/`). **None of Options A–D above copy these** — the one-liner installer (`install.sh` / `install.ps1`) has the same `.claude`, `skills`, `hooks`, `templates`, `scripts` scope as the manual methods. The plugin manifests point back at the shared `.claude/agents/`, `skills/`, and `.claude/rules/` you already installed; what's missing is the platform-specific manifest itself.
+
+To enable a platform's plugin:
+
+- **GitHub Copilot** has a native install command:
+  ```bash
+  copilot plugin install RBraga01/a-team:.copilot-plugin
+  ```
+- **Codex CLI, Cursor, and OpenCode** don't currently have an equivalent one-line install — copy `.codex-plugin/`, `.cursor-plugin/`, or `.opencode/` into your project root manually from a clone of the repo.
 
 ---
 
@@ -107,6 +120,7 @@ cp -rn a-team/.claude    ./
 cp -rn a-team/skills     ./
 cp -rn a-team/hooks      ./
 cp -rn a-team/templates  ./
+cp -rn a-team/scripts    ./
 cp     a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
@@ -170,6 +184,7 @@ Key consequences:
 
 - **Claude Code is the reference platform.** It has the full hook system, native sub-agent dispatch, and all slash commands.
 - **Hooks do not propagate across platforms.** Each plugin manifest configures its own hooks independently: `.codex-plugin/` and `.cursor-plugin/` wire up a session-start hook only, while `.copilot-plugin/` configures the full set (SessionStart, PreToolUse, PostToolUse, SessionEnd). On Codex and Cursor, mid-session enforcement therefore relies on the agents' own rules rather than hooks.
+- **A platform's hooks only take effect once its plugin directory is actually installed** — see [Platform plugin directories](#platform-plugin-directories); none of the install methods do this automatically.
 - **On Cursor and OpenCode, slash commands aren't available** — invoke the corresponding skill directly instead.
 
 > The exact agent and skill counts and the full platform matrix evolve between releases. Treat [`AGENTS.md`](../AGENTS.md), [`skills/`](../skills/), and the plugin manifests as the source of truth; this table is a guide to the *shape* of each platform's support.
