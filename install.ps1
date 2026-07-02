@@ -8,7 +8,7 @@ param(
     [switch]$Force
 )
 
-$RepoUrl  = "https://github.com/RBraga01/a-team.git"
+$RepoUrl  = if ($env:A_TEAM_REPO_URL) { $env:A_TEAM_REPO_URL } else { "https://github.com/RBraga01/a-team.git" }
 $Dirs     = @(".claude", "skills", "hooks", "templates", "scripts")
 $ErrorActionPreference = "Stop"
 
@@ -28,18 +28,29 @@ if (-not (Test-Path $Destination)) {
     Write-Host "Error: destination '$Destination' does not exist." -ForegroundColor Red
     exit 1
 }
+$Destination = (Resolve-Path -LiteralPath $Destination).Path
 
 # -- Sparse clone into temp dir --
 $Tmp = Join-Path $env:TEMP ("a-team-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0,8))
 Write-Host "  Fetching required files (sparse checkout)..." -ForegroundColor DarkGray
 
 try {
+    $PreviousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
     git clone --filter=blob:none --sparse --depth 1 --quiet $RepoUrl $Tmp 2>$null
+    $CloneExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $PreviousErrorActionPreference
+    if ($CloneExitCode -ne 0) { throw "git clone failed with exit code $CloneExitCode" }
     Set-Location $Tmp
-    $sparseDirs = $Dirs + "INIT_TEMPLATE.md"
-    git sparse-checkout set @sparseDirs --quiet
+    $ErrorActionPreference = "Continue"
+    git sparse-checkout set @Dirs
+    $SparseCheckoutExitCode = $LASTEXITCODE
+    $ErrorActionPreference = $PreviousErrorActionPreference
+    if ($SparseCheckoutExitCode -ne 0) { throw "git sparse-checkout failed with exit code $SparseCheckoutExitCode" }
 } catch {
-    Write-Host "Error: failed to clone repository. Check your internet connection." -ForegroundColor Red
+    $ErrorActionPreference = $PreviousErrorActionPreference
+    Set-Location $Destination
+    Write-Host "Error: failed to fetch required files. $($_.Exception.Message)" -ForegroundColor Red
     if (Test-Path $Tmp) { Remove-Item $Tmp -Recurse -Force }
     exit 1
 }

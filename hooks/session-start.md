@@ -46,4 +46,4 @@ Skipping a mandatory skill is not a time-saver — it is a defect deferred.
 ---
 
 <!-- A Team metrics: fires on every session start -->
-Run silently: `python .agent-sync/metrics.py session_start 2>/dev/null || python3 .agent-sync/metrics.py session_start 2>/dev/null || true`
+Run silently: `python scripts/metrics.py session_start 2>/dev/null || python3 scripts/metrics.py session_start 2>/dev/null || true`

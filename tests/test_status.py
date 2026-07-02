@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / ".agent-sync"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 
 def run_status(tmp_path):
@@ -16,7 +16,7 @@ def run_status(tmp_path):
     import importlib.util
     spec = importlib.util.spec_from_file_location(
         "status",
-        Path(__file__).parent.parent / ".agent-sync" / "status.py"
+        Path(__file__).parent.parent / "scripts" / "status.py"
     )
     mod = importlib.util.module_from_spec(spec)
     mod.BASE = tmp_path
@@ -32,6 +32,12 @@ def make_team_md(tmp_path, agent_count=3):
     for i in range(agent_count):
         lines.append(f"| agent-{i} | Role {i} |")
     (tmp_path / "TEAM.md").write_text("\n".join(lines))
+
+
+def test_default_base_dir_is_agent_sync():
+    import status
+
+    assert status.DEFAULT_BASE_DIR == Path(__file__).parent.parent / ".agent-sync"
 
 
 def test_no_team_no_init_shows_no_project(tmp_path):

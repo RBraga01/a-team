@@ -1,4 +1,4 @@
-# .agent-sync/metrics.py
+# scripts/metrics.py
 """
 Shared metrics module for A Team.
 Append-only log: .agent-sync/metrics/YYYY-MM-DD.log
@@ -20,12 +20,13 @@ except ImportError:
 # append_metric() concurrently in the same process (the common case on Windows
 # where fcntl is unavailable).
 _write_lock = _threading.Lock()
+DEFAULT_BASE_DIR = Path(__file__).parent.parent / ".agent-sync"
 
 
 def append_metric(event: str, base_dir: Path = None) -> None:
     """Append a metric event to today's log file."""
     if base_dir is None:
-        base_dir = Path(__file__).parent
+        base_dir = DEFAULT_BASE_DIR
     metrics_dir = base_dir / "metrics"
     metrics_dir.mkdir(parents=True, exist_ok=True)
     log_file = metrics_dir / f"{date.today()}.log"
@@ -50,7 +51,7 @@ def read_events(days: int, base_dir: Path = None) -> list[str]:
     Returns list of raw log lines.
     """
     if base_dir is None:
-        base_dir = Path(__file__).parent
+        base_dir = DEFAULT_BASE_DIR
     metrics_dir = base_dir / "metrics"
     events = []
     for i in range(days):

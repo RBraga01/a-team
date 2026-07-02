@@ -1,4 +1,4 @@
-# .agent-sync/metrics-report.py
+# scripts/metrics-report.py
 """
 A Team metrics report CLI.
 Usage: python metrics-report.py [--days 7]
@@ -13,6 +13,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from metrics import read_events
 
+DEFAULT_BASE_DIR = Path(__file__).parent.parent / ".agent-sync"
+
 
 def parse_events(days: int, base_dir: Path = None) -> dict:
     """Parse log events and return summary statistics.
@@ -21,7 +23,7 @@ def parse_events(days: int, base_dir: Path = None) -> dict:
     interventions, avg_time (str), success_rate (int 0-100).
     """
     if base_dir is None:
-        base_dir = Path(__file__).parent
+        base_dir = DEFAULT_BASE_DIR
     events = read_events(days, base_dir=base_dir)
 
     sessions = 0
@@ -83,7 +85,7 @@ def parse_events(days: int, base_dir: Path = None) -> dict:
 def rotate_logs(base_dir: Path = None) -> None:
     """Compress logs older than 30 days. Clean stale queue files older than 30 days."""
     if base_dir is None:
-        base_dir = Path(__file__).parent
+        base_dir = DEFAULT_BASE_DIR
     metrics_dir = base_dir / "metrics"
     stale_dir = base_dir / "queue" / "stale"
     cutoff = date.today() - timedelta(days=30)

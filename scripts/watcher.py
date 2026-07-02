@@ -1,4 +1,4 @@
-# .agent-sync/watcher.py
+# scripts/watcher.py
 #
 # Generic A Team watcher — coordinates Claude Code ↔ secondary CLI (Codex, OpenCode, etc.)
 #
@@ -8,7 +8,7 @@
 #   3. Notifies the Claude Code orchestrator via `claude -c /orchestrate tick`
 #
 # SETUP:
-#   1. Copy this file to .agent-sync/watcher.py in your project
+#   1. Copy this file to scripts/watcher.py in your project
 #   2. Set SECONDARY_CLI and MODEL below to match your setup
 #   3. The SessionStart hook in .claude/settings.json auto-starts this watcher
 #
@@ -35,6 +35,8 @@ import time
 from pathlib import Path
 from datetime import datetime
 
+from process_utils import pid_is_running
+
 # ── CONFIGURE THESE FOR YOUR PROJECT ──────────────────────────────────────────
 
 # Command to invoke your secondary CLI (e.g. "codex", "opencode", "aider")
@@ -48,7 +50,7 @@ POLL_INTERVAL = 5
 
 # ──────────────────────────────────────────────────────────────────────────────
 
-BASE     = Path(__file__).parent
+BASE     = Path(__file__).parent.parent / ".agent-sync"
 QUEUE    = BASE / "queue"
 PROC     = BASE / "processing"
 RESULTS  = BASE / "results"
@@ -70,9 +72,11 @@ def is_already_running():
         pid = int(PID_FILE.read_text().strip())
         if pid == os.getpid():
             return False
-        os.kill(pid, 0)
-        return True
-    except (ProcessLookupError, PermissionError, ValueError, OSError):
+        if pid_is_running(pid):
+            return True
+        PID_FILE.unlink(missing_ok=True)
+        return False
+    except (ValueError, OSError):
         PID_FILE.unlink(missing_ok=True)
         return False
 

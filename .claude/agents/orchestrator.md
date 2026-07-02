@@ -37,7 +37,7 @@ Run when the user invokes `/orchestrate init` or when `.agent-sync/TEAM.md` does
    After Path A or B: generate `INIT.md`, show the `## O que entendi` summary, wait for user approval, then continue to step 2.
 
    After successful init, record the metric:
-   `python .agent-sync/metrics.py "task_complete INIT orchestrator smart-init" 2>/dev/null || true`
+   `python scripts/metrics.py "task_complete INIT orchestrator smart-init" 2>/dev/null || true`
 
 2. **Inventory the workspace** — Glob for all agent files in `.claude/agents/` and all
    skill files in `skills/*/SKILL.md`.

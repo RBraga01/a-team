@@ -1,5 +1,5 @@
 <!-- Status line output on session start -->
-Run: `python .agent-sync/status.py 2>/dev/null || python3 .agent-sync/status.py 2>/dev/null || py .agent-sync/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'`
+Run: `python scripts/status.py 2>/dev/null || python3 scripts/status.py 2>/dev/null || py scripts/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'`
 
 ---
 
