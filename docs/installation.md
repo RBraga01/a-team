@@ -72,7 +72,7 @@ rm -rf a-team
 git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates scripts INIT_TEMPLATE.md
+git sparse-checkout set .claude skills hooks templates scripts
 cp -r .claude skills hooks templates scripts ../your-project/
 cp INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
@@ -84,7 +84,7 @@ PowerShell equivalent:
 git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates scripts INIT_TEMPLATE.md
+git sparse-checkout set .claude skills hooks templates scripts
 Copy-Item -Recurse .claude,skills,hooks,templates,scripts ..\your-project\
 Copy-Item INIT_TEMPLATE.md ..\your-project\INIT.md
 cd .. ; Remove-Item a-team -Recurse -Force

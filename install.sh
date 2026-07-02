@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-REPO_URL="https://github.com/RBraga01/a-team.git"
+REPO_URL="${A_TEAM_REPO_URL:-https://github.com/RBraga01/a-team.git}"
 DEST="${1:-$PWD}"
 DIRS=(".claude" "skills" "hooks" "templates" "scripts")
 
@@ -34,7 +34,7 @@ git clone \
   "$REPO_URL" "$TMP/a-team"
 
 cd "$TMP/a-team"
-git sparse-checkout set "${DIRS[@]}" INIT_TEMPLATE.md --quiet
+git sparse-checkout set "${DIRS[@]}"
 
 # -- Copy into destination --
 echo ""

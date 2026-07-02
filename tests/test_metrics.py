@@ -3,8 +3,12 @@ from datetime import date, timedelta
 from pathlib import Path
 import pytest
 
-sys.path.insert(0, str(Path(__file__).parent.parent / ".agent-sync"))
+sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 import metrics as m
+
+
+def test_default_base_dir_is_agent_sync():
+    assert m.DEFAULT_BASE_DIR == Path(__file__).parent.parent / ".agent-sync"
 
 
 def test_append_creates_log_file(tmp_path):
@@ -85,7 +89,7 @@ import importlib.util as _ilu
 
 _mr_spec = _ilu.spec_from_file_location(
     "metrics_report",
-    Path(__file__).parent.parent / ".agent-sync" / "metrics-report.py",
+    Path(__file__).parent.parent / "scripts" / "metrics-report.py",
 )
 mr = _ilu.module_from_spec(_mr_spec)
 _mr_spec.loader.exec_module(mr)

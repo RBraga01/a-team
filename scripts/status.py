@@ -1,4 +1,4 @@
-# .agent-sync/status.py
+# scripts/status.py
 """
 A Team status line script.
 Reads: .agent-sync/TEAM.md, current-task.json, watcher.pid
@@ -12,6 +12,10 @@ import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+from process_utils import pid_is_running
+
+DEFAULT_BASE_DIR = Path(__file__).parent.parent / ".agent-sync"
 
 
 def count_agents(base_dir: Path) -> int | None:
@@ -65,9 +69,11 @@ def is_watcher_running(base_dir: Path) -> bool:
         return False
     try:
         pid = int(pid_file.read_text().strip())
-        os.kill(pid, 0)
-        return True
-    except (ProcessLookupError, PermissionError, OSError):
+        if pid_is_running(pid):
+            return True
+        pid_file.unlink(missing_ok=True)
+        return False
+    except OSError:
         pid_file.unlink(missing_ok=True)
         return False
     except ValueError:
@@ -78,7 +84,7 @@ def is_watcher_running(base_dir: Path) -> bool:
 def main(base_dir: Path = None) -> None:
     """Print a single status line. Always exits 0."""
     if base_dir is None:
-        base_dir = Path(__file__).parent
+        base_dir = DEFAULT_BASE_DIR
         # Ensure UTF-8 output on Windows terminals
         if hasattr(sys.stdout, "reconfigure"):
             try:

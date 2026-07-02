@@ -842,7 +842,7 @@ rm -rf a-team</code></pre></div>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
+git sparse-checkout set .claude skills hooks templates
 cp -r .claude skills hooks templates ../
 cp INIT_TEMPLATE.md ../INIT.md
 cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
@@ -851,7 +851,7 @@ cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates INIT_TEMPLATE.md
+git sparse-checkout set .claude skills hooks templates
 Copy-Item -Recurse .claude,skills,hooks,templates ..\
 Copy-Item INIT_TEMPLATE.md ..\INIT.md
 cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>

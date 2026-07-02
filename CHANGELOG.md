@@ -6,6 +6,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Fixed
+
+- Corrected unsupported sparse-checkout arguments in both installers and added
+  end-to-end regression coverage for Bash and PowerShell.
+- Restored runtime enforcement scripts to the installed `scripts/` directory while
+  keeping generated project state under `.agent-sync/`.
+- Made watcher process detection safe on Windows.
+
+---
+
 ## [1.3.0] — 2026-06-16
 
 ### Added
