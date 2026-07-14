@@ -15,8 +15,8 @@
     "welcomed_at": "2026-06-08T09:47:15.686Z",
     "welcome_issue_number": 12,
     "starred_at_welcome": true,
-    "followup_sent": false,
-    "followup_sent_at": null,
+    "followup_sent": true,
+    "followup_sent_at": "2026-07-14T10:39:59.235Z",
     "featured": false
   },
   {
@@ -25,8 +25,8 @@
     "welcomed_at": "2026-06-08T10:14:27.895Z",
     "welcome_issue_number": 13,
     "starred_at_welcome": true,
-    "followup_sent": false,
-    "followup_sent_at": null,
+    "followup_sent": true,
+    "followup_sent_at": "2026-07-14T10:39:59.710Z",
     "featured": false
   },
   {
