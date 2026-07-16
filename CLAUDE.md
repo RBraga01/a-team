@@ -25,7 +25,7 @@ A Team/
 │   ├── agents/                ← 26 agent profiles
 │   ├── commands/              ← Slash commands
 │   └── rules/                 ← Enforced coding & workflow standards
-├── skills/                    ← 19 workflow skill modules
+├── skills/                    ← 20 workflow skill modules
 ├── hooks/
 │   └── session-start.md       ← Injected at every session start
 ├── .cursor-plugin/            ← Cursor IDE integration
@@ -65,7 +65,7 @@ A Team/
 | **ai-reviewer** | LLM code — prompt injection, token cost, tool safety | Any LLM API calls |
 | **performance-profiler** | Systematic profiling — measure before optimising | Performance regressions |
 
-## Skill Library (19)
+## Skill Library (20)
 
 | Skill | Use Case | Gate Type |
 |-------|---------|-----------|
@@ -86,6 +86,7 @@ A Team/
 | **incident-response** | Production incident playbook (detect → contain → resolve → post-mortem) | Workflow |
 | **data-migration** | Safe schema changes with rollback strategy | Hard gate |
 | **performance-audit** | Baseline → profile → optimise → validate with numbers | Workflow |
+| **architecture-audit** | Map system as-built → parallel specialist reviews → severity verdicts | Workflow |
 
 ## Orchestrator Init & Pruning Protocol
 

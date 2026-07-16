@@ -10,7 +10,7 @@ abstract: >-
   A Team is an open-source package of specialist agents, workflow skills, and
   enforcement hooks that turns any AI coding assistant into a structured engineering
   team. It provides 26 specialist agents across five categories (leadership, quality,
-  language specialists, domain, and operations), 19 enforced workflow skills including
+  language specialists, domain, and operations), 20 enforced workflow skills including
   hard gates that cannot be bypassed, and a lead orchestrator that manages daily task
   flow. The infrastructure is stateless by design — every agent derives its context
   from files. Compatible with Claude Code, Codex CLI, Cursor, OpenCode, and GitHub Copilot CLI.
