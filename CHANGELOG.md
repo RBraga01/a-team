@@ -8,6 +8,22 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+**1 new skill** (total: 19 → 20):
+- `architecture-audit` — systematic architecture review workflow. Maps the system
+  as-built (not as-documented), identifies load-bearing decisions, dispatches parallel
+  specialist reviews (architect, security-reviewer, performance-profiler,
+  database-reviewer, infra-reviewer), and produces evidence-backed findings with
+  severity verdicts (SOUND / SOUND-WITH-RISKS / INTERVENTION-REQUIRED). Every finding
+  requires a file reference and a consequence. Registered in `using-a-team` under
+  Architectural Decisions.
+
+### Changed
+
+- Skill count updated to 20 across `README.md`, `CLAUDE.md`, `docs/index.html`,
+  `docs/overview.md`, `CITATION.cff`, and all plugin manifests.
+
 ### Fixed
 
 - Corrected unsupported sparse-checkout arguments in both installers and added

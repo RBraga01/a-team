@@ -59,6 +59,7 @@ After verification passes, Step 5 of `verification-before-completion` is mandato
 | System design, new feature architecture | **architect** agent (produces ADR) |
 | Complex feature planning | **planner** agent |
 | Tech stack or pattern decision | **architect** agent |
+| Inherited/unfamiliar codebase, scaling milestone, or periodic health check | **architecture-audit** skill |
 
 ## Language & Domain Reviews
 

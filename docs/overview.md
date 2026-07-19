@@ -63,13 +63,13 @@ graph TB
         end
     end
 
-    subgraph S["🔒  SKILL LAYER — 19 skills"]
+    subgraph S["🔒  SKILL LAYER — 20 skills"]
         direction LR
         subgraph HARD["Hard Gates\n(cannot skip)"]
             HG["verification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]
         end
         subgraph WORK["Workflow Skills"]
-            WS["using-git-worktrees\nsubagent-driven-dev\ndispatching-parallel\nexecuting-plans\nwriting-plans\nfinishing-branch\nincident-response\nperformance-audit\nwriting-skills"]
+            WS["using-git-worktrees\nsubagent-driven-dev\ndispatching-parallel\nexecuting-plans\nwriting-plans\nfinishing-branch\nincident-response\nperformance-audit\narchitecture-audit\nwriting-skills"]
         end
     end
 

@@ -104,7 +104,9 @@
       "Skill(data-migration)",
       "Skill(data-migration:*)",
       "Skill(performance-audit)",
-      "Skill(performance-audit:*)"
+      "Skill(performance-audit:*)",
+      "Skill(architecture-audit)",
+      "Skill(architecture-audit:*)"
     ]
   },
   "worktreeDirectory": ".claude/worktrees",

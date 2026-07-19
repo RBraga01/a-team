@@ -23,7 +23,7 @@ Not a marketplace of agents you configure. A pre-configured, pre-enforced engine
 A Team turns any AI coding assistant into a structured, self-enforcing engineering team. Instead of one general-purpose model trying to do everything, you get:
 
 - **26 specialist agents**, each with a defined scope, model tier, and tool set
-- **19 workflow skills** that gate what can happen and when
+- **20 workflow skills** that gate what can happen and when
 - **A lead orchestrator** that manages daily task flow, dispatch, and state
 - **Hard enforcement hooks** that inject mandatory checks at session start and after every file edit
 - **A pipeline auditor** that verifies agents actually ran required checks — not just claimed they did
@@ -184,7 +184,7 @@ A Team/
 │   ├── commands/              ← Slash commands (/orchestrate, /plan, /quality-gate, …)
 │   └── rules/                 ← Coding and workflow standards loaded by all agents
 │
-├── skills/                    ← 19 workflow skill modules
+├── skills/                    ← 20 workflow skill modules
 │   ├── using-a-team/          ← Meta-skill: mandatory trigger map
 │   ├── verification-before-completion/
 │   ├── test-driven-development/
@@ -301,7 +301,7 @@ All language specialists run at **T2 · sonnet-4-6** (or platform equivalent).
 
 ---
 
-## Skill Library (19)
+## Skill Library (20)
 
 Skills are instruction modules that agents must consult before acting. Hard-gate skills cannot be skipped. Workflow skills define process.
 
@@ -330,6 +330,7 @@ Skills are instruction modules that agents must consult before acting. Hard-gate
 | **incident-response** | Workflow — production incident playbook (detect → contain → resolve → post-mortem) |
 | **data-migration** | Hard gate — schema changes need rollback plan and dry-run before production |
 | **performance-audit** | Workflow — baseline → profile → single change → measure delta |
+| **architecture-audit** | Workflow — map system as-built → parallel specialist reviews → evidence-backed findings with severity verdicts |
 
 ---
 
