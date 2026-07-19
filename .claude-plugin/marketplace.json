@@ -84,8 +84,8 @@
     },
     {
       "name": "builder-growth",
-      "description": "AI growth quality enforcement: 6 skills and 3 agents for growth teams",
-      "version": "1.0.0",
+      "description": "AI growth quality enforcement: 14 skills and 5 agents for growth teams",
+      "version": "1.1.0",
       "source": "https://github.com/RBraga01/builder-growth",
       "author": {
         "name": "RBraga01",

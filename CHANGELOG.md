@@ -6,6 +6,34 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+**Consistency shield — counts can no longer drift silently:**
+- `packs.json` — single truth source for the builder-* domain packs
+  (name, repo, pages URL, version, skill/agent counts).
+- `check_consistency.py` extended from 23 to 75 checks: agent count is now
+  enforced from the real truth source (`.claude/agents/*.md` file count) across
+  23 references, skill-count coverage extended to `CLAUDE.md`, the claude plugin
+  manifest, `marketplace.json`, and `CITATION.cff`, and packs.json is enforced
+  against README, `docs/index.html` ecosystem cards, and `marketplace.json`
+  (roster, versions, and advertised skill/agent counts).
+- `scripts/check_packs_remote.py` + `packs-sync` workflow — daily cron,
+  `workflow_dispatch`, and `repository_dispatch` (type `pack-updated`) compare
+  packs.json against the LIVE builder-* repos: roster, real file-tree
+  skill/agent counts, manifest version, and GitHub description. Drift opens
+  (or updates) a `pack-drift` issue automatically and closes it when resolved.
+
+### Fixed
+
+- builder-growth was advertised as "6 skills and 3 agents, v1.0.0" in
+  `marketplace.json` and the landing-page ecosystem card; the repo actually
+  ships 14 skills and 5 agents at v1.1.0. Corrected everywhere, including the
+  builder-growth GitHub repo description.
+
+---
+
 ## [1.4.0] — 2026-07-19
 
 ### Added

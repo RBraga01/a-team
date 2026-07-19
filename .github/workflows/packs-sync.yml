@@ -1,0 +1,64 @@
+name: Packs Sync
+
+# Detects drift between packs.json and the live builder-* repositories.
+# Runs daily, on demand, and on repository_dispatch (type: pack-updated)
+# so builder-* repos can ping this repo the moment they change.
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [pack-updated]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Pack drift check (packs.json vs live builder-* repos)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+
+      - name: Compare packs.json against live GitHub state
+        id: drift
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: python scripts/check_packs_remote.py | tee drift-report.txt
+
+      - name: Open or update drift issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create pack-drift --description "packs.json out of sync with a builder-* repo" --color D93F0B --force || true
+          title="Pack drift: packs.json out of sync with builder-* repos"
+          body="Automated report from the packs-sync workflow ($(date -u +%Y-%m-%d)):
+
+          \`\`\`
+          $(cat drift-report.txt)
+          \`\`\`
+
+          Fix by updating \`packs.json\` (plus the surfaces \`check_consistency.py\` enforces: README, docs/index.html, marketplace.json) or the builder repo itself, then re-run this workflow."
+          existing=$(gh issue list --state open --label pack-drift --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$title" --label pack-drift --body "$body"
+          fi
+
+      - name: Close drift issue if resolved
+        if: success()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          existing=$(gh issue list --state open --label pack-drift --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" --comment "packs-sync: drift resolved, all packs back in sync."
+          fi
