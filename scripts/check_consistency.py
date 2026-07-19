@@ -39,6 +39,7 @@ SKILL_COUNT_CHECKS = [
     ("README.md", r"← (\d+) workflow skill modules", "README directory tree"),
     ("README.md", r"## Skill Library \((\d+)\)", "README section heading"),
     ("docs/index.html", r"(\d+) enforced workflows", "index.html hero paragraph"),
+    ("docs/index.html", r'hero-stat-n n-purple">(\d+)<', "index.html hero stat skill count"),
     ("docs/index.html", r"(\d+) enforced workflow skills", "index.html FAQ answer"),
     ("docs/index.html", r"· (\d+) skills ·", "index.html footer"),
     (".codex-plugin/plugin.json", r"(\d+) enforced workflow skills", "codex plugin.json description"),
