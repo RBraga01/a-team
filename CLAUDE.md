@@ -1,4 +1,4 @@
-# A Team — A Complete Engineering Team in One Folder v1.3.0
+# A Team — A Complete Engineering Team in One Folder v1.4.0
 
 Not a marketplace of agents you configure — a pre-configured, pre-enforced team of 26 specialists
 with a lead orchestrator, hard quality gates, and a Pipeline Auditor that verifies work was done,

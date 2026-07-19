@@ -21,9 +21,9 @@ authors:
     alias: RBraga01
     email: ricardormbraga@hotmail.com
 
-version: "1.3.0"
+version: "1.4.0"
 
-date-released: "2026-06-02"
+date-released: "2026-07-19"
 
 license: MIT
 
@@ -62,8 +62,8 @@ preferred-citation:
     - family-names: Braga
       given-names: Ricardo Romão Marques
       alias: RBraga01
-  version: "1.3.0"
-  date-released: "2026-06-02"
+  version: "1.4.0"
+  date-released: "2026-07-19"
   license: MIT
   repository-code: "https://github.com/RBraga01/a-team"
   url: "https://rbraga01.github.io/a-team/"
