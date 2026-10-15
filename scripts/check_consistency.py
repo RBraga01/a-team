@@ -74,7 +74,7 @@ SKILL_COUNT_CHECKS = [
 ]
 
 AGENT_COUNT_CHECKS = [
-    ("README.md", r"team of (\d+) specialists", "README intro paragraph"),
+    ("README.md", r"packages (\d+) specialist agents", "README intro paragraph"),
     ("README.md", r"\*\*(\d+) specialist agents\*\*", "README bullet list"),
     ("README.md", r"← (\d+) agent profiles", "README directory tree"),
     ("README.md", r"## Agent Roster \((\d+)\)", "README section heading"),
