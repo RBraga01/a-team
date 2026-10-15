@@ -9,6 +9,12 @@ import test from 'node:test'
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const expectedPaths = [
   '.claude',
+  '.claude-plugin/plugin.json',
+  '.codex-plugin/plugin.json',
+  '.cursor-plugin/plugin.json',
+  '.copilot-plugin/plugin.json',
+  '.opencode/commands/orchestrate.md',
+  'assets/ATeam_full.png',
   'skills',
   'hooks',
   'templates',

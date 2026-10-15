@@ -59,6 +59,10 @@
 | **writing-plans** | Workflow | Create structured implementation plans |
 | **finishing-a-development-branch** | Workflow | Wrap up a branch before merge |
 | **writing-skills** | Meta | Create new A Team skills via TDD |
+| **five-whys** | Workflow | Structured causal analysis |
+| **smart-init** | Workflow | ROADMAP-aware initialization |
+| **skill-duplication-audit** | Workflow | Audit overlapping skills across packs |
+| **architecture-audit** | Workflow | Evidence-backed architecture review |
 | **api-contract-first** | Hard | Design OpenAPI/protobuf contract before any endpoint |
 | **incident-response** | Workflow | Production incident — detect, contain, diagnose, resolve, post-mortem |
 | **data-migration** | Hard | Safe schema migrations with rollback strategy |

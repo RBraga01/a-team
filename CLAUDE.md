@@ -87,6 +87,8 @@ A Team/
 | **data-migration** | Safe schema changes with rollback strategy | Hard gate |
 | **performance-audit** | Baseline → profile → optimise → validate with numbers | Workflow |
 | **architecture-audit** | Map system as-built → parallel specialist reviews → severity verdicts | Workflow |
+| **five-whys** | Root-cause investigation through 5-Why analysis | Workflow |
+| **smart-init** | ROADMAP-aware session initialization | Workflow |
 
 ## Orchestrator Init & Pruning Protocol
 

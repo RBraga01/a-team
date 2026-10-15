@@ -31,6 +31,7 @@ graph TB
         CX["Codex CLI\n.codex-plugin/"]
         CU["Cursor\n.cursor-plugin/"]
         OC["OpenCode\n.opencode/"]
+        CP["Copilot CLI\n.copilot-plugin/"]
     end
 
     subgraph E["⚡  ENFORCEMENT LAYER — fires automatically"]
@@ -56,7 +57,7 @@ graph TB
             QA["code-reviewer\narchitect\nplanner\nsecurity-reviewer\ntdd-guide\nrefactor-cleaner\nbuild-error-resolver\ndebugger"]
         end
         subgraph LANG["Languages"]
-            LA["go · python · rust\nkotlin · swift · flutter\ndatabase · infra · ai"]
+            LA["go · python · rust · typescript\nkotlin · swift · flutter\ndatabase · infra · ai"]
         end
         subgraph OPS["Operations"]
             OP["harness-optimizer\nperformance-profiler\ncompliance-reviewer\nloop-operator\nchief-of-staff\ndoc-updater\ne2e-runner"]
@@ -66,10 +67,10 @@ graph TB
     subgraph S["🔒  SKILL LAYER — 20 skills"]
         direction LR
         subgraph HARD["Hard Gates\n(cannot skip)"]
-            HG["verification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]
+            HG["using-a-team\nverification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]
         end
         subgraph WORK["Workflow Skills"]
-            WS["using-git-worktrees\nsubagent-driven-dev\ndispatching-parallel\nexecuting-plans\nwriting-plans\nfinishing-branch\nincident-response\nperformance-audit\narchitecture-audit\nwriting-skills"]
+            WS["using-git-worktrees\nsubagent-driven-development\ndispatching-parallel-agents\nexecuting-plans\nwriting-plans\nfinishing-a-development-branch\nincident-response\nperformance-audit\narchitecture-audit\nwriting-skills\nsmart-init\nfive-whys\nskill-duplication-audit"]
         end
     end
 
@@ -148,6 +149,7 @@ mindmap
       python-reviewer
       rust-reviewer
       database-reviewer
+      typescript-reviewer
     Domain
       infra-reviewer
       compliance-reviewer

@@ -9,7 +9,7 @@ param(
 )
 
 $RepoUrl  = if ($env:A_TEAM_REPO_URL) { $env:A_TEAM_REPO_URL } else { "https://github.com/RBraga01/a-team.git" }
-$Dirs     = @(".claude", "skills", "hooks", "templates", "scripts")
+$Dirs     = @(".claude", ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".copilot-plugin", ".opencode", "skills", "hooks", "templates", "scripts", "assets")
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
@@ -92,7 +92,7 @@ Remove-Item $Tmp -Recurse -Force
 
 # -- Smoke check: verify hook scripts are present --
 Write-Host ""
-$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py")
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png")
 $MissingCount = 0
 foreach ($script in $HookScripts) {
     $scriptPath = Join-Path $Destination $script
@@ -106,6 +106,7 @@ if ($MissingCount -gt 0) {
     Write-Host "  Error: $MissingCount enforcement script(s) missing." -ForegroundColor Red
     Write-Host "  Security gate, watcher, metrics, and status line will be inactive."
     Write-Host "  This is a bug — please report at github.com/RBraga01/a-team/issues"
+    exit 1
 } else {
     Write-Host "  v All enforcement scripts present" -ForegroundColor Green
 }
@@ -117,6 +118,6 @@ Write-Host "$Copied item(s) installed, $Skipped skipped."
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor White
 Write-Host "  1. Edit INIT.md  -- declare your languages, stack, and compliance scope"
-Write-Host "  2. Open your project in Claude Code, Codex, Cursor, or OpenCode"
+Write-Host "  2. Configure Claude Code, Codex, Cursor, OpenCode, or GitHub Copilot CLI"
 Write-Host "  3. Run /orchestrate init"
 Write-Host ""
