@@ -25,7 +25,7 @@ No audit trail                        DAILY.md + Veto Buffer + AUDIT.md
 
 ```mermaid
 graph TB
-    subgraph P["🖥️  PLATFORM LAYER — works on all CLIs"]
+    subgraph P["🖥️  INTEGRATION LAYER — support varies by host"]
         direction LR
         CC["Claude Code\n.claude/"]
         CX["Codex CLI\n.codex-plugin/"]
@@ -218,8 +218,8 @@ After init: `.agent-sync/TEAM.md` lists what's active. Everything else is pruned
 |-----------|-------------------------|
 | **Stateless** | Every agent reads from files; no memory between sessions |
 | **Prunable** | Orchestrator removes irrelevant agents at init; lean by default |
-| **Portable** | Works on Claude Code, Codex, Cursor, OpenCode — same files |
-| **Enforceable** | Hard gates via hooks; skills injected every session |
+| **Portable** | Shared files and host-specific integration bundles for five tools; capabilities differ |
+| **Enforceable** | Skills and configured hooks provide gates where the host supports them |
 | **Auditable** | DAILY.md, Veto Buffer, AUDIT.md — full trail of decisions |
 | **Surgical** | Every agent has a single responsibility; no scope creep |
 | **Parallel** | Independent tasks dispatched simultaneously; worktrees prevent collision |

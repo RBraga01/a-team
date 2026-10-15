@@ -101,7 +101,7 @@ The installers include all integration manifests and OpenCode commands. **A copi
 - **OpenCode:** `.opencode/commands/` is the project-level custom-command directory.
 - **GitHub Copilot CLI:** separately run `copilot plugin install RBraga01/a-team:.copilot-plugin`; inspect `copilot plugin list`. End-to-end loading of referenced components still needs a real Copilot CLI test.
 - **Cursor:** install via **Customize → Plugins** or test through Cursor's local plugin directory; copying `.cursor-plugin/` into a project alone does not register a plugin.
-- **Codex:** the `.codex-plugin/` manifest is bundled, but copying it alone is not a verified Codex plugin installation. Check registration and component loading on the targeted Codex build.
+- **Codex:** the `.codex-plugin/` manifest now declares package-root skills and a session-start hook, but no native agent roster. Copying it alone is not a verified Codex plugin installation. Check actual registration and hook loading.
 
 Hook/agent/command parity across platforms must be validated separately. See [Platform support](#platform-support).
 
@@ -162,21 +162,16 @@ Running `morning` first lets the orchestrator read repo state before anything is
 
 ## Platform support
 
-A Team can run on one CLI or several at once. All platforms share the same agent definitions and the `.agent-sync/` state directory, but their enforcement capabilities differ.
+The table describes **what A Team currently declares or distributes**, not what has been proven in a real session. Automatic activation and enforcement can differ considerably by host.
 
-| Platform        | Agents | Skills | Rules | Hooks                 | Slash commands |
-| --------------- | ------ | ------ | ----- | --------------------- | -------------- |
-| **Claude Code** | ✅     | ✅     | ✅    | full (SessionStart + PostToolUse) | ✅ |
-| **Codex CLI**   | ✅     | ✅     | ✅    | session-start only    | —              |
-| **Cursor**      | ✅     | ✅     | ✅    | session-start only    | —              |
-| **OpenCode**    | —      | ✅     | —     | —                     | command aliases |
-| **GitHub Copilot** | via plugin | ✅ | — | full (SessionStart + PreToolUse + PostToolUse + SessionEnd) | — |
+| Platform | Specialist agents | Skills | Rules | Hook configuration | Commands |
+|---|---|---|---|---|---|
+| Claude Code | Project `.claude/agents/` | `skills/` | `.claude/rules/` | Project `settings.json` | Project slash commands |
+| Codex CLI | Not declared in package | `./skills/` in plugin | Project `AGENTS.md` | `SessionStart` declared | Not packaged |
+| Cursor | `.claude/agents/` declared | `skills/` declared | `.claude/rules/` declared | `sessionStart` declared | Not packaged |
+| OpenCode | No A Team-native agent files | Host-discovered/manual | Not declared | Not declared | `.opencode/commands/` |
+| GitHub Copilot CLI | Sibling directory path* | Sibling directory path* | Not declared | Four events declared* | Not packaged |
 
-Key consequences:
+*GitHub Copilot CLI's legacy manifest lives inside `.copilot-plugin/`. Its `../` paths to sibling directories may not survive installation of that subdirectory as an isolated plugin; **real end-to-end validation is outstanding**.*
 
-- **Claude Code is the reference platform.** It has the full hook system, native sub-agent dispatch, and all slash commands.
-- **Hooks do not propagate across platforms.** Each plugin manifest configures its own hooks independently: `.codex-plugin/` and `.cursor-plugin/` wire up a session-start hook only, while `.copilot-plugin/` configures the full set (SessionStart, PreToolUse, PostToolUse, SessionEnd). On Codex and Cursor, mid-session enforcement therefore relies on the agents' own rules rather than hooks.
-- **File presence is not plugin activation** — follow [platform plugin activation](#platform-plugin-activation), and test command discovery, hooks, and agent loading in each CLI.
-- **On Cursor and OpenCode, slash commands aren't available** — invoke the corresponding skill directly instead.
-
-> The exact agent and skill counts and the full platform matrix evolve between releases. Treat [`AGENTS.md`](../AGENTS.md), [`skills/`](../skills/), and the plugin manifests as the source of truth; this table is a guide to the *shape* of each platform's support.
+Claude Code remains the reference platform. The current Codex and Cursor manifests have structurally valid package-root paths; they still require actual CLI registration. OpenCode supplies project command aliases rather than A Team-native agent/hook definitions. A copied file is not equivalent to an activated plugin. For details see [Platform plugin activation](#platform-plugin-activation).

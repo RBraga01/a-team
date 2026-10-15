@@ -90,7 +90,9 @@ test('manifests that declare a hooks file: file exists and parses as JSON', () =
     if (typeof json.hooks !== 'string') continue
     const hookAbsPath = json.hooks.startsWith('/')
       ? json.hooks
-      : join(manifestAbsDir, json.hooks)
+      : manifestPath === '.cursor-plugin/plugin.json' || manifestPath === '.codex-plugin/plugin.json'
+        ? join(ROOT, json.hooks)
+        : join(manifestAbsDir, json.hooks)
     assert.ok(
       existsSync(hookAbsPath),
       `Hook file referenced by ${manifestPath} not found at ${json.hooks}`,
@@ -158,4 +160,24 @@ test('GitHub Copilot CLI hooks use the supported config-file shape', () => {
       )
     }
   }
+})
+
+
+test('Codex and Cursor component paths stay inside the distribution root', () => {
+  const mapping = [
+    ['.codex-plugin/plugin.json', ['skills', 'hooks']],
+    ['.cursor-plugin/plugin.json', ['skills', 'agents', 'rules', 'hooks']],
+  ]
+  for (const [manifestPath, fields] of mapping) {
+    const json = readJson(join(ROOT, manifestPath))
+    for (const field of fields) {
+      assert.ok(typeof json[field] === 'string', `${manifestPath}: missing ${field}`)
+      assert.ok(json[field].startsWith('./'), `${manifestPath}: ${field} must start with ./`)
+      assert.ok(!json[field].split('/').includes('..'), `${manifestPath}: ${field} must not escape plugin root`)
+      assert.ok(existsSync(join(ROOT, json[field])), `${manifestPath}: ${field} target not found`)
+    }
+  }
+  const codex = readJson(join(ROOT, '.codex-plugin/plugin.json'))
+  assert.equal(codex.interface.composerIcon, './assets/ATeam_full.png')
+  assert.ok(existsSync(join(ROOT, codex.interface.composerIcon)))
 })

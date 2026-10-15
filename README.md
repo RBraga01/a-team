@@ -38,7 +38,7 @@ A Team turns any AI coding assistant into a structured, self-enforcing engineeri
 - **26 specialist agents**, each with a defined scope, model tier, and tool set
 - **20 workflow skills** that gate what can happen and when
 - **A lead orchestrator** that manages daily task flow, dispatch, and state
-- **Hard enforcement hooks** that inject mandatory checks at session start and after every file edit
+- **Quality-gate instructions and host-specific hooks** (automatic enforcement varies by CLI)
 - **A pipeline auditor** that verifies agents actually ran required checks — not just claimed they did
 
 The infrastructure is stateless by design. Every agent derives its context from files, not memory. Sessions can be interrupted and resumed without drift.
@@ -157,9 +157,9 @@ The orchestrator reads `INIT.md`, prunes irrelevant agents and skills, and gener
 
 ### 3. Start working
 
-Every subsequent session, the `using-a-team` meta-skill is injected automatically via the `SessionStart` hook. No manual setup needed per session.
+On **Claude Code**, the configured `SessionStart` hook loads `using-a-team` after the project is trusted. Other platforms require their own plugin activation and hook verification.
 
-> **Tip:** Run `/orchestrate morning` to kick off the daily task cycle, or just start working — the enforcement hooks fire automatically on every session start and every file edit.
+> **Tip:** Run `/orchestrate morning` to propose today's tasks. Automatic hooks depend on the selected CLI and must be verified in that host.
 
 ---
 
@@ -227,11 +227,13 @@ A Team distributes definitions for five tools. Shared state in `.agent-sync/` is
 
 | Platform | Agents | Skills | Rules | Hooks | Commands |
 |----------|--------|--------|-------|-------|----------|
-| **Claude Code** | `.claude/agents/` | `skills/` | `.claude/rules/` | `settings.json` hooks | `.claude/commands/` |
-| **Codex CLI** | `.claude/agents/` (via agentsPath) | `skills/` | `.claude/rules/` | `onSessionStart` hook | — |
-| **Cursor** | `.claude/agents/` (via agentsPath) | `skills/` | `.claude/rules/` | `onSessionStart` hook | — |
-| **GitHub Copilot CLI** | `.claude/agents/` (via `agents` path) | `skills/` | `.claude/rules/` | `SessionStart` / `PreToolUse` / `PostToolUse` / `SessionEnd` hooks | — |
-| **OpenCode** | — | `skills/` | — | — | `.opencode/commands/` |
+| **Claude Code** | `.claude/agents/` | `skills/` | `.claude/rules/` | project settings | `.claude/commands/` |
+| **Codex CLI** | Not declared by this plugin | `./skills/` | `AGENTS.md` as project instructions | `SessionStart` declared | Not declared |
+| **Cursor** | `./.claude/agents/` | `./skills/` | `./.claude/rules/` | `sessionStart` declared | Not declared |
+| **GitHub Copilot CLI** | `../.claude/agents/`* | `../skills/`* | Not declared | Four events declared* | Not declared |
+| **OpenCode** | No A Team-native agents bundled | Host-discovered or manual | Not declared | Not declared | `.opencode/commands/` |
+
+*Copilot uses a separate legacy plugin installed from `.copilot-plugin/`. Whether its sibling component paths remain available after installation has **not** been verified; do not assume those hooks are active.*
 
 ### Running multiple CLIs on the same project
 
@@ -239,19 +241,19 @@ All CLIs share `.agent-sync/` (DAILY.md, ROUTING.md, TEAM.md, results/). This me
 
 - The orchestrator's state is visible regardless of which CLI triggered it.
 - File Claims are written once and honoured by any CLI reading ROUTING.md.
-- Hooks are **not** propagated across platforms — configure session-start hooks in each plugin manifest separately (already done in `.codex-plugin/`, `.cursor-plugin/`, and `.copilot-plugin/`).
+- Hooks are **not** propagated across platforms: each host needs its own configuration and activation; seeing a hook declaration does not prove that it has executed.
 
 ### Platform-specific behaviour
 
 **Claude Code** is the primary platform. It has the full hook system (`SessionStart`, `PostToolUse`), slash commands, and native sub-agent dispatch via the `Agent` tool.
 
-**Codex CLI** loads agents and skills from the same paths as Claude Code. It does not support `PostToolUse` hooks — the session-start reminder is injected but mid-session enforcement relies on the agents' own rules, not hooks.
+**Codex CLI** has a package-root skill path and `SessionStart` hook declaration. It does **not** declare native specialist agents or slash commands in its plugin manifest. Validate runtime loading in Codex before relying on the gate.
 
-**Cursor** loads agents and skills. Its rule injection depends on the `.cursor-plugin/` manifest's `rulesPath`. Slash commands are not available; use the skill invocation pattern instead.
+**Cursor** declares project-root paths for agents, skills, rules and a session-start hook. It must be installed/activated as a Cursor Plugin. A Team does not currently package dedicated Cursor commands.
 
-**OpenCode** has command aliases in `.opencode/commands/` mapping to the same workflows. It does not have native agent or hook support — skills are invoked manually.
+**OpenCode** receives A Team's command aliases in `.opencode/commands/`. This distribution does not bundle OpenCode-native agent or hook definitions; this is not a limitation of the OpenCode platform itself.
 
-**GitHub Copilot CLI** loads agents, skills, and hooks via the `.copilot-plugin/plugin.json` manifest. It supports the A Team session, tool-use, post-edit, and session-end gates through Copilot CLI hooks, so enforcement parity is full — not partial.
+**GitHub Copilot CLI** has a legacy manifest declaring agents, skills and four hook events. Its installation command is valid, but package-relative component loading and enforcement parity have **not** been demonstrated on a real Copilot CLI session.
 
 Install:
 
