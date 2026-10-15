@@ -31,7 +31,7 @@ if (-not (Test-Path $Destination)) {
 $Destination = (Resolve-Path -LiteralPath $Destination).Path
 
 # -- Sparse clone into temp dir --
-$Tmp = Join-Path $env:TEMP ("a-team-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0,8))
+$Tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("a-team-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0,8))
 Write-Host "  Fetching required files (sparse checkout)..." -ForegroundColor DarkGray
 
 try {
