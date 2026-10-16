@@ -80,7 +80,9 @@ jobs:
           trap 'kill "$pid" 2>/dev/null || true' EXIT
           ready=0
           for i in $(seq 1 25); do
-            if curl --silent --show-error --fail --user opencode:ci-only-local-test               http://127.0.0.1:41873/api/command > "$RUNNER_TEMP/opencode-commands.json" 2>/dev/null; then
+            if curl --silent --show-error --fail --user opencode:ci-only-local-test \
+              --get --data-urlencode "location[directory]=$GITHUB_WORKSPACE" \
+              http://127.0.0.1:41873/api/command > "$RUNNER_TEMP/opencode-commands.json" 2>/dev/null; then
               ready=1
               break
             fi
