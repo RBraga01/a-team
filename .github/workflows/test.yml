@@ -19,6 +19,9 @@ on:
       - '.opencode/**'
       - 'assets/**'
       - 'README.md'
+      - 'plugin.json'
+      - 'hooks/**'
+      - 'docs/installation.md'
       - 'docs/installation.md'
       - '.github/workflows/test.yml'
   workflow_dispatch:
@@ -53,7 +56,7 @@ jobs:
 
       - name: Check manifests and Bash installation
         working-directory: tests
-        run: node --test lib/plugin-manifests.test.js lib/installers.test.js
+        run: node --test lib/plugin-manifests.test.js lib/installers.test.js lib/opencode-commands.test.js
 
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:

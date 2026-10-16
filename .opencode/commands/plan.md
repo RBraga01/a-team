@@ -1,7 +1,7 @@
-# /plan
+---
+description: Prepare an implementation plan before coding.
+---
 
-Create a structured implementation plan.
+Plan request: $ARGUMENTS
 
-Invokes the `planner` agent. Reads INIT.md for project context, analyzes existing codebase, produces a phased plan saved to `docs/plans/YYYY-MM-DD-<feature>.md`.
-
-Run before any implementation work. The plan is consumed by `executing-plans` or `subagent-driven-development`.
+Read `INIT.md` and `.claude/agents/planner.md` if present. Inspect the relevant source; propose test-first, phased implementation steps, affected files, risks and acceptance tests. Save the approved plan under `docs/plans/`. Do not implement before approval.

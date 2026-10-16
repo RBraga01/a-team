@@ -1,12 +1,7 @@
-# /e2e
+---
+description: Run relevant end-to-end tests and report evidence.
+---
 
-End-to-end test suite. Invokes the `e2e-runner` agent.
+End-to-end test scope: $ARGUMENTS
 
-Prefers Agent Browser for semantic selectors. Falls back to Playwright. Tests critical user journeys: auth, core features, payments, CRUD flows.
-
-**Usage:**
-```
-/e2e
-```
-
-Success criteria: all critical journeys passing (100%), overall pass rate > 95%, flaky rate < 5%.
+Read `.claude/agents/e2e-runner.md` if present. Identify the critical user journeys and runnable test commands; execute available tests, report pass/fail evidence, and identify missing coverage. Avoid claiming 100% coverage without measured results.

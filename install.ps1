@@ -93,7 +93,7 @@ foreach ($dir in $Dirs) {
 }
 
 # -- Project instruction files: preserve existing policies --
-foreach ($File in @("AGENTS.md","CLAUDE.md")) {
+foreach ($File in @("AGENTS.md","CLAUDE.md","plugin.json")) {
     $InstructionTarget = Join-Path $Destination $File
     if (-not (Test-Path -LiteralPath $InstructionTarget)) {
         Copy-Item -LiteralPath (Join-Path $Tmp $File) -Destination $InstructionTarget
@@ -123,7 +123,7 @@ Remove-Item $Tmp -Recurse -Force
 
 # -- Smoke check: verify hook scripts are present --
 Write-Host ""
-$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md")
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md","plugin.json","hooks/hooks.json")
 $MissingCount = 0
 foreach ($script in $HookScripts) {
     $scriptPath = Join-Path $Destination $script

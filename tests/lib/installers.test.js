@@ -8,6 +8,8 @@ import test from 'node:test'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const expectedPaths = [
+  'plugin.json',
+  'hooks/hooks.json',
   'AGENTS.md',
   'CLAUDE.md',
   '.claude',

@@ -52,7 +52,7 @@ for dir in "${DIRS[@]}"; do
 done
 
 # -- Install project instruction files without replacing existing policies --
-for file in AGENTS.md CLAUDE.md; do
+for file in AGENTS.md CLAUDE.md plugin.json; do
   if [ ! -e "$DEST/$file" ]; then
     cp "$file" "$DEST/$file"
     echo -e "  ${GREEN}✓${RESET} $file (project instructions)"
@@ -75,7 +75,7 @@ fi
 
 # -- Smoke check: verify hook scripts are present --
 echo ""
-HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md")
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md" "plugin.json" "hooks/hooks.json")
 MISSING_COUNT=0
 for script in "${HOOK_SCRIPTS[@]}"; do
   if [ ! -f "$DEST/$script" ]; then

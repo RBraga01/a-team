@@ -1,12 +1,7 @@
-# /code-review
+---
+description: Review the current diff for correctness and risks.
+---
 
-Code quality review. Invokes the `code-reviewer` agent.
+Code review scope: $ARGUMENTS
 
-Reviews staged and recent changes for security, code quality, surgical changes compliance, and best practices. Reports findings by severity (CRITICAL → HIGH → MEDIUM → LOW).
-
-**Usage:**
-```
-/code-review
-```
-
-Run after every code change, before every commit.
+Read `.claude/agents/code-reviewer.md` if present and inspect the actual diff. Prioritize correctness, tests, security, and scope creep. Report findings with file and line references and severity; do not fabricate tests or review approvals.

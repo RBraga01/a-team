@@ -73,7 +73,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
 cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
-cp -n a-team/AGENTS.md a-team/CLAUDE.md your-project/
+cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json your-project/
 cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
@@ -88,7 +88,7 @@ git clone --filter=blob:none --sparse --depth 1 \
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
-cp -n AGENTS.md CLAUDE.md ../your-project/
+cp -n AGENTS.md CLAUDE.md plugin.json ../your-project/
 cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
@@ -101,7 +101,7 @@ git clone --filter=blob:none --sparse --depth 1 `
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
-foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+foreach ($f in 'AGENTS.md','CLAUDE.md','plugin.json','INIT_TEMPLATE.md') {
   $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
   if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
 }
@@ -115,7 +115,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 1. Go to [github.com/RBraga01/a-team](https://github.com/RBraga01/a-team)
 2. Click **Code → Download ZIP**
 3. Extract and copy `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/`, `assets/` into your project root
-4. Copy `AGENTS.md` and `CLAUDE.md` only when they do not already exist; otherwise review and merge instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` when absent.
+4. Copy `AGENTS.md`, `CLAUDE.md` and root `plugin.json` only when they do not already exist; otherwise review and merge instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` when absent.
 
 ---
 
@@ -125,7 +125,7 @@ If the project is already in progress, use `cp -rn` (no-clobber) when copying th
 
 ```bash
 cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
-cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
@@ -176,6 +176,7 @@ A Team/
 ├── README.md                  ← This file
 ├── CLAUDE.md                  ← Project overview loaded by Claude Code
 ├── AGENTS.md                  ← Agent roster & command reference
+├── plugin.json                ← Portable Codex/Agent Plugins manifest
 ├── INIT_TEMPLATE.md           ← Template for project-specific init doc
 ├── AGENTS.md                  ← Project-level agent instructions (non-overwriting copy)
 ├── CLAUDE.md                  ← Project-level Claude instructions (non-overwriting copy)
@@ -255,7 +256,7 @@ All CLIs share `.agent-sync/` (DAILY.md, ROUTING.md, TEAM.md, results/). This me
 
 **Claude Code** is the primary platform. It has the full hook system (`SessionStart`, `PostToolUse`), slash commands, and native sub-agent dispatch via the `Agent` tool.
 
-**Codex CLI** has a package-root skill path and `SessionStart` hook declaration. It does **not** declare native specialist agents or slash commands in its plugin manifest. Validate runtime loading in Codex before relying on the gate.
+**Codex CLI** has a portable root `plugin.json`, package-root skills, and a `SessionStart` hook declaration. It does **not** declare native specialist agents or slash commands in its plugin manifest. Validate runtime loading in Codex before relying on the gate.
 
 **Cursor** declares project-root paths for agents, skills, rules and a session-start hook. It must be installed/activated as a Cursor Plugin. A Team does not currently package dedicated Cursor commands.
 

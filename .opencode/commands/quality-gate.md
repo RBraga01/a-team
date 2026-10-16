@@ -1,10 +1,7 @@
-# /quality-gate
+---
+description: Perform pre-merge review and verification checks.
+---
 
-Full pre-merge quality check. Runs code-reviewer and security-reviewer in parallel.
+Quality gate scope: $ARGUMENTS
 
-Gate criteria:
-- PASS: No CRITICAL or HIGH issues
-- WARN: HIGH only — merge with documented issue
-- BLOCK: Any CRITICAL — must fix before merge
-
-Also verifies: tests passing, build succeeds, no debug statements, no hardcoded secrets.
+Consult `.claude/commands/quality-gate.md`, `.claude/agents/code-reviewer.md` and `.claude/agents/security-reviewer.md` if present. Run available tests and build checks; inspect the actual changes for security/correctness. Report a blocking or passing verdict with evidence; **do not merge without human approval**.

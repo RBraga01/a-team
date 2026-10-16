@@ -1,12 +1,7 @@
-# /debug
+---
+description: Investigate and reproduce a failure before proposing fixes.
+---
 
-Systematic root-cause debugging. Invokes the `debugger` agent.
+Failure to investigate: $ARGUMENTS
 
-Enforces the Iron Law: Phase 1 (reproduce and isolate root cause) must complete before any fix is proposed.
-
-**Usage:**
-```
-/debug "login endpoint returns 500 after password change"
-```
-
-Never propose a fix before completing Phase 1.
+Consult `.claude/agents/debugger.md` and `skills/systematic-debugging/SKILL.md`, if present. Reproduce, isolate, gather actual evidence and determine the cause before changes. Propose a minimal fix and verify it with a failing-then-passing regression test.

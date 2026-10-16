@@ -1,12 +1,7 @@
-# /security-review
+---
+description: Audit security-sensitive code and dependencies.
+---
 
-Security audit. Invokes the `security-reviewer` agent.
+Security review scope: $ARGUMENTS
 
-Checks OWASP Top 10, secrets, injection, authentication, and dependency vulnerabilities.
-
-**Usage:**
-```
-/security-review
-```
-
-If a CRITICAL vulnerability is found: stop all other work, fix it first, rotate any exposed secrets.
+Read `.claude/agents/security-reviewer.md` if present. Inspect the relevant files and dependency manifests for injection, authentication, authorization, secrets, and data exposure. Report actionable findings with evidence. Do not publish secrets or claim a security certification.
