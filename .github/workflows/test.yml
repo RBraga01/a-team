@@ -75,6 +75,7 @@ jobs:
           OPENCODE_SERVER_PASSWORD: ci-only-local-test
         run: |
           opencode --version
+          printf '%s\\n' '{"commands":{"a-team-probe":{"template":"CI synthetic command using $ARGUMENTS"}}}' > opencode.json
           opencode serve --hostname 127.0.0.1 --port 41873 > "$RUNNER_TEMP/opencode-server.log" 2>&1 &
           pid=$!
           trap 'kill "$pid" 2>/dev/null || true' EXIT
