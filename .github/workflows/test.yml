@@ -70,11 +70,27 @@ jobs:
           node-version: '22'
       - name: Install official OpenCode CLI (no API key)
         run: npm install --global @opencode/cli
-      - name: Check native custom-command loading
+      - name: Check native custom-command loading via local API
+        env:
+          OPENCODE_SERVER_PASSWORD: ci-only-local-test
         run: |
           opencode --version
-          opencode debug config > "$RUNNER_TEMP/opencode-config.json"
-          node tests/verify-opencode-host.mjs "$RUNNER_TEMP/opencode-config.json"
+          opencode serve --hostname 127.0.0.1 --port 41873 > "$RUNNER_TEMP/opencode-server.log" 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          ready=0
+          for i in $(seq 1 25); do
+            if curl --silent --show-error --fail --user opencode:ci-only-local-test               http://127.0.0.1:41873/api/command > "$RUNNER_TEMP/opencode-commands.json" 2>/dev/null; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ "$ready" -ne 1 ]; then
+            cat "$RUNNER_TEMP/opencode-server.log"
+            exit 1
+          fi
+          node tests/verify-opencode-host.mjs "$RUNNER_TEMP/opencode-commands.json"
 
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:
