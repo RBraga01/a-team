@@ -8,14 +8,15 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [1.4.1] — 2026-10-16
+
 ### Added
+
 - Portable root `plugin.json` for Codex and Agent Plugins; Codex lifecycle hooks
   use the single root `hooks/hooks.json` instead of a duplicate under `.codex-plugin/`.
 - OpenCode project commands now forward `$ARGUMENTS`, include frontmatter for discovery,
   and preserve the explicit human approval stop before implementation/dispatch.
 - Offline tests validate the portable manifest, Codex hook location and 10 OpenCode commands.
-
-### Added
 
 **Repository consistency and distribution audit (October 2026):**
 - Added an automated negative-control CI test that deliberately corrupts a catalog row
@@ -60,6 +61,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `marketplace.json` and the landing-page ecosystem card; the repo actually
   ships 14 skills and 5 agents at v1.1.0. Corrected everywhere, including the
   builder-growth GitHub repo description.
+
+### Release note
+
+- Patch release focused on packaging, installation and documentation consistency; **no new agents or skills**.
+- GitHub Copilot CLI plugin functionality and real-host parity are **not verified**; its
+  manifest version is synchronized solely as release metadata, without code changes.
+- Native host activation for Codex, Cursor, Claude Code and OpenCode remains tracked in issues #34–#37.
 
 ---
 
