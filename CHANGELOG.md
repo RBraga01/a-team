@@ -68,6 +68,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - GitHub Copilot CLI plugin functionality and real-host parity are **not verified**; its
   manifest version is synchronized solely as release metadata, without code changes.
 - Native host activation for Codex, Cursor, Claude Code and OpenCode remains tracked in issues #34–#37.
+- OpenCode v2.0.30 CLI command discovery was attempted without model/API keys, but its local command registry returned no entries even for a synthetic JSON control; host execution remains unverified.
 
 ---
 
