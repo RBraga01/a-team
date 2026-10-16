@@ -1,7 +1,7 @@
 {
   "name": "a-team",
   "displayName": "A Team",
-  "description": "A complete engineering team in one folder. 26 pre-configured specialists, 20 enforced workflow skills, a lead orchestrator, and a Pipeline Auditor — for Claude Code, Codex CLI, Cursor, and OpenCode.",
+  "description": "A complete engineering team in one folder. 26 pre-configured specialists, 20 enforced workflow skills, a lead orchestrator, and a Pipeline Auditor — for Claude Code, Codex CLI, Cursor, OpenCode, and GitHub Copilot CLI.",
   "version": "1.4.0",
   "author": {
     "name": "RBraga01",
@@ -18,7 +18,8 @@
     "code-review",
     "orchestration"
   ],
-  "skills": "../skills/",
-  "agents": "../.claude/agents/",
-  "hooks": "./hooks/hooks-cursor.json"
+  "skills": "./skills/",
+  "agents": "./.claude/agents/",
+  "rules": "./.claude/rules/",
+  "hooks": "./.cursor-plugin/hooks/hooks-cursor.json"
 }

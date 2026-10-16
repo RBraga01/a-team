@@ -25,12 +25,13 @@ No audit trail                        DAILY.md + Veto Buffer + AUDIT.md
 
 ```mermaid
 graph TB
-    subgraph P["🖥️  PLATFORM LAYER — works on all CLIs"]
+    subgraph P["🖥️  INTEGRATION LAYER — support varies by host"]
         direction LR
         CC["Claude Code\n.claude/"]
         CX["Codex CLI\n.codex-plugin/"]
         CU["Cursor\n.cursor-plugin/"]
         OC["OpenCode\n.opencode/"]
+        CP["Copilot CLI\n.copilot-plugin/"]
     end
 
     subgraph E["⚡  ENFORCEMENT LAYER — fires automatically"]
@@ -56,7 +57,7 @@ graph TB
             QA["code-reviewer\narchitect\nplanner\nsecurity-reviewer\ntdd-guide\nrefactor-cleaner\nbuild-error-resolver\ndebugger"]
         end
         subgraph LANG["Languages"]
-            LA["go · python · rust\nkotlin · swift · flutter\ndatabase · infra · ai"]
+            LA["go · python · rust · typescript\nkotlin · swift · flutter\ndatabase · infra · ai"]
         end
         subgraph OPS["Operations"]
             OP["harness-optimizer\nperformance-profiler\ncompliance-reviewer\nloop-operator\nchief-of-staff\ndoc-updater\ne2e-runner"]
@@ -66,10 +67,10 @@ graph TB
     subgraph S["🔒  SKILL LAYER — 20 skills"]
         direction LR
         subgraph HARD["Hard Gates\n(cannot skip)"]
-            HG["verification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]
+            HG["using-a-team\nverification-before-completion\ntest-driven-development\nbrainstorming\nsystematic-debugging\napi-contract-first\ndata-migration"]
         end
         subgraph WORK["Workflow Skills"]
-            WS["using-git-worktrees\nsubagent-driven-dev\ndispatching-parallel\nexecuting-plans\nwriting-plans\nfinishing-branch\nincident-response\nperformance-audit\narchitecture-audit\nwriting-skills"]
+            WS["using-git-worktrees\nsubagent-driven-development\ndispatching-parallel-agents\nexecuting-plans\nwriting-plans\nfinishing-a-development-branch\nincident-response\nperformance-audit\narchitecture-audit\nwriting-skills\nsmart-init\nfive-whys\nskill-duplication-audit"]
         end
     end
 
@@ -148,6 +149,7 @@ mindmap
       python-reviewer
       rust-reviewer
       database-reviewer
+      typescript-reviewer
     Domain
       infra-reviewer
       compliance-reviewer
@@ -197,9 +199,12 @@ journey
 cp -r "A Team/.claude"  your-project/
 cp -r "A Team/skills"   your-project/
 cp -r "A Team/hooks"    your-project/
+cp -r "A Team/scripts"  your-project/
+# Additional CLI integration folders and install instructions: README.md
 
 # 2. Declare your project scope
-cp "A Team/INIT_TEMPLATE.md" your-project/INIT.md
+cp -n "A Team/AGENTS.md" "A Team/CLAUDE.md" your-project/
+cp -n "A Team/INIT_TEMPLATE.md" your-project/INIT.md
 # edit INIT.md — languages, stack, compliance scope, CLI(s)
 
 # 3. Initialize — orchestrator prunes irrelevant agents automatically
@@ -216,8 +221,8 @@ After init: `.agent-sync/TEAM.md` lists what's active. Everything else is pruned
 |-----------|-------------------------|
 | **Stateless** | Every agent reads from files; no memory between sessions |
 | **Prunable** | Orchestrator removes irrelevant agents at init; lean by default |
-| **Portable** | Works on Claude Code, Codex, Cursor, OpenCode — same files |
-| **Enforceable** | Hard gates via hooks; skills injected every session |
+| **Portable** | Shared files and host-specific integration bundles for five tools; capabilities differ |
+| **Enforceable** | Skills and configured hooks provide gates where the host supports them |
 | **Auditable** | DAILY.md, Veto Buffer, AUDIT.md — full trail of decisions |
 | **Surgical** | Every agent has a single responsibility; no scope creep |
 | **Parallel** | Independent tasks dispatched simultaneously; worktrees prevent collision |

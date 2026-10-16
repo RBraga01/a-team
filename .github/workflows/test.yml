@@ -9,6 +9,18 @@ on:
       - '.claude/agents/**'
       - '.claude/rules/**'
       - 'tests/**'
+      - 'scripts/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - '.claude-plugin/**'
+      - '.codex-plugin/**'
+      - '.cursor-plugin/**'
+      - '.copilot-plugin/**'
+      - '.opencode/**'
+      - 'assets/**'
+      - 'README.md'
+      - 'docs/installation.md'
+      - '.github/workflows/test.yml'
   workflow_dispatch:
     inputs:
       mode:
@@ -38,6 +50,23 @@ jobs:
       - name: Run assertion unit tests
         working-directory: tests
         run: node --test lib/assertions.test.js
+
+      - name: Check manifests and Bash installation
+        working-directory: tests
+        run: node --test lib/plugin-manifests.test.js lib/installers.test.js
+
+  # ── Validate the Windows PowerShell installer on Windows ───────────────────
+  installer-windows:
+    name: Installer smoke (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '20'
+      - name: Run installer smoke tests
+        working-directory: tests
+        run: node --test lib/installers.test.js
 
   # ── Integration tests (replay mode — uses committed transcripts) ─────────────
   integration-tests-replay:

@@ -10,6 +10,17 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+**Repository consistency and distribution audit (October 2026):**
+- Added an automated negative-control CI test that deliberately corrupts a catalog row
+  and requires the inventory checker to reject it.
+- Added a complete agent and skill catalog under `docs/catalog.md` and moved detailed
+  operational documentation into `docs/how-it-works.md`.
+- Extended the CI consistency checker from numeric matching to exact catalog membership,
+  and added Bash/PowerShell installer tests (including a Windows runner).
+- Included CLI integration directories and artwork in all installation methods, plus
+  non-overwriting root AGENTS.md and CLAUDE.md project instructions, while
+  keeping plugin activation as a separate, host-specific step.
+
 **Consistency shield — counts can no longer drift silently:**
 - `packs.json` — single truth source for the builder-* domain packs
   (name, repo, pages URL, version, skill/agent counts).
@@ -26,6 +37,17 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   (or updates) a `pack-drift` issue automatically and closes it when resolved.
 
 ### Fixed
+
+- Corrected missing agent/skill table entries and classified `api-contract-first`
+  and `data-migration` as hard gates.
+- Fixed Codex and Cursor plugin-root paths and a missing Codex icon reference.
+  Declared package hooks where supported; actual CLI activation and enforcement
+  remain subject to end-to-end verification.
+- Removed inaccurate multi-CLI enforcement-parity claims from installation guidance.
+- Fixed the PowerShell installer on environments without an explicit `TEMP` variable,
+  and made it merge missing files into existing directories without overwriting project settings.
+- Updated GitHub Pages installation examples to match actual distribution contents.
+- Condensed the root README and surfaced an illustrative orchestrator quick start.
 
 - builder-growth was advertised as "6 skills and 3 agents, v1.0.0" in
   `marketplace.json` and the landing-page ecosystem card; the repo actually

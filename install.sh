@@ -1,5 +1,5 @@
 ﻿#!/usr/bin/env bash
-# A Team installer — copies .claude/, skills/, hooks/, and templates/ into your project.
+# A Team installer — copies shared infrastructure and all platform integration directories.
 # Usage:
 #   bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install.sh)
 #   bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install.sh) /path/to/project
@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_URL="${A_TEAM_REPO_URL:-https://github.com/RBraga01/a-team.git}"
 DEST="${1:-$PWD}"
-DIRS=(".claude" "skills" "hooks" "templates" "scripts")
+DIRS=(".claude" ".claude-plugin" ".codex-plugin" ".cursor-plugin" ".copilot-plugin" ".opencode" "skills" "hooks" "templates" "scripts" "assets")
 
 RESET="\033[0m"; BOLD="\033[1m"; GREEN="\033[32m"; BLUE="\033[34m"; RED="\033[31m"; DIM="\033[2m"
 
@@ -51,6 +51,18 @@ for dir in "${DIRS[@]}"; do
   fi
 done
 
+# -- Install project instruction files without replacing existing policies --
+for file in AGENTS.md CLAUDE.md; do
+  if [ ! -e "$DEST/$file" ]; then
+    cp "$file" "$DEST/$file"
+    echo -e "  ${GREEN}✓${RESET} $file (project instructions)"
+    COPIED=$((COPIED + 1))
+  else
+    echo -e "  ${DIM}↩ $file already exists — skipped; merge A Team instructions manually if needed${RESET}"
+    SKIPPED=$((SKIPPED + 1))
+  fi
+done
+
 # -- Copy INIT_TEMPLATE as INIT.md if not already present --
 if [ ! -f "$DEST/INIT.md" ]; then
   cp INIT_TEMPLATE.md "$DEST/INIT.md"
@@ -63,7 +75,7 @@ fi
 
 # -- Smoke check: verify hook scripts are present --
 echo ""
-HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py")
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md")
 MISSING_COUNT=0
 for script in "${HOOK_SCRIPTS[@]}"; do
   if [ ! -f "$DEST/$script" ]; then
@@ -76,6 +88,7 @@ if [ $MISSING_COUNT -gt 0 ]; then
   echo -e "  ${RED}${BOLD}Error:${RESET} $MISSING_COUNT enforcement script(s) missing."
   echo -e "  Security gate, watcher, metrics, and status line will be ${RED}inactive${RESET}."
   echo -e "  This is a bug — please report at github.com/RBraga01/a-team/issues"
+  exit 1
 else
   echo -e "  ${GREEN}✓${RESET} All enforcement scripts present"
 fi
@@ -86,6 +99,6 @@ echo -e "${GREEN}${BOLD}Done.${RESET} $COPIED item(s) installed, $SKIPPED skippe
 echo ""
 echo -e "${BOLD}Next steps:${RESET}"
 echo -e "  1. Edit ${BLUE}INIT.md${RESET} — declare your languages, stack, and compliance scope"
-echo -e "  2. Open your project in Claude Code, Codex, Cursor, or OpenCode"
+echo -e "  2. Configure Claude Code, Codex, Cursor, OpenCode, or GitHub Copilot CLI"
 echo -e "  3. Run ${BLUE}/orchestrate init${RESET}"
 echo ""

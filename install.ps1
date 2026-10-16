@@ -9,7 +9,7 @@ param(
 )
 
 $RepoUrl  = if ($env:A_TEAM_REPO_URL) { $env:A_TEAM_REPO_URL } else { "https://github.com/RBraga01/a-team.git" }
-$Dirs     = @(".claude", "skills", "hooks", "templates", "scripts")
+$Dirs     = @(".claude", ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".copilot-plugin", ".opencode", "skills", "hooks", "templates", "scripts", "assets")
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
@@ -31,7 +31,7 @@ if (-not (Test-Path $Destination)) {
 $Destination = (Resolve-Path -LiteralPath $Destination).Path
 
 # -- Sparse clone into temp dir --
-$Tmp = Join-Path $env:TEMP ("a-team-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0,8))
+$Tmp = Join-Path ([System.IO.Path]::GetTempPath()) ("a-team-install-" + [System.Guid]::NewGuid().ToString("N").Substring(0,8))
 Write-Host "  Fetching required files (sparse checkout)..." -ForegroundColor DarkGray
 
 try {
@@ -68,9 +68,40 @@ foreach ($dir in $Dirs) {
             Write-Host "  v $dir/" -ForegroundColor Green
             $Copied++
         } else {
-            Write-Host "  -> $dir/ already exists — skipped (use -Force to overwrite)" -ForegroundColor DarkGray
-            $Skipped++
+            # Merge absent files into an existing directory without overwriting
+            # project rules, settings, agents or locally maintained scripts.
+            $MergedFiles = 0
+            $ExistingFiles = 0
+            Get-ChildItem -LiteralPath $src -Recurse -File -Force | ForEach-Object {
+                $Relative = $_.FullName.Substring($src.Length).TrimStart([System.IO.Path]::DirectorySeparatorChar)
+                $TargetFile = Join-Path $dest $Relative
+                if (Test-Path -LiteralPath $TargetFile) {
+                    $ExistingFiles++
+                } else {
+                    $Parent = Split-Path -Parent $TargetFile
+                    if (-not (Test-Path -LiteralPath $Parent)) {
+                        New-Item -ItemType Directory -Path $Parent -Force | Out-Null
+                    }
+                    Copy-Item -LiteralPath $_.FullName -Destination $TargetFile
+                    $MergedFiles++
+                }
+            }
+            Write-Host "  ~ $dir/ merged $MergedFiles missing file(s); preserved $ExistingFiles existing" -ForegroundColor DarkGray
+            if ($MergedFiles -gt 0) { $Copied++ } else { $Skipped++ }
         }
+    }
+}
+
+# -- Project instruction files: preserve existing policies --
+foreach ($File in @("AGENTS.md","CLAUDE.md")) {
+    $InstructionTarget = Join-Path $Destination $File
+    if (-not (Test-Path -LiteralPath $InstructionTarget)) {
+        Copy-Item -LiteralPath (Join-Path $Tmp $File) -Destination $InstructionTarget
+        Write-Host "  v $File (project instructions)" -ForegroundColor Green
+        $Copied++
+    } else {
+        Write-Host "  -> $File already exists; merge A Team instructions manually if needed" -ForegroundColor DarkGray
+        $Skipped++
     }
 }
 
@@ -92,7 +123,7 @@ Remove-Item $Tmp -Recurse -Force
 
 # -- Smoke check: verify hook scripts are present --
 Write-Host ""
-$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py")
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md")
 $MissingCount = 0
 foreach ($script in $HookScripts) {
     $scriptPath = Join-Path $Destination $script
@@ -106,6 +137,7 @@ if ($MissingCount -gt 0) {
     Write-Host "  Error: $MissingCount enforcement script(s) missing." -ForegroundColor Red
     Write-Host "  Security gate, watcher, metrics, and status line will be inactive."
     Write-Host "  This is a bug — please report at github.com/RBraga01/a-team/issues"
+    exit 1
 } else {
     Write-Host "  v All enforcement scripts present" -ForegroundColor Green
 }
@@ -117,6 +149,6 @@ Write-Host "$Copied item(s) installed, $Skipped skipped."
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor White
 Write-Host "  1. Edit INIT.md  -- declare your languages, stack, and compliance scope"
-Write-Host "  2. Open your project in Claude Code, Codex, Cursor, or OpenCode"
+Write-Host "  2. Configure Claude Code, Codex, Cursor, OpenCode, or GitHub Copilot CLI"
 Write-Host "  3. Run /orchestrate init"
 Write-Host ""

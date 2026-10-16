@@ -7,7 +7,7 @@ Works on Claude Code, Codex CLI, Cursor, OpenCode, and GitHub Copilot CLI.
 
 ## Quick Start
 
-1. Copy the entire `.claude/` folder and `skills/` folder into your project root.
+1. Install the shared directories, scripts and platform integration files using `install.sh` / `install.ps1`, or follow the complete manual options in `README.md`. Do not overwrite an existing `AGENTS.md`, `CLAUDE.md` or `.claude/settings.json`.
 2. Write a project `INIT.md` (use `INIT_TEMPLATE.md` as a guide).
 3. Run `/orchestrate init` — the Lead Orchestrator reads `INIT.md`, evaluates which agents
    and skills are irrelevant to the scope, and prunes them automatically.
@@ -87,6 +87,8 @@ A Team/
 | **data-migration** | Safe schema changes with rollback strategy | Hard gate |
 | **performance-audit** | Baseline → profile → optimise → validate with numbers | Workflow |
 | **architecture-audit** | Map system as-built → parallel specialist reviews → severity verdicts | Workflow |
+| **five-whys** | Root-cause investigation through 5-Why analysis | Workflow |
+| **smart-init** | ROADMAP-aware session initialization | Workflow |
 
 ## Orchestrator Init & Pruning Protocol
 

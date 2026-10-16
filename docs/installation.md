@@ -15,7 +15,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 ### Depends on your install method
 
-- **Option A (one-liner):** `curl` (Mac/Linux/WSL) or PowerShell (Windows). Nothing else.
+- **Option A (one-liner):** `git` and `curl` (Mac/Linux/WSL); `git` and PowerShell (Windows).
 - **Option B:** the [GitHub CLI](https://cli.github.com/) (`gh`).
 - **Option C:** `git` (version recent enough to support `--filter` and `--sparse`, i.e. Git 2.27+).
 - **Option D:** nothing — just a browser and an unzip tool.
@@ -33,7 +33,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 ## Install methods
 
-All methods install the same core files into your project directory: `.claude/`, `skills/`, `hooks/`, `templates/`, and `scripts/`. **None of them install the platform plugin directories** (`.codex-plugin/`, `.cursor-plugin/`, `.opencode/`, `.copilot-plugin/`) — see [Platform plugin directories](#platform-plugin-directories) below if you're on Codex CLI, Cursor, OpenCode, or Copilot. Pick one method.
+All methods copy the same directory distribution and, if missing, add the root `AGENTS.md`, `CLAUDE.md`, and `INIT.md`. Existing project instructions are not overwritten.  `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/` and `assets/`. **File presence is not plugin activation.** Follow [platform activation](#platform-plugin-activation) for non-native integrations.
 
 ### Option A — One-liner (recommended)
 
@@ -57,12 +57,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
-cp -r a-team/.claude      your-project/
-cp -r a-team/skills       your-project/
-cp -r a-team/hooks        your-project/
-cp -r a-team/templates    your-project/
-cp -r a-team/scripts      your-project/
-cp    a-team/INIT_TEMPLATE.md your-project/INIT.md
+cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
+cp -n a-team/AGENTS.md a-team/CLAUDE.md your-project/
+cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
 
@@ -72,21 +69,25 @@ rm -rf a-team
 git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates scripts
-cp -r .claude skills hooks templates scripts ../your-project/
-cp INIT_TEMPLATE.md ../your-project/INIT.md
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
+cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
+cp -n AGENTS.md CLAUDE.md ../your-project/
+cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
 
-PowerShell equivalent:
+**Windows (PowerShell equivalent):**
 
 ```powershell
 git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates scripts
-Copy-Item -Recurse .claude,skills,hooks,templates,scripts ..\your-project\
-Copy-Item INIT_TEMPLATE.md ..\your-project\INIT.md
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
+Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
+foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+  $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
+  if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
+}
 cd .. ; Remove-Item a-team -Recurse -Force
 ```
 
@@ -94,20 +95,20 @@ cd .. ; Remove-Item a-team -Recurse -Force
 
 1. Go to the [repository](https://github.com/RBraga01/a-team).
 2. **Code → Download ZIP**.
-3. Extract and copy `.claude/`, `skills/`, `hooks/`, `templates/`, and `scripts/` into your project root.
-4. Copy `INIT_TEMPLATE.md` as `INIT.md`.
+3. Extract and copy all eleven directories named under [Install methods](#install-methods) into your project root.
+4. Copy root `AGENTS.md` and `CLAUDE.md` if absent, otherwise merge your existing instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` if absent.
 
-### Platform plugin directories
+### Platform plugin activation
 
-Codex CLI, Cursor, OpenCode, and GitHub Copilot each read their hooks and manifest from a dedicated plugin directory in the project root (`.codex-plugin/`, `.cursor-plugin/`, `.opencode/`, `.copilot-plugin/`). **None of Options A–D above copy these** — the one-liner installer (`install.sh` / `install.ps1`) has the same `.claude`, `skills`, `hooks`, `templates`, `scripts` scope as the manual methods. The plugin manifests point back at the shared `.claude/agents/`, `skills/`, and `.claude/rules/` you already installed; what's missing is the platform-specific manifest itself.
+The installers include all integration manifests and OpenCode commands. **A copied manifest is not proof that its host CLI registered or loaded the plugin.**
 
-To enable a platform's plugin:
+- **Claude Code:** the project `.claude/` settings, hooks and commands are available after trusting the workspace.
+- **OpenCode:** `.opencode/commands/` is the project-level custom-command directory.
+- **GitHub Copilot CLI:** separately run `copilot plugin install RBraga01/a-team:.copilot-plugin`; inspect `copilot plugin list`. End-to-end loading of referenced components still needs a real Copilot CLI test.
+- **Cursor:** install via **Customize → Plugins** or test through Cursor's local plugin directory; copying `.cursor-plugin/` into a project alone does not register a plugin.
+- **Codex:** the `.codex-plugin/` manifest now declares package-root skills and a session-start hook, but no native agent roster. Copying it alone is not a verified Codex plugin installation. Check actual registration and hook loading.
 
-- **GitHub Copilot** has a native install command:
-  ```bash
-  copilot plugin install RBraga01/a-team:.copilot-plugin
-  ```
-- **Codex CLI, Cursor, and OpenCode** don't currently have an equivalent one-line install — copy `.codex-plugin/`, `.cursor-plugin/`, or `.opencode/` into your project root manually from a clone of the repo.
+Hook/agent/command parity across platforms must be validated separately. See [Platform support](#platform-support).
 
 ---
 
@@ -116,15 +117,12 @@ To enable a platform's plugin:
 If the project is already in progress, copy with `cp -rn` (no-clobber) so your existing files survive:
 
 ```bash
-cp -rn a-team/.claude    ./
-cp -rn a-team/skills     ./
-cp -rn a-team/hooks      ./
-cp -rn a-team/templates  ./
-cp -rn a-team/scripts    ./
-cp     a-team/INIT_TEMPLATE.md ./INIT.md
+cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
+cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
-> **Protect your settings.** If you already have `.claude/settings.json`, the install must not overwrite it. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
+> **Protect your settings.** Both script installers merge missing files into existing folders without replacing existing files. If you already have `AGENTS.md`, `CLAUDE.md`, or `.claude/settings.json`, they are kept intact; merge relevant A Team instructions, permissions and hooks manually. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
 
 When filling out `INIT.md` for an existing project, describe **what already exists** — languages, frameworks, current test coverage, known technical debt. The orchestrator uses this to prune irrelevant agents, and accuracy matters more here than on a greenfield project.
 
@@ -170,21 +168,16 @@ Running `morning` first lets the orchestrator read repo state before anything is
 
 ## Platform support
 
-A Team can run on one CLI or several at once. All platforms share the same agent definitions and the `.agent-sync/` state directory, but their enforcement capabilities differ.
+The table describes **what A Team currently declares or distributes**, not what has been proven in a real session. Automatic activation and enforcement can differ considerably by host.
 
-| Platform        | Agents | Skills | Rules | Hooks                 | Slash commands |
-| --------------- | ------ | ------ | ----- | --------------------- | -------------- |
-| **Claude Code** | ✅     | ✅     | ✅    | full (SessionStart + PostToolUse) | ✅ |
-| **Codex CLI**   | ✅     | ✅     | ✅    | session-start only    | —              |
-| **Cursor**      | ✅     | ✅     | ✅    | session-start only    | —              |
-| **OpenCode**    | —      | ✅     | —     | —                     | command aliases |
-| **GitHub Copilot** | via plugin | ✅ | — | full (SessionStart + PreToolUse + PostToolUse + SessionEnd) | — |
+| Platform | Specialist agents | Skills | Rules | Hook configuration | Commands |
+|---|---|---|---|---|---|
+| Claude Code | Project `.claude/agents/` | `skills/` | `.claude/rules/` | Project `settings.json` | Project slash commands |
+| Codex CLI | Not declared in package | `./skills/` in plugin | Project `AGENTS.md` | `SessionStart` declared | Not packaged |
+| Cursor | `.claude/agents/` declared | `skills/` declared | `.claude/rules/` declared | `sessionStart` declared | Not packaged |
+| OpenCode | No A Team-native agent files | Host-discovered/manual | Not declared | Not declared | `.opencode/commands/` |
+| GitHub Copilot CLI | Sibling directory path* | Sibling directory path* | Not declared | Four events declared* | Not packaged |
 
-Key consequences:
+*GitHub Copilot CLI's legacy manifest lives inside `.copilot-plugin/`. Its `../` paths to sibling directories may not survive installation of that subdirectory as an isolated plugin; **real end-to-end validation is outstanding**.*
 
-- **Claude Code is the reference platform.** It has the full hook system, native sub-agent dispatch, and all slash commands.
-- **Hooks do not propagate across platforms.** Each plugin manifest configures its own hooks independently: `.codex-plugin/` and `.cursor-plugin/` wire up a session-start hook only, while `.copilot-plugin/` configures the full set (SessionStart, PreToolUse, PostToolUse, SessionEnd). On Codex and Cursor, mid-session enforcement therefore relies on the agents' own rules rather than hooks.
-- **A platform's hooks only take effect once its plugin directory is actually installed** — see [Platform plugin directories](#platform-plugin-directories); none of the install methods do this automatically.
-- **On Cursor and OpenCode, slash commands aren't available** — invoke the corresponding skill directly instead.
-
-> The exact agent and skill counts and the full platform matrix evolve between releases. Treat [`AGENTS.md`](../AGENTS.md), [`skills/`](../skills/), and the plugin manifests as the source of truth; this table is a guide to the *shape* of each platform's support.
+Claude Code remains the reference platform. The current Codex and Cursor manifests have structurally valid package-root paths; they still require actual CLI registration. OpenCode supplies project command aliases rather than A Team-native agent/hook definitions. A copied file is not equivalent to an activated plugin. For details see [Platform plugin activation](#platform-plugin-activation).

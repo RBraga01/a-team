@@ -16,3 +16,24 @@ jobs:
           python-version: "3.11"
       - name: Run consistency checker
         run: python scripts/check_consistency.py
+
+      - name: Negative control — changing one catalog row must fail
+        shell: bash
+        run: |
+          cp docs/catalog.md "$RUNNER_TEMP/catalog-original.md"
+          trap 'cp "$RUNNER_TEMP/catalog-original.md" docs/catalog.md' EXIT
+          python - <<'PY'
+          from pathlib import Path
+          path = Path("docs/catalog.md")
+          original = path.read_text(encoding="utf-8")
+          before = "| `orchestrator` |"
+          after = "| `orchestrator-negative-probe` |"
+          assert original.count(before) == 1, "expected exactly one orchestrator catalog row"
+          path.write_text(original.replace(before, after, 1), encoding="utf-8")
+          PY
+          if python scripts/check_consistency.py > "$RUNNER_TEMP/negative-check.log" 2>&1; then
+            cat "$RUNNER_TEMP/negative-check.log"
+            echo "ERROR: catalog membership check accepted a deliberately incorrect agent"
+            exit 1
+          fi
+          grep -F "ROSTER docs/catalog.md agents:" "$RUNNER_TEMP/negative-check.log"

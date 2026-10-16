@@ -74,7 +74,7 @@ SKILL_COUNT_CHECKS = [
 ]
 
 AGENT_COUNT_CHECKS = [
-    ("README.md", r"team of (\d+) specialists", "README intro paragraph"),
+    ("README.md", r"packages (\d+) specialist agents", "README intro paragraph"),
     ("README.md", r"\*\*(\d+) specialist agents\*\*", "README bullet list"),
     ("README.md", r"← (\d+) agent profiles", "README directory tree"),
     ("README.md", r"## Agent Roster \((\d+)\)", "README section heading"),
@@ -225,6 +225,36 @@ def check_packs() -> tuple[list[str], int]:
     return errors, checks
 
 
+def check_catalogs() -> tuple[list[str], int]:
+    """Verify exact membership; a valid count must not hide missing names."""
+    agents = {p.stem for p in (REPO_ROOT / ".claude/agents").glob("*.md")}
+    skills = {p.parent.name for p in (REPO_ROOT / "skills").glob("*/SKILL.md")}
+    specs = [
+        ("docs/catalog.md", "## Agent Catalog (", "## Skill Catalog (", None, "`"),
+        ("CLAUDE.md", "## Agent Roster (", "## Skill Library (", "## Orchestrator Init", "**"),
+        ("AGENTS.md", "## Core Engineering Agents", "## Skill Library", "## Command Reference", "**"),
+    ]
+    errors, checks = [], 0
+    for filename, first, second, third, style in specs:
+        content = (REPO_ROOT / filename).read_text(encoding="utf-8")
+        a, b = content.find(first), content.find(second)
+        c = len(content) if third is None else content.find(third, b)
+        if a < 0 or b <= a or c <= b:
+            errors.append(f"MISSING {filename}: catalog section headings")
+            continue
+        for label, section, expected in (("agents", content[a:b], agents), ("skills", content[b:c], skills)):
+            names = []
+            for line in section.splitlines():
+                if line.startswith("| " + style):
+                    names.append(line.split(style)[1])
+            found = set(names)
+            checks += 1
+            if len(names) != len(found):
+                errors.append(f"DUPLICATE {filename}: {label} table has duplicate names")
+            if found != expected:
+                errors.append(f"ROSTER {filename} {label}: missing={sorted(expected - found)} extra={sorted(found - expected)}")
+    return errors, checks
+
 def main() -> int:
     actual_skills = count_skills()
     actual_agents = count_agents()
@@ -242,8 +272,9 @@ def main() -> int:
     version_errors = run_checks(VERSION_CHECKS, actual_version)
     platform_errors = run_checks(PLATFORM_COUNT_CHECKS, "5")
     pack_errors, pack_checks = check_packs()
+    catalog_errors, catalog_checks = check_catalogs()
 
-    all_errors = skill_errors + agent_errors + version_errors + platform_errors + pack_errors
+    all_errors = skill_errors + agent_errors + version_errors + platform_errors + pack_errors + catalog_errors
 
     if all_errors:
         print(f"Found {len(all_errors)} consistency error(s):\n")
@@ -259,6 +290,7 @@ def main() -> int:
         + len(VERSION_CHECKS)
         + len(PLATFORM_COUNT_CHECKS)
         + pack_checks
+        + catalog_checks
     )
     print(f"All {total} checks passed")
     return 0
