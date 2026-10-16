@@ -58,6 +58,24 @@ jobs:
         working-directory: tests
         run: node --test lib/plugin-manifests.test.js lib/installers.test.js lib/opencode-commands.test.js
 
+  # ── OpenCode native command discovery (no model or API key) ───────────────
+  opencode-discovery:
+    name: OpenCode CLI command discovery (no API)
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install official OpenCode CLI (no API key)
+        run: npm install --global @opencode/cli
+      - name: Check native custom-command loading
+        run: |
+          opencode --version
+          opencode debug config > "$RUNNER_TEMP/opencode-config.json"
+          node tests/verify-opencode-host.mjs "$RUNNER_TEMP/opencode-config.json"
+
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:
     name: Installer smoke (Windows)
