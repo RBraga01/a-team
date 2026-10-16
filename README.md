@@ -2,7 +2,7 @@
   <img src="assets/ATeam_full.png" alt="A Team logo" width="200">
 </p>
 
- # A Team — A Complete Engineering Team in One Folder v1.4.0
+ # A Team — A Complete Engineering Team in One Folder v1.4.1
 
 > **The pain:** AI coding sessions can lose context, skip reviews, and claim progress without verification.
 

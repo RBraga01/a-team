@@ -1,0 +1,46 @@
+name: Publish versioned release from marked main commit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CHANGELOG.md'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    # Intentional one-time gate; only the reviewed v1.4.1 merge can publish.
+    if: contains(github.event.head_commit.message, '[publish-v1.4.1]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Validate release manifest and inventory
+        run: |
+          python scripts/check_consistency.py
+          cd tests && npm test
+      - name: Create tag and GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          VERSION=v1.4.1
+          git fetch --tags --quiet
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Refusing to re-tag existing $VERSION"
+            exit 1
+          fi
+          python scripts/extract_changelog.py "$VERSION" > "$RUNNER_TEMP/release-notes.md"
+          git tag -a "$VERSION" -m "A Team $VERSION"
+          git push origin "refs/tags/$VERSION"
+          gh release create "$VERSION" --title "A Team $VERSION" --notes-file "$RUNNER_TEMP/release-notes.md" --verify-tag
