@@ -56,6 +56,7 @@ def load_packs() -> list[dict]:
 # (relative_path, regex_with_one_capture_group, human_label)
 SKILL_COUNT_CHECKS = [
     ("README.md", r"\*\*(\d+) workflow skills\*\* that gate", "README bullet list"),
+    ("plugin.json", r"(\d+) skills, orchestrated workflows", "portable plugin description"),
     ("README.md", r"← (\d+) workflow skill modules", "README directory tree"),
     ("README.md", r"## Skill Library \((\d+)\)", "README section heading"),
     ("CLAUDE.md", r"← (\d+) workflow skill modules", "CLAUDE.md directory tree"),
@@ -75,6 +76,7 @@ SKILL_COUNT_CHECKS = [
 
 AGENT_COUNT_CHECKS = [
     ("README.md", r"packages (\d+) specialist agents", "README intro paragraph"),
+    ("plugin.json", r"(\d+) specialist agents", "portable plugin description"),
     ("README.md", r"\*\*(\d+) specialist agents\*\*", "README bullet list"),
     ("README.md", r"← (\d+) agent profiles", "README directory tree"),
     ("README.md", r"## Agent Roster \((\d+)\)", "README section heading"),
@@ -101,6 +103,7 @@ AGENT_COUNT_CHECKS = [
 
 VERSION_CHECKS = [
     ("README.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "README title heading"),
+    ("plugin.json", r'"version":\s*"(\d+\.\d+\.\d+)"', "portable plugin version"),
     ("AGENTS.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "AGENTS.md title heading"),
     ("CLAUDE.md", r"# A Team[^\n]*v(\d+\.\d+\.\d+)", "CLAUDE.md title heading"),
     ("docs/index.html", r'nav-logo-badge">v(\d+\.\d+\.\d+)<', "index.html nav badge"),

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python scripts/status.py 2>/dev/null || python3 scripts/status.py 2>/dev/null || py scripts/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'",
+            "command": "python ${PLUGIN_ROOT}/scripts/status.py 2>/dev/null || python3 ${PLUGIN_ROOT}/scripts/status.py 2>/dev/null || py ${PLUGIN_ROOT}/scripts/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'",
             "async": false
           },
           {

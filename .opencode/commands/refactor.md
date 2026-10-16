@@ -1,12 +1,7 @@
-# /refactor
+---
+description: Find and safely remove dead code with tests.
+---
 
-Dead code cleanup and consolidation. Invokes the `refactor-cleaner` agent.
+Refactor scope: $ARGUMENTS
 
-Runs detection tools (knip, depcheck, ts-prune), categorizes findings by risk, and removes safely with tests passing after each batch.
-
-**Usage:**
-```
-/refactor
-```
-
-Never run during active feature development or before production deploys.
+Read `.claude/agents/refactor-cleaner.md` if present. Identify unused code with relevant tools, propose focused cleanup, preserve public contracts and existing behavior, and rerun tests after each change. No unrelated refactors.

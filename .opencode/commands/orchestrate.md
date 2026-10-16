@@ -1,22 +1,15 @@
-<!-- Status line output on session start -->
-Run: `python scripts/status.py 2>/dev/null || python3 scripts/status.py 2>/dev/null || py scripts/status.py 2>/dev/null || echo '⚡ A Team · instala Python para ver o estado'`
-
+---
+description: Initialize a project or run the A Team daily orchestration cycle.
 ---
 
-# /orchestrate
+A Team orchestrator request: $ARGUMENTS
 
-Invoke the Lead Orchestrator.
+Read `AGENTS.md` and `.claude/agents/orchestrator.md` as **instructions**, not as a registered native OpenCode agent.
+The first argument chooses one of `init`, `morning`, `tick`, `report`. If missing or unknown, show usage and stop.
 
-**Usage:**
-```
-/orchestrate init          Initialize team from INIT.md; prune irrelevant agents and skills
-/orchestrate morning       Plan today's tasks from TASKS.md backlog
-/orchestrate tick          Process completed task results and dispatch dependents
-/orchestrate report        Compile end-of-day telemetry
-```
+- `init`: require `INIT.md`; select only relevant agent/skill definitions; write `.agent-sync/TEAM.md` and `.agent-sync/ROUTING.md` following the orchestrator contract. Do not delete unrelated project files.
+- `morning`: require `TASKS.md`; review task dependencies, prepare up to three tasks, and present a proposed plan. **STOP and request explicit human approval before dispatching or editing code.**
+- `tick`: read task results and update statuses only from recorded evidence.
+- `report`: summarize daily execution and unresolved veto items with evidence.
 
-**Prerequisites:**
-- `INIT.md` must exist (copy from `INIT_TEMPLATE.md` and fill in)
-- `TASKS.md` must exist for morning/tick/report modes
-
-The orchestrator never writes product code. It only dispatches sub-agents.
+Do not claim native multi-agent dispatch or hook enforcement in OpenCode. Use project files for durable state. Maintain the documented safety and review gates.

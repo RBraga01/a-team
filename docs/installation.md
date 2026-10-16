@@ -33,7 +33,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 ## Install methods
 
-All methods copy the same directory distribution and, if missing, add the root `AGENTS.md`, `CLAUDE.md`, and `INIT.md`. Existing project instructions are not overwritten.  `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/` and `assets/`. **File presence is not plugin activation.** Follow [platform activation](#platform-plugin-activation) for non-native integrations.
+All methods copy the same directory distribution and, if missing, add the root `AGENTS.md`, `CLAUDE.md`, `plugin.json`, and `INIT.md`. Existing project instructions are not overwritten.  `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/` and `assets/`. **File presence is not plugin activation.** Follow [platform activation](#platform-plugin-activation) for non-native integrations.
 
 ### Option A — One-liner (recommended)
 
@@ -58,7 +58,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
 cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
-cp -n a-team/AGENTS.md a-team/CLAUDE.md your-project/
+cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json your-project/
 cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
@@ -71,7 +71,7 @@ git clone --filter=blob:none --sparse --depth 1 \
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
-cp -n AGENTS.md CLAUDE.md ../your-project/
+cp -n AGENTS.md CLAUDE.md plugin.json ../your-project/
 cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
@@ -84,7 +84,7 @@ git clone --filter=blob:none --sparse --depth 1 `
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
-foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+foreach ($f in 'AGENTS.md','CLAUDE.md','plugin.json','INIT_TEMPLATE.md') {
   $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
   if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
 }
@@ -96,7 +96,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 1. Go to the [repository](https://github.com/RBraga01/a-team).
 2. **Code → Download ZIP**.
 3. Extract and copy all eleven directories named under [Install methods](#install-methods) into your project root.
-4. Copy root `AGENTS.md` and `CLAUDE.md` if absent, otherwise merge your existing instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` if absent.
+4. Copy root `AGENTS.md`, `CLAUDE.md` and `plugin.json` if absent, otherwise merge your existing instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` if absent.
 
 ### Platform plugin activation
 
@@ -106,7 +106,7 @@ The installers include all integration manifests and OpenCode commands. **A copi
 - **OpenCode:** `.opencode/commands/` is the project-level custom-command directory.
 - **GitHub Copilot CLI:** separately run `copilot plugin install RBraga01/a-team:.copilot-plugin`; inspect `copilot plugin list`. End-to-end loading of referenced components still needs a real Copilot CLI test.
 - **Cursor:** install via **Customize → Plugins** or test through Cursor's local plugin directory; copying `.cursor-plugin/` into a project alone does not register a plugin.
-- **Codex:** the `.codex-plugin/` manifest now declares package-root skills and a session-start hook, but no native agent roster. Copying it alone is not a verified Codex plugin installation. Check actual registration and hook loading.
+- **Codex:** portable `plugin.json` at the package root is the primary identity, with `.codex-plugin/plugin.json` as a compatibility overlay. Skills load from `skills/`; hooks use `hooks/hooks.json` but must be trusted in Codex. Codex plugin installation and real hook execution still need host verification.
 
 Hook/agent/command parity across platforms must be validated separately. See [Platform support](#platform-support).
 
@@ -118,7 +118,7 @@ If the project is already in progress, copy with `cp -rn` (no-clobber) so your e
 
 ```bash
 cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
-cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
@@ -173,7 +173,7 @@ The table describes **what A Team currently declares or distributes**, not what 
 | Platform | Specialist agents | Skills | Rules | Hook configuration | Commands |
 |---|---|---|---|---|---|
 | Claude Code | Project `.claude/agents/` | `skills/` | `.claude/rules/` | Project `settings.json` | Project slash commands |
-| Codex CLI | Not declared in package | `./skills/` in plugin | Project `AGENTS.md` | `SessionStart` declared | Not packaged |
+| Codex CLI | No native agent profiles declared | root `skills/` (portable manifest) | Project `AGENTS.md` | `hooks/hooks.json` declared; user trust needed | Not packaged |
 | Cursor | `.claude/agents/` declared | `skills/` declared | `.claude/rules/` declared | `sessionStart` declared | Not packaged |
 | OpenCode | No A Team-native agent files | Host-discovered/manual | Not declared | Not declared | `.opencode/commands/` |
 | GitHub Copilot CLI | Sibling directory path* | Sibling directory path* | Not declared | Four events declared* | Not packaged |

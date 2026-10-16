@@ -22,6 +22,7 @@ const __dir = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dir, '..', '..')
 
 const PLATFORM_MANIFESTS = [
+  'plugin.json',
   '.claude-plugin/plugin.json',
   '.codex-plugin/plugin.json',
   '.cursor-plugin/plugin.json',
@@ -177,7 +178,24 @@ test('Codex and Cursor component paths stay inside the distribution root', () =>
       assert.ok(existsSync(join(ROOT, json[field])), `${manifestPath}: ${field} target not found`)
     }
   }
+  const portable = readJson(join(ROOT, 'plugin.json'))
+  assert.equal(portable.$schema, 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json')
+  assert.equal(portable.name, 'a-team')
   const codex = readJson(join(ROOT, '.codex-plugin/plugin.json'))
   assert.equal(codex.interface.composerIcon, './assets/ATeam_full.png')
   assert.ok(existsSync(join(ROOT, codex.interface.composerIcon)))
+})
+
+test('portable manifest and Codex overlay use a single root hooks file', () => {
+  const portable = readJson(join(ROOT, 'plugin.json'))
+  const overlay = readJson(join(ROOT, '.codex-plugin', 'plugin.json'))
+  assert.equal(portable.version, overlay.version)
+  assert.equal(overlay.skills, './skills/')
+  assert.equal(overlay.hooks, './hooks/hooks.json')
+  assert.ok(existsSync(join(ROOT, 'hooks', 'hooks.json')))
+  const hooks = readJson(join(ROOT, 'hooks', 'hooks.json'))
+  assert.ok(Array.isArray(hooks.hooks.SessionStart))
+  assert.match(JSON.stringify(hooks), /PLUGIN_ROOT/)
+  assert.ok(!existsSync(join(ROOT, '.codex-plugin', 'hooks', 'hooks.json')),
+    'old duplicate Codex hooks file should not be shipped')
 })

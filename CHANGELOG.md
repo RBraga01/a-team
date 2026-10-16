@@ -9,6 +9,13 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+- Portable root `plugin.json` for Codex and Agent Plugins; Codex lifecycle hooks
+  use the single root `hooks/hooks.json` instead of a duplicate under `.codex-plugin/`.
+- OpenCode project commands now forward `$ARGUMENTS`, include frontmatter for discovery,
+  and preserve the explicit human approval stop before implementation/dispatch.
+- Offline tests validate the portable manifest, Codex hook location and 10 OpenCode commands.
+
+### Added
 
 **Repository consistency and distribution audit (October 2026):**
 - Added an automated negative-control CI test that deliberately corrupts a catalog row

@@ -23,7 +23,7 @@
     "codex"
   ],
   "skills": "./skills/",
-  "hooks": "./.codex-plugin/hooks/hooks.json",
+  "hooks": "./hooks/hooks.json",
   "interface": {
     "composerIcon": "./assets/ATeam_full.png",
     "displayName": "A Team",
