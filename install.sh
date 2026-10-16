@@ -51,6 +51,18 @@ for dir in "${DIRS[@]}"; do
   fi
 done
 
+# -- Install project instruction files without replacing existing policies --
+for file in AGENTS.md CLAUDE.md; do
+  if [ ! -e "$DEST/$file" ]; then
+    cp "$file" "$DEST/$file"
+    echo -e "  ${GREEN}✓${RESET} $file (project instructions)"
+    COPIED=$((COPIED + 1))
+  else
+    echo -e "  ${DIM}↩ $file already exists — skipped; merge A Team instructions manually if needed${RESET}"
+    SKIPPED=$((SKIPPED + 1))
+  fi
+done
+
 # -- Copy INIT_TEMPLATE as INIT.md if not already present --
 if [ ! -f "$DEST/INIT.md" ]; then
   cp INIT_TEMPLATE.md "$DEST/INIT.md"
@@ -63,7 +75,7 @@ fi
 
 # -- Smoke check: verify hook scripts are present --
 echo ""
-HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png")
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md")
 MISSING_COUNT=0
 for script in "${HOOK_SCRIPTS[@]}"; do
   if [ ! -f "$DEST/$script" ]; then

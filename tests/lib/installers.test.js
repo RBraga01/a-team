@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, rmSync } from 'node:fs'
+import { existsSync, mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -8,6 +8,8 @@ import test from 'node:test'
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const expectedPaths = [
+  'AGENTS.md',
+  'CLAUDE.md',
   '.claude',
   '.claude-plugin/plugin.json',
   '.codex-plugin/plugin.json',
@@ -86,6 +88,46 @@ test('PowerShell installer installs the complete distribution', { skip: !powersh
       },
     )
     assertInstallation(result, destination)
+  } finally {
+    rmSync(destination, { recursive: true, force: true })
+  }
+})
+
+test('Bash installer preserves existing AGENTS.md and CLAUDE.md', { skip: !bash }, () => {
+  const destination = mkdtempSync(join(tmpdir(), 'a-team-bash-guard-'))
+  try {
+    writeFileSync(join(destination, 'AGENTS.md'), 'CUSTOM AGENT POLICY\n')
+    writeFileSync(join(destination, 'CLAUDE.md'), 'CUSTOM CLAUDE POLICY\n')
+    const result = spawnSync(bash, [join(repoRoot, 'install.sh'), destination], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      env: { ...process.env, A_TEAM_REPO_URL: pathToFileURL(repoRoot).href },
+    })
+    assertInstallation(result, destination)
+    assert.equal(readFileSync(join(destination, 'AGENTS.md'), 'utf8'), 'CUSTOM AGENT POLICY\n')
+    assert.equal(readFileSync(join(destination, 'CLAUDE.md'), 'utf8'), 'CUSTOM CLAUDE POLICY\n')
+  } finally {
+    rmSync(destination, { recursive: true, force: true })
+  }
+})
+
+test('PowerShell installer preserves existing project instructions', { skip: !powershell }, () => {
+  const destination = mkdtempSync(join(tmpdir(), 'a-team-pwsh-guard-'))
+  try {
+    writeFileSync(join(destination, 'AGENTS.md'), 'CUSTOM AGENT POLICY\n')
+    writeFileSync(join(destination, 'CLAUDE.md'), 'CUSTOM CLAUDE POLICY\n')
+    const result = spawnSync(
+      powershell,
+      ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', join(repoRoot, 'install.ps1'), '-Destination', destination],
+      {
+        cwd: repoRoot,
+        encoding: 'utf8',
+        env: { ...process.env, A_TEAM_REPO_URL: pathToFileURL(repoRoot).href },
+      },
+    )
+    assertInstallation(result, destination)
+    assert.equal(readFileSync(join(destination, 'AGENTS.md'), 'utf8'), 'CUSTOM AGENT POLICY\n')
+    assert.equal(readFileSync(join(destination, 'CLAUDE.md'), 'utf8'), 'CUSTOM CLAUDE POLICY\n')
   } finally {
     rmSync(destination, { recursive: true, force: true })
   }

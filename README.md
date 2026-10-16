@@ -73,7 +73,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
 cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
-cp a-team/INIT_TEMPLATE.md your-project/INIT.md
+cp -n a-team/AGENTS.md a-team/CLAUDE.md your-project/
+cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
 
@@ -87,7 +88,8 @@ git clone --filter=blob:none --sparse --depth 1 \
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
-cp INIT_TEMPLATE.md ../your-project/INIT.md
+cp -n AGENTS.md CLAUDE.md ../your-project/
+cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
 
@@ -99,7 +101,10 @@ git clone --filter=blob:none --sparse --depth 1 `
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
-Copy-Item INIT_TEMPLATE.md ..\your-project\INIT.md
+foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+  $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
+  if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
+}
 cd .. ; Remove-Item a-team -Recurse -Force
 ```
 
@@ -110,7 +115,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 1. Go to [github.com/RBraga01/a-team](https://github.com/RBraga01/a-team)
 2. Click **Code → Download ZIP**
 3. Extract and copy `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/`, `assets/` into your project root
-4. Copy `INIT_TEMPLATE.md` as `INIT.md`
+4. Copy `AGENTS.md` and `CLAUDE.md` only when they do not already exist; otherwise review and merge instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` when absent.
 
 ---
 
@@ -120,6 +125,7 @@ If the project is already in progress, use `cp -rn` (no-clobber) when copying th
 
 ```bash
 cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
@@ -171,6 +177,8 @@ A Team/
 ├── CLAUDE.md                  ← Project overview loaded by Claude Code
 ├── AGENTS.md                  ← Agent roster & command reference
 ├── INIT_TEMPLATE.md           ← Template for project-specific init doc
+├── AGENTS.md                  ← Project-level agent instructions (non-overwriting copy)
+├── CLAUDE.md                  ← Project-level Claude instructions (non-overwriting copy)
 │
 ├── .claude/
 │   ├── settings.json          ← Permissions, hooks, worktree config

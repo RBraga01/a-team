@@ -74,6 +74,19 @@ foreach ($dir in $Dirs) {
     }
 }
 
+# -- Project instruction files: preserve existing policies --
+foreach ($File in @("AGENTS.md","CLAUDE.md")) {
+    $InstructionTarget = Join-Path $Destination $File
+    if (-not (Test-Path -LiteralPath $InstructionTarget)) {
+        Copy-Item -LiteralPath (Join-Path $Tmp $File) -Destination $InstructionTarget
+        Write-Host "  v $File (project instructions)" -ForegroundColor Green
+        $Copied++
+    } else {
+        Write-Host "  -> $File already exists; merge A Team instructions manually if needed" -ForegroundColor DarkGray
+        $Skipped++
+    }
+}
+
 # INIT.md
 $initSrc  = Join-Path $Tmp "INIT_TEMPLATE.md"
 $initDest = Join-Path $Destination "INIT.md"
@@ -92,7 +105,7 @@ Remove-Item $Tmp -Recurse -Force
 
 # -- Smoke check: verify hook scripts are present --
 Write-Host ""
-$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png")
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md")
 $MissingCount = 0
 foreach ($script in $HookScripts) {
     $scriptPath = Join-Path $Destination $script

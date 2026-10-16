@@ -11,11 +11,14 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 **Repository consistency and distribution audit (October 2026):**
+- Added an automated negative-control CI test that deliberately corrupts a catalog row
+  and requires the inventory checker to reject it.
 - Added a complete agent and skill catalog under `docs/catalog.md` and moved detailed
   operational documentation into `docs/how-it-works.md`.
 - Extended the CI consistency checker from numeric matching to exact catalog membership,
   and added Bash/PowerShell installer tests (including a Windows runner).
-- Included CLI integration directories and artwork in all installation methods, while
+- Included CLI integration directories and artwork in all installation methods, plus
+  non-overwriting root AGENTS.md and CLAUDE.md project instructions, while
   keeping plugin activation as a separate, host-specific step.
 
 **Consistency shield — counts can no longer drift silently:**
@@ -42,6 +45,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   remain subject to end-to-end verification.
 - Removed inaccurate multi-CLI enforcement-parity claims from installation guidance.
 - Fixed the PowerShell installer on environments without an explicit `TEMP` variable.
+- Updated GitHub Pages installation examples to match actual distribution contents.
 - Condensed the root README and surfaced an illustrative orchestrator quick start.
 
 - builder-growth was advertised as "6 skills and 3 agents, v1.0.0" in

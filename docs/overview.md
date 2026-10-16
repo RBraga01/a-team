@@ -199,9 +199,12 @@ journey
 cp -r "A Team/.claude"  your-project/
 cp -r "A Team/skills"   your-project/
 cp -r "A Team/hooks"    your-project/
+cp -r "A Team/scripts"  your-project/
+# Additional CLI integration folders and install instructions: README.md
 
 # 2. Declare your project scope
-cp "A Team/INIT_TEMPLATE.md" your-project/INIT.md
+cp -n "A Team/AGENTS.md" "A Team/CLAUDE.md" your-project/
+cp -n "A Team/INIT_TEMPLATE.md" your-project/INIT.md
 # edit INIT.md — languages, stack, compliance scope, CLI(s)
 
 # 3. Initialize — orchestrator prunes irrelevant agents automatically

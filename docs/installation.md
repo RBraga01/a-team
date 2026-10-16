@@ -33,7 +33,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 ## Install methods
 
-All methods copy the same distribution: `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/` and `assets/`. **File presence is not plugin activation.** Follow [platform activation](#platform-plugin-activation) for non-native integrations.
+All methods copy the same directory distribution and, if missing, add the root `AGENTS.md`, `CLAUDE.md`, and `INIT.md`. Existing project instructions are not overwritten.  `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/` and `assets/`. **File presence is not plugin activation.** Follow [platform activation](#platform-plugin-activation) for non-native integrations.
 
 ### Option A — One-liner (recommended)
 
@@ -58,7 +58,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
 cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
-cp a-team/INIT_TEMPLATE.md your-project/INIT.md
+cp -n a-team/AGENTS.md a-team/CLAUDE.md your-project/
+cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
 ```
 
@@ -70,7 +71,8 @@ git clone --filter=blob:none --sparse --depth 1 \
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
-cp INIT_TEMPLATE.md ../your-project/INIT.md
+cp -n AGENTS.md CLAUDE.md ../your-project/
+cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
 ```
 
@@ -82,7 +84,10 @@ git clone --filter=blob:none --sparse --depth 1 `
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
 Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
-Copy-Item INIT_TEMPLATE.md ..\your-project\INIT.md
+foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+  $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
+  if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
+}
 cd .. ; Remove-Item a-team -Recurse -Force
 ```
 
@@ -91,7 +96,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 1. Go to the [repository](https://github.com/RBraga01/a-team).
 2. **Code → Download ZIP**.
 3. Extract and copy all eleven directories named under [Install methods](#install-methods) into your project root.
-4. Copy `INIT_TEMPLATE.md` as `INIT.md`.
+4. Copy root `AGENTS.md` and `CLAUDE.md` if absent, otherwise merge your existing instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` if absent.
 
 ### Platform plugin activation
 
@@ -113,10 +118,11 @@ If the project is already in progress, copy with `cp -rn` (no-clobber) so your e
 
 ```bash
 cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
-> **Protect your settings.** If you already have `.claude/settings.json`, the install must not overwrite it. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
+> **Protect your settings.** If you already have `AGENTS.md`, `CLAUDE.md`, or `.claude/settings.json`, the install must not overwrite them. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
 
 When filling out `INIT.md` for an existing project, describe **what already exists** — languages, frameworks, current test coverage, known technical debt. The orchestrator uses this to prune irrelevant agents, and accuracy matters more here than on a greenfield project.
 

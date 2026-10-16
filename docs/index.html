@@ -824,14 +824,15 @@ footer p { font-size:.8rem; color:var(--muted); }
       <div class="os-row"><span class="os-label">Windows PowerShell</span>
         <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
           <pre><code>irm https://raw.githubusercontent.com/RBraga01/a-team/main/install.ps1 | iex</code></pre></div></div>
-      <p class="install-note">Installs <code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, and <code>INIT.md</code> into the current directory. Skips files that already exist. No build step, no dependencies.</p>
+      <p class="install-note">Copies shared and platform-specific directories, plus <code>INIT.md</code>, <code>AGENTS.md</code> and <code>CLAUDE.md</code> if absent. Requires Git. Plugin activation is still platform-specific.</p>
     </div>
 
     <div class="tab-pane" id="tab-ghcli">
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code>gh repo clone RBraga01/a-team -- --depth 1
-cp -r a-team/.claude a-team/skills a-team/hooks a-team/templates ./
-cp a-team/INIT_TEMPLATE.md INIT.md
+cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
+cp -n a-team/INIT_TEMPLATE.md INIT.md
 rm -rf a-team</code></pre></div>
       <p class="install-note">Requires the <a href="https://cli.github.com" target="_blank" rel="noopener" style="color:var(--blue)">GitHub CLI</a>. Shallow clone — only the latest commit.</p>
     </div>
@@ -842,18 +843,23 @@ rm -rf a-team</code></pre></div>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates
-cp -r .claude skills hooks templates ../
-cp INIT_TEMPLATE.md ../INIT.md
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
+cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../
+cp -n AGENTS.md CLAUDE.md ../
+cp -n INIT_TEMPLATE.md ../INIT.md
 cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
       <div class="os-row"><span class="os-label">Windows PowerShell</span>
         <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude skills hooks templates
-Copy-Item -Recurse .claude,skills,hooks,templates ..\
-Copy-Item INIT_TEMPLATE.md ..\INIT.md
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
+Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\
+# Existing AGENTS.md/CLAUDE.md/INIT.md must not be replaced
+foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+  $dest = if ($f -eq 'INIT_TEMPLATE.md') { '..\\INIT.md' } else { "..\\$f" }
+  if (-not (Test-Path $dest)) { Copy-Item $f $dest }
+}
 cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
       <p class="install-note">Sparse checkout — downloads only the required directories, not the full repo history.</p>
     </div>
@@ -863,8 +869,8 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <li>Go to <a href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener" style="color:var(--blue)">github.com/RBraga01/a-team</a></li>
         <li>Click <strong>Code → Download ZIP</strong></li>
         <li>Extract the archive</li>
-        <li>Copy <code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code> into your project root</li>
-        <li>Rename <code>INIT_TEMPLATE.md</code> to <code>INIT.md</code></li>
+        <li>Copy all shared and platform directories (<code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code>, <code>scripts/</code>, <code>.claude-plugin/</code>, <code>.codex-plugin/</code>, <code>.cursor-plugin/</code>, <code>.copilot-plugin/</code>, <code>.opencode/</code>, <code>assets/</code>) into your project root</li>
+        <li>Copy <code>INIT_TEMPLATE.md</code> as <code>INIT.md</code>, and copy root <code>AGENTS.md</code>/<code>CLAUDE.md</code> only if those files are absent</li>
       </ol>
       <p class="install-note">No git or command line required. Works on any OS.</p>
     </div>
@@ -910,8 +916,8 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
       <details class="faq-item">
         <summary>Is this just another prompt library?</summary>
         <div class="faq-body">
-          <p>No. A prompt library gives you text to paste. A Team gives you <strong>enforced structure</strong>: hooks that fire at every session start, hard gates that block completion unless evidence is produced, an orchestrator that audits whether agents actually ran their checks, and a file-locking system that prevents parallel agents from colliding.</p>
-          <p>The key word is <em>enforce</em>. An agent that skips a mandatory gate gets flagged and blocked from merging — it's not optional.</p>
+          <p>No. A prompt library gives you text to paste. A Team gives you <strong>enforced structure</strong>: skills, configured hooks, an orchestrator that audits recorded verification evidence, and a file-claims process for coordinating parallel work.</p>
+          <p>The objective is <em>verifiable process</em>. Native hook support and enforcement differ by CLI; validate host behaviour before relying on automatic gates.</p>
         </div>
       </details>
 
@@ -931,7 +937,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
       <details class="faq-item">
         <summary>Do I need to be a senior developer to use this?</summary>
         <div class="faq-body">
-          <p>No. A Team is designed to bring senior-level standards to any developer. The agents enforce TDD, surgical changes, security reviews, and proper root-cause debugging automatically — you don't need to know why each rule exists to benefit from it.</p>
+          <p>No. A Team is designed to bring senior-level standards to any developer. Its instructions require TDD, focused changes, security reviews and root-cause analysis. Actual enforcement depends on CLI hooks and the project's review process.</p>
           <p>That said, senior developers will recognise the patterns (Clean Architecture, OWASP, TDD) and may want to customise the rules for their specific context.</p>
         </div>
       </details>
@@ -941,7 +947,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <div class="faq-body">
           <p>Yes. The process has four steps:</p>
           <ol>
-            <li><strong>Install with <code>-n</code> (no-clobber)</strong> — copy <code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, and <code>templates/</code> into your project root using <code>cp -rn</code>. This skips any files you already have, so your existing <code>.claude/settings.json</code> and agent configs are preserved.</li>
+            <li><strong>Install with <code>-n</code> (no-clobber)</strong> — use the full directory list in the installation section with <code>cp -rn</code> and preserve existing <code>AGENTS.md</code>, <code>CLAUDE.md</code> and <code>.claude/settings.json</code>. This skips any files you already have, so your existing <code>.claude/settings.json</code> and agent configs are preserved.</li>
             <li><strong>Fill out <code>INIT.md</code> to describe what already exists</strong> — list the languages, frameworks, and modules already in use. Describe the current test coverage and any known technical debt. The orchestrator uses this to prune irrelevant agents; if you don't describe your stack accurately, it may delete agents you need or keep ones you don't.</li>
             <li><strong>Run <code>/orchestrate init</code> and review the result</strong> — check <code>.agent-sync/TEAM.md</code> before continuing. Restore any agent that was pruned incorrectly.</li>
             <li><strong>Start with <code>/orchestrate morning</code></strong> — let the orchestrator read the repo state before you make any changes. Approve the plan, then proceed.</li>
