@@ -11,6 +11,8 @@ try { payload = JSON.parse(raw) } catch {
 }
 const list = Array.isArray(payload) ? payload : payload.data
 assert.ok(Array.isArray(list), 'Expected OpenCode command.list API response with a data array')
+console.log('OpenCode resolved location:', JSON.stringify(payload.location))
+console.log('Raw command registry records:', list.length, list.slice(0, 3).map(x => ({name:x.name, hasTemplate:typeof x.template==='string'})))
 const commands = Object.fromEntries(list.filter(x => x && x.name).map(x => [x.name, x]))
 const expected = ['build-fix', 'code-review', 'debug', 'e2e', 'feature', 'orchestrate', 'plan', 'quality-gate', 'refactor', 'security-review']
 console.log('OpenCode API discovered commands:', Object.keys(commands).sort())
