@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, rmSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, rmSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -128,6 +128,54 @@ test('PowerShell installer preserves existing project instructions', { skip: !po
     assertInstallation(result, destination)
     assert.equal(readFileSync(join(destination, 'AGENTS.md'), 'utf8'), 'CUSTOM AGENT POLICY\n')
     assert.equal(readFileSync(join(destination, 'CLAUDE.md'), 'utf8'), 'CUSTOM CLAUDE POLICY\n')
+  } finally {
+    rmSync(destination, { recursive: true, force: true })
+  }
+})
+
+test('Bash installer merges missing files in an existing .claude/ directory', { skip: !bash }, () => {
+  const destination = mkdtempSync(join(tmpdir(), 'a-team-bash-merge-'))
+  try {
+    mkdirSync(join(destination, '.claude'))
+    mkdirSync(join(destination, 'scripts'))
+    writeFileSync(join(destination, '.claude', 'settings.json'), 'CUSTOM SETTINGS\n')
+    writeFileSync(join(destination, 'scripts', 'custom_local.py'), 'KEEP ME\n')
+    const result = spawnSync(bash, [join(repoRoot, 'install.sh'), destination], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      env: { ...process.env, A_TEAM_REPO_URL: pathToFileURL(repoRoot).href },
+    })
+    assertInstallation(result, destination)
+    assert.equal(readFileSync(join(destination, '.claude', 'settings.json'), 'utf8'), 'CUSTOM SETTINGS\n')
+    assert.equal(readFileSync(join(destination, 'scripts', 'custom_local.py'), 'utf8'), 'KEEP ME\n')
+    assert.ok(existsSync(join(destination, '.claude', 'agents', 'orchestrator.md')), 'agent profiles should be merged')
+    assert.ok(existsSync(join(destination, 'scripts', 'pre_tool_use.py')), 'new scripts should be merged')
+  } finally {
+    rmSync(destination, { recursive: true, force: true })
+  }
+})
+
+test('PowerShell installer merges missing files in an existing .claude/ directory', { skip: !powershell }, () => {
+  const destination = mkdtempSync(join(tmpdir(), 'a-team-pwsh-merge-'))
+  try {
+    mkdirSync(join(destination, '.claude'))
+    mkdirSync(join(destination, 'scripts'))
+    writeFileSync(join(destination, '.claude', 'settings.json'), 'CUSTOM SETTINGS\n')
+    writeFileSync(join(destination, 'scripts', 'custom_local.py'), 'KEEP ME\n')
+    const result = spawnSync(
+      powershell,
+      ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', join(repoRoot, 'install.ps1'), '-Destination', destination],
+      {
+        cwd: repoRoot,
+        encoding: 'utf8',
+        env: { ...process.env, A_TEAM_REPO_URL: pathToFileURL(repoRoot).href },
+      },
+    )
+    assertInstallation(result, destination)
+    assert.equal(readFileSync(join(destination, '.claude', 'settings.json'), 'utf8'), 'CUSTOM SETTINGS\n')
+    assert.equal(readFileSync(join(destination, 'scripts', 'custom_local.py'), 'utf8'), 'KEEP ME\n')
+    assert.ok(existsSync(join(destination, '.claude', 'agents', 'orchestrator.md')), 'agent profiles should be merged')
+    assert.ok(existsSync(join(destination, 'scripts', 'pre_tool_use.py')), 'new scripts should be merged')
   } finally {
     rmSync(destination, { recursive: true, force: true })
   }

@@ -133,7 +133,7 @@ Then fill out `INIT.md` to describe **what already exists** — languages, frame
 
 After running `/orchestrate init`, review `.agent-sync/TEAM.md` before doing any work. Restore any agent that was incorrectly pruned. Start the first session with `/orchestrate morning` to let the orchestrator read the repo state before touching anything.
 
-> **Note:** If you already have a `.claude/settings.json`, do not let the install overwrite it — merge the A Team permissions manually to preserve your existing configuration.
+> **Note:** For existing projects, Bash and PowerShell installers now merge missing files into existing folders without overwriting conflicts. Existing `.claude/settings.json`, `CLAUDE.md` and `AGENTS.md` are preserved — merge A Team policies and permissions manually after installation.
 
 ---
 

@@ -68,8 +68,26 @@ foreach ($dir in $Dirs) {
             Write-Host "  v $dir/" -ForegroundColor Green
             $Copied++
         } else {
-            Write-Host "  -> $dir/ already exists — skipped (use -Force to overwrite)" -ForegroundColor DarkGray
-            $Skipped++
+            # Merge absent files into an existing directory without overwriting
+            # project rules, settings, agents or locally maintained scripts.
+            $MergedFiles = 0
+            $ExistingFiles = 0
+            Get-ChildItem -LiteralPath $src -Recurse -File -Force | ForEach-Object {
+                $Relative = $_.FullName.Substring($src.Length).TrimStart([System.IO.Path]::DirectorySeparatorChar)
+                $TargetFile = Join-Path $dest $Relative
+                if (Test-Path -LiteralPath $TargetFile) {
+                    $ExistingFiles++
+                } else {
+                    $Parent = Split-Path -Parent $TargetFile
+                    if (-not (Test-Path -LiteralPath $Parent)) {
+                        New-Item -ItemType Directory -Path $Parent -Force | Out-Null
+                    }
+                    Copy-Item -LiteralPath $_.FullName -Destination $TargetFile
+                    $MergedFiles++
+                }
+            }
+            Write-Host "  ~ $dir/ merged $MergedFiles missing file(s); preserved $ExistingFiles existing" -ForegroundColor DarkGray
+            if ($MergedFiles -gt 0) { $Copied++ } else { $Skipped++ }
         }
     }
 }

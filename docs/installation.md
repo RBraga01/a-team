@@ -122,7 +122,7 @@ cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
-> **Protect your settings.** If you already have `AGENTS.md`, `CLAUDE.md`, or `.claude/settings.json`, the install must not overwrite them. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
+> **Protect your settings.** Both script installers merge missing files into existing folders without replacing existing files. If you already have `AGENTS.md`, `CLAUDE.md`, or `.claude/settings.json`, they are kept intact; merge relevant A Team instructions, permissions and hooks manually. Merge the A Team permissions and hooks into your existing file by hand so your current configuration is preserved.
 
 When filling out `INIT.md` for an existing project, describe **what already exists** — languages, frameworks, current test coverage, known technical debt. The orchestrator uses this to prune irrelevant agents, and accuracy matters more here than on a greenfield project.
 

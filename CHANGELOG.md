@@ -44,7 +44,8 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   Declared package hooks where supported; actual CLI activation and enforcement
   remain subject to end-to-end verification.
 - Removed inaccurate multi-CLI enforcement-parity claims from installation guidance.
-- Fixed the PowerShell installer on environments without an explicit `TEMP` variable.
+- Fixed the PowerShell installer on environments without an explicit `TEMP` variable,
+  and made it merge missing files into existing directories without overwriting project settings.
 - Updated GitHub Pages installation examples to match actual distribution contents.
 - Condensed the root README and surfaced an illustrative orchestrator quick start.
 
