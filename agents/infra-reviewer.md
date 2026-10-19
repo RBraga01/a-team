@@ -1,9 +1,10 @@
 ---
 name: infra-reviewer
 description: Infrastructure and DevOps specialist for Terraform, Docker, Kubernetes, and CI/CD pipelines. Use for all IaC changes, Dockerfile edits, K8s manifests, and pipeline configuration. Infrastructure mistakes reach production silently — review everything.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

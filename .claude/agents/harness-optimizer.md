@@ -1,10 +1,12 @@
 ---
 name: harness-optimizer
 description: Pipeline auditor. Reads terminal command history to verify agents actually ran required skills (verification-before-completion, code-reviewer, etc.) and did not self-report compliance without executing it. Invalidates merge if rule evasion is detected.
-allowedTools:
-  - read
-  - write
-  - shell
+tools:
+  - Read
+  - Write
+  - Bash
+  - Edit
+  - Skill
 model: haiku
 ---
 

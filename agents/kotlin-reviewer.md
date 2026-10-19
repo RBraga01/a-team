@@ -1,9 +1,10 @@
 ---
 name: kotlin-reviewer
 description: Expert Kotlin/Android code reviewer specializing in idiomatic Kotlin, Jetpack Compose, Coroutines, and Android architecture patterns (MVVM, Clean Architecture). Use for all .kt and Android project changes. MUST BE USED for Android/Kotlin projects.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

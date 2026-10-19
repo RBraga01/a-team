@@ -1,6 +1,6 @@
 # Host validation — 2026-10-19
 
-Machine: Windows 11 Home 10.0.26200. CLI tests used isolated homes and a disposable project. No paid Claude, Copilot, Codex, Cursor or OpenCode model transcript was run.
+Machine: Windows 11 Home 10.0.26200. Installation tests used isolated homes and disposable projects. After user approval, Claude Code model sessions ran in `E:\Projectos\worktrees\a-team-live-validation`; no other host model session was run.
 
 ## GitHub Copilot CLI 1.0.98 (#33)
 
@@ -8,20 +8,28 @@ Machine: Windows 11 Home 10.0.26200. CLI tests used isolated homes and a disposa
 - `copilot plugin install RBraga01/a-team` succeeded in a disposable `COPILOT_HOME`. The published root package initially listed two skill parsing errors (`brainstorming`, `incident-response`), caused by unquoted colons in YAML descriptions. Both descriptions are fixed.
 - Installing the corrected local root package reports `Installed 20 skills`; `copilot skill list --json` lists 20 plugin skills with no parse failures.
 - The installed package contains 26 `com.github.copilot/agents/*.agent.md` files and `com.github.copilot/hooks/hooks.json` with four events. `scripts/sync_plugin_agents.py --check` prevents drift from the canonical profiles.
-- Native agent invocation and hook execution still require an authenticated session. Packaging and skill discovery are proven; runtime enforcement is not.
+- Authenticated Copilot CLI sessions with the local plugin returned `READY`. The first run rejected the shared Claude `PreToolUse` hook because the matcher was empty. Changing it to `*` removed that warning, but revealed that Copilot executes shared hook commands through PowerShell on Windows. Replaced the Bash-specific hook commands with portable Python entry points. In a disposable project, Copilot then read ordinary files and its repository `preToolUse` hook blocked a real Read of a test-only `.env` file with the guard's expected message. Native agent invocation remains unverified.
 
 ## Claude Code 2.1.303 (#34)
 
 - `claude plugin validate .claude --strict --json` passed after adding command frontmatter. `claude plugin validate .claude-plugin/marketplace.json --json` passed after changing remote builder pack sources to GitHub source objects.
 - A clean install with `CLAUDE_CONFIG_DIR` and `claude plugin install a-team@rbraga01` succeeded. `claude plugin details a-team` reports 20 workflow skills, 10 commands, 26 agents and a SessionStart hook.
 - `install.ps1` into a project containing custom `AGENTS.md`, `CLAUDE.md` and `.claude/settings.json` preserved their contents and installed 26 project agent files. Existing settings require a deliberate merge for A Team project hooks.
-- Interactive startup reached Claude Code's login-method screen. It could not test `/orchestrate init`, `/orchestrate morning`, `SessionStart` or `PostToolUse` without authentication and a model session.
+- With the user's approval, authenticated Claude Code Pro sessions ran against a disposable Python CLI project. `/orchestrate init` generated `.agent-sync/TEAM.md` and `ROUTING.md` and invoked the `orchestrator` subagent. Pruning was decided but denied in non-interactive mode without a permission prompt, so the listed agent and skill files remain. This is a partial init, not a successful prune.
+- The first debug trace found that Claude rejected `.claude/settings.json` because `statusLine.type` was missing and warned that all 26 agents used the unsupported `allowedTools` frontmatter key. Both are corrected: `statusLine.type` is `command`; agent `tools` values now use Claude's actual tool names. The allowlists include `Skill`, `Edit` where writing was already allowed, and `Agent` for the orchestrator. A fresh trace had no invalid-setting or unknown-frontmatter warnings; agent dispatch under the new allowlist still needs a separately approved morning plan. After this trace, shared hook commands were made portable for Copilot; Claude's final hook behavior needs retesting with those commands.
+- After trusting only this disposable project with its blanket `permissions.allow` list removed, `/orchestrate morning` wrote `.agent-sync/DAILY.md` with one proposed task, marked `PENDING HUMAN APPROVAL`, and dispatched no agent. Its debug trace shows A Team `SessionStart`, `PreToolUse` and `PostToolUse:Write` hooks executing successfully. The PreToolUse shell command was also changed to preserve a blocking exit code and show its error; a `.env` read payload exits 2.
+- Approval of the plan and full prune were deliberately not simulated. The existing-project settings merge remains a manual step.
+- The init instructions no longer suggest `rm -rf` for skill pruning, since the project's own PreToolUse guard blocks recursive force removal. The authenticated retry held the prune because the disposable agent files had uncommitted edits and the Veto Buffer decision required human approval.
+
+Reproduction: install this branch into a new test project, fill `INIT.md` and `TASKS.md`, and run `claude -p '/orchestrate init' --permission-mode acceptEdits --permission-prompts none`, then `claude -p '/orchestrate morning'` with the same permission flags. In the trusted-project morning run, the result said `Do you approve this plan?`, `DAILY.md` contained `PENDING HUMAN APPROVAL`, and the debug log recorded `Hooks: SessionStart:startup`, `Hooks: PreToolUse:Write` and `Hooks: PostToolUse:Write ... finished with status 0`. No task was dispatched.
 
 ## Codex CLI 0.162.0-alpha.17.2 (#35)
 
 - In a disposable `CODEX_HOME`, `codex plugin marketplace add <repo>` registered `a-team-local`; `codex plugin add a-team@a-team-local` installed and enabled version 1.4.1.
 - Installed package contains 20 skill directories and `hooks/hooks.json`. The plugin manifest does not register the 26 specialists as native Codex agents; project `AGENTS.md` remains the instruction source.
 - SessionStart execution and hook trust need a real interactive session; file presence and enabled status do not prove the hook fired.
+- With the user's approval, `a-team@a-team-local` was also installed and enabled in the authenticated Codex profile. A stale `a-team@rbraga01-a-team` v1.3.0 installation caused a missing-description skill error and its marketplace snapshot was absent; the old plugin and marketplace were removed with Codex CLI after saving a local config backup. A subsequent authenticated `codex exec` completed without that error.
+- The interactive `codex --no-daemon` opened this disposable project and showed the hook trust screen. It listed three active `SessionStart` hooks and two unrelated plugin hooks requiring review; the latter were left untrusted. The TUI did not identify which active `SessionStart` hook belonged to A Team, so execution of A Team's hook remains unproven. No `--dangerously-bypass-hook-trust` flag was used.
 
 ## Cursor 3.19.7 (#36)
 

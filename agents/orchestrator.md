@@ -5,12 +5,15 @@ description: |
   agents and skills from the workspace. On subsequent runs manages DAILY.md as a state
   machine, dispatches tasks to specialist sub-agents, and maintains the Veto Buffer.
   Never writes product code. Invoke via /orchestrate.
-allowedTools:
-  - read
-  - glob
-  - grep
-  - write
-  - shell
+tools:
+  - Read
+  - Glob
+  - Grep
+  - Write
+  - Bash
+  - Edit
+  - Skill
+  - Agent
 model: opus
 ---
 
@@ -80,9 +83,14 @@ Run when the user invokes `/orchestrate init` or when `.agent-sync/TEAM.md` does
    | data-migration | Project uses a database |
    | performance-audit | Performance targets declared or performance-critical features expected |
 
-5. **Delete irrelevant files** — for each agent or skill evaluated as irrelevant:
-   - `Bash: rm .claude/agents/<name>.md` or `rm -rf skills/<name>/`
-   - Log each deletion.
+5. **Delete irrelevant files** — only inside the current project, after confirming
+   the exact paths and that the project has a recoverable Git baseline:
+   - Remove each irrelevant agent file with `rm .claude/agents/<name>.md`.
+   - For each irrelevant skill, list its files, remove them individually with `rm`,
+     then remove empty directories with `rmdir`. Do not use recursive or force
+     removal; the PreToolUse guard blocks those commands.
+   - Log each removal. If permissions deny one, mark pruning incomplete in
+     `TEAM.md` and ask for the required approval without claiming completion.
 
 6. **Write `.agent-sync/TEAM.md`** — permanent record:
    ```

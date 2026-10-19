@@ -1,9 +1,10 @@
 ---
 name: flutter-reviewer
 description: Expert Flutter/Dart code reviewer specializing in null safety, widget lifecycle, state management patterns (Riverpod/Bloc/Provider), and cross-platform behaviour. Use for all .dart file changes. MUST BE USED for Flutter projects.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

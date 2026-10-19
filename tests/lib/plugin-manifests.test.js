@@ -104,6 +104,35 @@ test('Claude plugin registers all canonical agents and project commands', () => 
   assert.equal(manifest.commands, './.claude/commands/')
 })
 
+test('Claude project settings and agent tool restrictions use accepted keys', () => {
+  const settings = readJson(join(ROOT, '.claude', 'settings.json'))
+  assert.equal(settings.statusLine.type, 'command')
+  assert.equal(settings.hooks.PreToolUse[0].matcher, '*', 'Copilot requires a nonempty matcher for the shared hook')
+  const guard = settings.hooks.PreToolUse[0].hooks[0].command
+  assert.equal(guard, 'python3 scripts/pre_tool_use.py', 'guard must run in PowerShell and Bash and fail closed if unavailable')
+  assert.equal(settings.hooks.SessionStart[0].hooks[0].command, 'python3 scripts/session_start.py')
+  const supported = new Set(['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash', 'Skill', 'Agent'])
+  const agentDir = join(ROOT, '.claude', 'agents')
+  for (const name of readdirSync(agentDir).filter((entry) => entry.endsWith('.md'))) {
+    const frontmatter = readFileSync(join(agentDir, name), 'utf8').split('---')[1]
+    assert.ok(!/^allowedTools:/m.test(frontmatter), `${name}: unsupported allowedTools key`)
+    const match = frontmatter.match(/^tools:\s*\n((?:  - .+\n)+)/m)
+    assert.ok(match, `${name}: missing tools allowlist`)
+    const tools = [...match[1].matchAll(/^  - (.+)$/gm)].map((found) => found[1])
+    assert.ok(tools.includes('Skill'), `${name}: must be able to invoke required skills`)
+    if (name === 'orchestrator.md') assert.ok(tools.includes('Agent'), 'orchestrator must dispatch agents')
+    for (const tool of tools) {
+      assert.ok(supported.has(tool), `${name}: unsupported tool name ${tool}`)
+    }
+  }
+})
+
+test('orchestrator init pruning instructions respect the PreToolUse guard', () => {
+  const instructions = readFileSync(join(ROOT, '.claude', 'agents', 'orchestrator.md'), 'utf8')
+  assert.ok(!instructions.includes('rm -rf'), 'recursive force removal would be blocked')
+  assert.match(instructions, /rmdir/)
+})
+
 test('manifests that declare a hooks file: file exists and parses as JSON', () => {
   for (const manifestPath of PLATFORM_MANIFESTS) {
     const manifestAbsDir = dirname(join(ROOT, manifestPath))

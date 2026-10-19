@@ -1,9 +1,10 @@
 ---
 name: performance-profiler
 description: Systematic performance investigation specialist. Measures before optimising, identifies the actual bottleneck, and produces before/after benchmarks. Use when performance regressions are suspected or before optimising any critical path. Never optimise without measuring first.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: haiku
 ---
 

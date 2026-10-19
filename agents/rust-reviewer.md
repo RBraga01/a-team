@@ -1,9 +1,10 @@
 ---
 name: rust-reviewer
 description: Expert Rust code reviewer specializing in memory safety, ownership patterns, error handling, and idiomatic Rust. Use for all Rust code changes. MUST BE USED for Rust projects.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

@@ -3,11 +3,12 @@ name: typescript-reviewer
 description: Expert TypeScript/React/frontend code reviewer — TS strictness, React idioms,
   design-state completeness, accessibility, PWA/service-worker correctness, and client-side
   security. Use for all TS/TSX changes. MUST BE USED for TypeScript/React/frontend projects.
-allowedTools:
-  - read
-  - glob
-  - grep
-  - shell
+tools:
+  - Read
+  - Glob
+  - Grep
+  - Bash
+  - Skill
 model: sonnet
 ---
 

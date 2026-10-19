@@ -1,8 +1,9 @@
 ---
 name: planner
 description: Expert planning specialist for complex features and refactoring. Use PROACTIVELY when users request feature implementation, architectural changes, or complex refactoring. Produces structured implementation plans with phases, file paths, and risk ratings.
-allowedTools:
-  - read
+tools:
+  - Read
+  - Skill
 model: sonnet
 ---
 

@@ -1,9 +1,10 @@
 ---
 name: ai-reviewer
 description: AI/LLM code reviewer specializing in prompt injection, unsafe tool use, token cost, hallucination handling, and model call architecture. Use for any code that calls LLM APIs, handles prompt construction, or uses AI-driven tool dispatch. MUST BE USED for AI-native applications.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

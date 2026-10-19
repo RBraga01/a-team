@@ -26,6 +26,7 @@ const expectedPaths = [
   'templates',
   'scripts',
   'scripts/pre_tool_use.py',
+  'scripts/session_start.py',
   'scripts/process_utils.py',
   'scripts/watcher.py',
   'INIT.md',

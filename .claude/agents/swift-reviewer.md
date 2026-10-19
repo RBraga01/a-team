@@ -1,9 +1,10 @@
 ---
 name: swift-reviewer
 description: Expert Swift/iOS code reviewer specializing in Swift concurrency, SwiftUI lifecycle, ARC memory management, and Apple platform patterns. Use for all .swift file changes. MUST BE USED for iOS/macOS projects.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

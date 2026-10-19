@@ -1,9 +1,10 @@
 ---
 name: loop-operator
 description: Operate autonomous agent loops safely. Use when running autonomous loops unattended — monitors progress, detects stalls, and escalates when loops fail repeatedly.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 
