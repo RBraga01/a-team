@@ -1,6 +1,9 @@
 """Offline contract checks: non-destructive A Team initialization and dispatch."""
 
 from pathlib import Path
+import json
+import subprocess
+import sys
 
 import pytest
 
@@ -121,3 +124,36 @@ def test_legacy_physical_pruning_state_not_trusted(project):
     p = project / ".agent-sync/TEAM.md"
     p.write_text(p.read_text().replace("logical-v1", "physical-pruning"))
     assert not may_dispatch(project, "Agent", "planner")[0]
+
+
+def test_pretool_hook_blocks_inactive_dispatch_without_leaking_identity(project):
+    initialize(project)
+    guard = Path(__file__).resolve().parents[1] / "scripts" / "pre_tool_use.py"
+    for name, expected in (("planner", 0), ("go-reviewer", 2), ("a-team:security-reviewer", 2)):
+        result = subprocess.run(
+            [sys.executable, str(guard)],
+            input=json.dumps({"tool_name": "Agent", "tool_input": {"subagent_type": name}}),
+            cwd=project, text=True, capture_output=True, check=False,
+        )
+        assert result.returncode == expected
+        if expected == 2:
+            assert name not in result.stderr  # Avoid echoing dispatch arguments.
+    disallowed_skill = subprocess.run(
+        [sys.executable, str(guard)],
+        input=json.dumps({"tool_name": "Skill", "tool_input": {"skill": "data-migration"}}),
+        cwd=project, text=True, capture_output=True, check=False,
+    )
+    assert disallowed_skill.returncode == 2
+
+
+def test_pretool_hook_blocks_when_legacy_roster_exists(project):
+    initialize(project)
+    roster_file = project / ".agent-sync/TEAM.md"
+    roster_file.write_text(roster_file.read_text().replace("logical-v1", "old-deletion-mode"))
+    guard = Path(__file__).resolve().parents[1] / "scripts" / "pre_tool_use.py"
+    result = subprocess.run(
+        [sys.executable, str(guard)],
+        input=json.dumps({"tool_name": "Agent", "tool_input": {"subagent_type": "planner"}}),
+        cwd=project, text=True, capture_output=True, check=False,
+    )
+    assert result.returncode == 2
