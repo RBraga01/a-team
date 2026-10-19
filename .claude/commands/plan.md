@@ -1,3 +1,7 @@
+---
+description: Write an implementation plan before coding.
+---
+
 # /plan
 
 Create a structured implementation plan for a feature or refactor.

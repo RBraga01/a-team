@@ -1,3 +1,7 @@
+---
+description: Run the pre-merge quality and verification gates.
+---
+
 # /quality-gate
 
 Full pre-merge quality check. Runs multiple agents in parallel to validate readiness.

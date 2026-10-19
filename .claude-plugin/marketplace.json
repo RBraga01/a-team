@@ -29,7 +29,7 @@
       "name": "builder-ai",
       "description": "AI product quality enforcement: 8 skills and 5 agents for LLM product teams",
       "version": "1.0.0",
-      "source": "https://github.com/RBraga01/builder-ai",
+      "source": { "source": "github", "repo": "RBraga01/builder-ai" },
       "author": {
         "name": "RBraga01",
         "url": "https://github.com/RBraga01"
@@ -48,7 +48,7 @@
       "name": "builder-product",
       "description": "AI product quality enforcement: 7 skills and 3 agents for product teams",
       "version": "1.0.0",
-      "source": "https://github.com/RBraga01/builder-product",
+      "source": { "source": "github", "repo": "RBraga01/builder-product" },
       "author": {
         "name": "RBraga01",
         "url": "https://github.com/RBraga01"
@@ -67,7 +67,7 @@
       "name": "builder-design",
       "description": "AI UI design quality enforcement: 8 skills and 5 agents for UI design teams",
       "version": "1.0.0",
-      "source": "https://github.com/RBraga01/builder-design",
+      "source": { "source": "github", "repo": "RBraga01/builder-design" },
       "author": {
         "name": "RBraga01",
         "url": "https://github.com/RBraga01"
@@ -86,7 +86,7 @@
       "name": "builder-growth",
       "description": "AI growth quality enforcement: 14 skills and 5 agents for growth teams",
       "version": "1.1.0",
-      "source": "https://github.com/RBraga01/builder-growth",
+      "source": { "source": "github", "repo": "RBraga01/builder-growth" },
       "author": {
         "name": "RBraga01",
         "url": "https://github.com/RBraga01"

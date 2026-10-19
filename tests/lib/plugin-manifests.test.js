@@ -84,6 +84,20 @@ test('marketplace.json a-team entry matches .claude-plugin/plugin.json version',
   )
 })
 
+test('Claude marketplace external packs use GitHub source objects', () => {
+  const market = readJson(join(ROOT, '.claude-plugin', 'marketplace.json'))
+  for (const entry of market.plugins.filter((plugin) => plugin.name !== 'a-team')) {
+    assert.deepEqual(entry.source, { source: 'github', repo: `RBraga01/${entry.name}` })
+  }
+})
+
+test('Claude plugin registers all canonical agents and project commands', () => {
+  const manifest = readJson(join(ROOT, '.claude-plugin', 'plugin.json'))
+  const agentNames = readdirSync(join(ROOT, '.claude', 'agents')).filter((name) => name.endsWith('.md')).sort()
+  assert.deepEqual(manifest.agents.slice().sort(), agentNames.map((name) => `./.claude/agents/${name}`))
+  assert.equal(manifest.commands, './.claude/commands/')
+})
+
 test('manifests that declare a hooks file: file exists and parses as JSON', () => {
   for (const manifestPath of PLATFORM_MANIFESTS) {
     const manifestAbsDir = dirname(join(ROOT, manifestPath))
@@ -214,4 +228,13 @@ test('portable manifest and Codex overlay use a single root hooks file', () => {
   assert.match(JSON.stringify(hooks), /PLUGIN_ROOT/)
   assert.ok(!existsSync(join(ROOT, '.codex-plugin', 'hooks', 'hooks.json')),
     'old duplicate Codex hooks file should not be shipped')
+})
+
+test('Codex marketplace advertises the repository-root plugin', () => {
+  const market = readJson(join(ROOT, '.agents', 'plugins', 'marketplace.json'))
+  const plugin = market.plugins.find((entry) => entry.name === 'a-team')
+  assert.ok(plugin)
+  assert.equal(plugin.source.source, 'local')
+  assert.equal(plugin.source.path, './')
+  assert.equal(plugin.policy.installation, 'AVAILABLE')
 })

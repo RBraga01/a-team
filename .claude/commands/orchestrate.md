@@ -1,3 +1,7 @@
+---
+description: Initialize the project team or manage the daily orchestration cycle.
+---
+
 # /orchestrate
 
 Invoke the Lead Orchestrator.

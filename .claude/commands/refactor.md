@@ -1,3 +1,7 @@
+---
+description: Remove dead code and duplication while preserving behavior.
+---
+
 # /refactor
 
 Find and safely remove dead code, unused dependencies, and duplicates.
