@@ -1,0 +1,151 @@
+name: HOL Plugin Scanner
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'plugin.json'
+      - '.codex-plugin/**'
+      - '.claude-plugin/**'
+      - '.agents/**'
+      - 'skills/**'
+      - 'agents/**'
+      - '.claude/agents/**'
+      - 'scripts/**'
+      - 'hooks/**'
+      - 'tests/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - 'SECURITY.md'
+      - '.github/workflows/**'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Scanner is third-party code. Do not grant write access, submission tokens,
+# repository secrets, or permission to post outside the repository.
+permissions:
+  contents: read
+
+jobs:
+  hol-scan:
+    name: Security & marketplace readiness
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: HOL AI Plugin Scanner (offline)
+        id: scanner
+        uses: hashgraph-online/ai-plugin-scanner-action@caba2e96aa8ad2feb6cf6fca52442b52e22e779f # v1.2.635
+        with:
+          plugin_dir: "."
+          mode: scan
+          profile: public-marketplace
+          min_score: 80
+          fail_on_severity: high
+          format: json
+          output: hol-scan-report.json
+          online: false
+          install_cisco: false
+          submission_enabled: false
+          pr_comment: off
+          upload_sarif: false
+
+      - name: Summarize machine-readable findings for review
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import collections
+          import json
+          from pathlib import Path
+
+          path = Path("hol-scan-report.json")
+          if not path.is_file():
+              print("Scanner did not produce a machine-readable report.")
+              raise SystemExit(0)
+          report = json.loads(path.read_text(encoding="utf-8"))
+          print("Report root fields:", sorted(report) if isinstance(report, dict) else type(report).__name__)
+
+          by_severity = collections.Counter()
+          issues = []
+          metrics = []
+          def walk(value, keypath="root"):
+              if isinstance(value, dict):
+                  for key, val in value.items():
+                      if key in {"score", "score_normalized", "total_score", "max_score", "grade", "policy_pass", "security_score"} and isinstance(val, (str, int, float, bool)):
+                          metrics.append((keypath + "." + key, val))
+                  severity = value.get("severity")
+                  rule = value.get("rule_id") or value.get("rule") or value.get("code") or value.get("id")
+                  if isinstance(severity, str) and severity.lower() in {"critical", "high", "medium", "low", "info"}:
+                      by_severity[severity.lower()] += 1
+                      label = str(rule or "unknown-rule")
+                      location = value.get("path") or value.get("file") or value.get("location") or ""
+                      if isinstance(location, dict):
+                          location = location.get("path", "")
+                      issues.append((severity.lower(), label[:100], str(location)[:110]))
+                  for key, val in value.items():
+                      if isinstance(val, (list, dict)):
+                          walk(val, keypath + "." + key)
+              elif isinstance(value, list):
+                  for index, val in enumerate(value):
+                      walk(val, keypath + "[" + str(index) + "]")
+
+          walk(report)
+          print("Score and policy fields:", metrics[:50])
+          print("Finding counts:", dict(by_severity))
+          findings = report.get("findings") or []
+          print("Unique top-level findings:", len(findings))
+          rule_counts = collections.Counter(
+              (str(item.get("severity")), str(item.get("ruleId")))
+              for item in findings if isinstance(item, dict)
+          )
+          print("Distinct rules (severity, id, occurrences):")
+          for (severity, rule), count in rule_counts.most_common(45):
+              print(" -", severity, rule, count)
+          print("First 60 medium-or-higher unique finding locations:")
+          high_priority = [
+              item for item in findings if isinstance(item, dict)
+              and item.get("severity") in {"critical", "high", "medium"}
+          ]
+          for finding in high_priority[:60]:
+              print(" -", finding.get("ruleId"), finding.get("filePath"), str(finding.get("title", ""))[:100])
+
+          print("Finding shape sample:", sorted(findings[0]) if findings and isinstance(findings[0], dict) else "none")
+          for finding in findings[:12]:
+              if not isinstance(finding, dict):
+                  continue
+              overview = {
+                  key: str(value)[:130]
+                  for key, value in finding.items()
+                  if key not in {"message", "description", "evidence", "remediation", "snippet", "code", "metadata", "details", "raw"}
+                  and not isinstance(value, (dict, list))
+              }
+              print("Top-level finding:", overview)
+          for metric in ("score", "effective_score", "raw_score", "profile", "policy_pass", "verify_pass", "summary"):
+              value = report.get(metric)
+              print("Top-level metric", metric, ":", str(value)[:600])
+          print("First 35 findings (severity, rule, file only):")
+          for issue in issues[:35]:
+              print(" -", issue)
+          PY
+
+      - name: Publish evidence artifact (including failure cases)
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: hol-security-scan
+          path: hol-scan-report.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: State scanner limits
+        if: always()
+        run: |
+          {
+            echo '### HOL source-repository scan'
+            echo 'Offline third-party scanner; no OAuth, external submission, or Cisco analyzer enabled.'
+            echo 'Passing does **not** certify software safety or update the HOL central registry automatically.'
+            echo 'The catalog must independently rescan the current source for its normalized trust score.'
+          } >> "$GITHUB_STEP_SUMMARY"
