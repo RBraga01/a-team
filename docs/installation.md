@@ -12,6 +12,7 @@ A Team is configuration, not a running service, so the requirements are light. C
 
 - **A supported AI coding assistant.** At least one of: Claude Code (primary, full feature set), Codex CLI, Cursor, OpenCode, or GitHub Copilot. See [Platform support](#platform-support) for what each one can do.
 - **A target project directory.** A Team installs into a project, not globally. Decide whether you're starting greenfield or adding to an existing repo (see [Adding to an existing project](#adding-to-an-existing-project)).
+- **Python 3.9 or newer available as `python3`.** The shared Claude Code and Copilot hooks call that command. Both installers check it before copying files. For manual installation, run `python3 --version` first.
 
 ### Depends on your install method
 
@@ -104,7 +105,7 @@ The installers include all integration manifests and OpenCode commands. **A copi
 
 - **Claude Code:** the project `.claude/` settings, hooks and commands are available after trusting the workspace.
 - **OpenCode:** `.opencode/commands/` is the project-level custom-command directory.
-- **GitHub Copilot CLI:** separately run `copilot plugin install RBraga01/a-team`; inspect `copilot plugin list --json` and `copilot skill list --json`. The repository root is the portable plugin; the legacy `.copilot-plugin/` subdirectory cannot be installed directly because its component paths escape that directory. Native agents and hooks are packaged under `com.github.copilot/`; real hook execution still needs an authenticated session.
+- **GitHub Copilot CLI:** separately run `copilot plugin install RBraga01/a-team`; inspect `copilot plugin list --json` and `copilot skill list --json`. The repository root is the portable plugin; the legacy `.copilot-plugin/` subdirectory cannot be installed directly because its component paths escape that directory. Native agents and hooks are packaged under `com.github.copilot/`; an authenticated Windows session confirmed that the shared project `PreToolUse` hook blocked a test `.env` read. Native agent invocation remains unverified.
 - **Cursor:** install via **Customize → Plugins** or test through Cursor's local plugin directory; copying `.cursor-plugin/` into a project alone does not register a plugin.
 - **Codex:** portable `plugin.json` at the package root is the primary identity, with `.codex-plugin/plugin.json` as a compatibility overlay. Skills load from `skills/`; hooks use `hooks/hooks.json` but must be trusted in Codex. Codex plugin installation and real hook execution still need host verification.
 
@@ -178,6 +179,6 @@ The table describes **what A Team currently declares or distributes**, not what 
 | OpenCode | No A Team-native agent files | Host-discovered/manual | Not declared | Not declared | `.opencode/commands/` |
 | GitHub Copilot CLI | `com.github.copilot/agents/` (26 files) | root `skills/` (20 loaded) | Not declared | Four events declared* | Not packaged |
 
-*On Windows, Copilot CLI 1.0.98 rejects installation from `.copilot-plugin/` because `../skills/` escapes the plugin directory. Installing the repository root succeeds and loads all 20 skills. Runtime agent and hook execution remains unverified.*
+*On Windows, Copilot CLI 1.0.98 rejects installation from `.copilot-plugin/` because `../skills/` escapes the plugin directory. Installing the repository root succeeds and loads all 20 skills. An authenticated session confirmed a shared project hook blocked a test `.env` read; native agent invocation remains unverified.*
 
 Claude Code remains the reference platform. The current Codex and Cursor manifests have structurally valid package-root paths; they still require actual CLI registration. OpenCode supplies project command aliases rather than A Team-native agent/hook definitions. A copied file is not equivalent to an activated plugin. For details see [Platform plugin activation](#platform-plugin-activation).

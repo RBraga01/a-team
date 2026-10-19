@@ -24,6 +24,15 @@ if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     Write-Host "Install from https://git-scm.com/download/win"
     exit 1
 }
+if (-not (Get-Command python3 -ErrorAction SilentlyContinue)) {
+    Write-Host "Error: Python 3.9+ must be available as python3 for hooks." -ForegroundColor Red
+    exit 1
+}
+& python3 -c "import sys; sys.exit(sys.version_info < (3, 9))"
+if ($LASTEXITCODE -ne 0) {
+    Write-Host "Error: Python 3.9+ must be available as python3 for hooks." -ForegroundColor Red
+    exit 1
+}
 if (-not (Test-Path $Destination)) {
     Write-Host "Error: destination '$Destination' does not exist." -ForegroundColor Red
     exit 1

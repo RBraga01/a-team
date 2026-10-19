@@ -19,6 +19,7 @@ echo ""
 
 # -- Preflight checks --
 command -v git >/dev/null 2>&1 || { echo -e "${RED}Error: git is required but not installed.${RESET}"; exit 1; }
+command -v python3 >/dev/null 2>&1 && python3 -c 'import sys; sys.exit(sys.version_info < (3, 9))' >/dev/null 2>&1 || { echo -e "${RED}Error: Python 3.9+ must be available as python3 for hooks.${RESET}"; exit 1; }
 [ -d "$DEST" ]              || { echo -e "${RED}Error: destination '$DEST' does not exist.${RESET}"; exit 1; }
 
 # -- Sparse clone into temp dir --

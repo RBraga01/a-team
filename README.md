@@ -49,6 +49,8 @@ The infrastructure is stateless by design. Every agent derives its context from 
 
 Pick a method below. All copy the shared infrastructure plus platform-specific files. **Copying plugin files is not the same as activating a CLI plugin**; follow [platform activation](docs/installation.md#platform-plugin-activation).
 
+The shared security hooks require Python 3.9 or newer available as `python3`. Both installers verify this before copying files.
+
 ### Option A — One-liner (recommended)
 
 **Mac / Linux / WSL:**
@@ -242,7 +244,7 @@ A Team distributes definitions for five tools. Shared state in `.agent-sync/` is
 | **GitHub Copilot CLI** | `com.github.copilot/agents/` | root `skills/` | Not declared | Four events declared* | Not declared |
 | **OpenCode** | No A Team-native agents bundled | Host-discovered or manual | Not declared | Not declared | `.opencode/commands/` |
 
-*Copilot CLI 1.0.98 installed the repository-root plugin and discovered all 20 skills on Windows. The 26 native agent files and four hook events are packaged; their runtime execution has not yet been verified.*
+*Copilot CLI 1.0.98 installed the repository-root plugin and discovered all 20 skills on Windows. An authenticated session confirmed that the shared project hook blocked a test `.env` read. Native agent invocation remains unverified.*
 
 ### Running multiple CLIs on the same project
 
@@ -262,7 +264,7 @@ All CLIs share `.agent-sync/` (DAILY.md, ROUTING.md, TEAM.md, results/). This me
 
 **OpenCode** receives A Team's command aliases in `.opencode/commands/`. This distribution does not bundle OpenCode-native agent or hook definitions; this is not a limitation of the OpenCode platform itself.
 
-**GitHub Copilot CLI** loads the portable root plugin. Copilot-specific agents and hooks are under `com.github.copilot/`; 20 skills loaded in a Windows CLI install. An authenticated session is still needed to confirm agent invocation and hook execution.
+**GitHub Copilot CLI** loads the portable root plugin. Copilot-specific agents and hooks are under `com.github.copilot/`; 20 skills loaded in a Windows CLI install. A shared project hook blocked a test `.env` read in an authenticated session; native agent invocation still needs validation.
 
 Install:
 
