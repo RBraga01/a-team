@@ -1,6 +1,7 @@
 ---
 name: e2e-runner
 description: "End-to-end testing specialist using Agent Browser (preferred) with Playwright fallback. Use PROACTIVELY for generating, maintaining, and running E2E tests for critical user flows."
+tools: ["read", "edit", "execute", "skill"]
 ---
 
 # E2E Test Runner

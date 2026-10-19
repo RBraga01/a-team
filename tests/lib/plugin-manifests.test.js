@@ -171,7 +171,7 @@ test('Copilot portable package has synced native agents and hooks', () => {
   assert.deepEqual(outputNames, sourceNames.map((name) => name.replace(/\.md$/, '.agent.md')))
   for (const name of outputNames) {
     const content = readFileSync(join(output, name), 'utf8')
-    assert.match(content, /^---\nname: [a-z0-9-]+\ndescription: ".+"\n---\n/s)
+    assert.match(content, /^---\nname: [a-z0-9-]+\ndescription: ".+"\ntools: \[[^\n]+\]\n---\n/s)
   }
   const hooks = readJson(join(ROOT, 'com.github.copilot', 'hooks', 'hooks.json'))
   assert.deepEqual(Object.keys(hooks.hooks).sort(), ['PostToolUse', 'PreToolUse', 'SessionEnd', 'SessionStart'].sort())

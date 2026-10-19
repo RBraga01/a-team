@@ -1,6 +1,7 @@
 ---
 name: doc-updater
 description: "Documentation and codemap specialist. Use PROACTIVELY for updating codemaps and documentation after features land. Generates docs/CODEMAPS/*, updates READMEs and guides."
+tools: ["read", "edit", "skill"]
 ---
 
 # Documentation & Codemap Specialist

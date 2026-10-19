@@ -1,6 +1,7 @@
 ---
 name: debugger
 description: "Systematic root-cause debugging specialist. Use for ANY bug, test failure, or unexpected behavior BEFORE proposing fixes. Enforces the Iron Law — no fixes without root cause investigation first."
+tools: ["read", "edit", "execute", "skill"]
 ---
 
 # Systematic Debugger

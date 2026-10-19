@@ -131,7 +131,6 @@ def main() -> None:
         cmd = tool_input.get("command", "")
         if _is_destructive(cmd):
             print("BLOQUEADO: comando destrutivo detectado e cancelado.", file=sys.stderr)
-            print(f"Comando: {cmd[:120]}", file=sys.stderr)
             sys.exit(2)
 
     _log(data)

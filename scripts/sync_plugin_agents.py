@@ -14,6 +14,19 @@ SOURCE = ROOT / ".claude" / "agents"
 TARGET = ROOT / "com.github.copilot" / "agents"
 CLAUDE_TARGET = ROOT / "agents"
 
+# GitHub Copilot custom-agent aliases and CLI tool names.
+COPILOT_TOOL_ALIASES = {
+    "Read": "read",
+    "Bash": "execute",
+    "Write": "edit",
+    "Edit": "edit",
+    "MultiEdit": "edit",
+    "Glob": "search",
+    "Grep": "search",
+    "Agent": "agent",
+    "Skill": "skill",
+}
+
 
 def convert(path: Path) -> str:
     text = path.read_text(encoding="utf-8").replace("\r\n", "\n")
@@ -38,7 +51,26 @@ def convert(path: Path) -> str:
     description = " ".join(([first] if first != "|" else []) + continued)
     if not description:
         raise ValueError(f"{path}: empty description")
-    return f"---\nname: {name}\ndescription: {json.dumps(description, ensure_ascii=False)}\n---\n{body}"
+    tools_start = next((i for i, line in enumerate(lines) if line == "tools:"), None)
+    if tools_start is None:
+        raise ValueError(f"{path}: missing tools list")
+    source_tools = []
+    for line in lines[tools_start + 1 :]:
+        if not line.startswith((" ", "\t")):
+            break
+        if not line.startswith("  - "):
+            raise ValueError(f"{path}: invalid tools list")
+        source_tools.append(line[4:].strip())
+    if not source_tools:
+        raise ValueError(f"{path}: empty tools list")
+    unknown = set(source_tools) - set(COPILOT_TOOL_ALIASES)
+    if unknown:
+        raise ValueError(f"{path}: unsupported tool(s): {', '.join(sorted(unknown))}")
+    tools = list(dict.fromkeys(COPILOT_TOOL_ALIASES[tool] for tool in source_tools))
+    return (
+        f"---\nname: {name}\ndescription: {json.dumps(description, ensure_ascii=False)}\n"
+        f"tools: {json.dumps(tools)}\n---\n{body}"
+    )
 
 
 def main() -> int:
