@@ -95,6 +95,22 @@ jobs:
           walk(report)
           print("Score and policy fields:", metrics[:50])
           print("Finding counts:", dict(by_severity))
+          findings = report.get("findings") or []
+          print("Unique top-level findings:", len(findings))
+          print("Finding shape sample:", sorted(findings[0]) if findings and isinstance(findings[0], dict) else "none")
+          for finding in findings[:12]:
+              if not isinstance(finding, dict):
+                  continue
+              overview = {
+                  key: str(value)[:130]
+                  for key, value in finding.items()
+                  if key not in {"message", "description", "evidence", "remediation", "snippet", "code", "metadata", "details", "raw"}
+                  and not isinstance(value, (dict, list))
+              }
+              print("Top-level finding:", overview)
+          for metric in ("score", "effective_score", "raw_score", "profile", "policy_pass", "verify_pass", "summary"):
+              value = report.get(metric)
+              print("Top-level metric", metric, ":", str(value)[:600])
           print("First 35 findings (severity, rule, file only):")
           for issue in issues[:35]:
               print(" -", issue)
