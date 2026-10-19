@@ -52,6 +52,54 @@ jobs:
           pr_comment: off
           upload_sarif: false
 
+      - name: Summarize machine-readable findings for review
+        if: always()
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import collections
+          import json
+          from pathlib import Path
+
+          path = Path("hol-scan-report.json")
+          if not path.is_file():
+              print("Scanner did not produce a machine-readable report.")
+              raise SystemExit(0)
+          report = json.loads(path.read_text(encoding="utf-8"))
+          print("Report root fields:", sorted(report) if isinstance(report, dict) else type(report).__name__)
+
+          by_severity = collections.Counter()
+          issues = []
+          metrics = []
+          def walk(value, keypath="root"):
+              if isinstance(value, dict):
+                  for key, val in value.items():
+                      if key in {"score", "score_normalized", "total_score", "max_score", "grade", "policy_pass", "security_score"} and isinstance(val, (str, int, float, bool)):
+                          metrics.append((keypath + "." + key, val))
+                  severity = value.get("severity")
+                  rule = value.get("rule_id") or value.get("rule") or value.get("code") or value.get("id")
+                  if isinstance(severity, str) and severity.lower() in {"critical", "high", "medium", "low", "info"}:
+                      by_severity[severity.lower()] += 1
+                      label = str(rule or "unknown-rule")
+                      location = value.get("path") or value.get("file") or value.get("location") or ""
+                      if isinstance(location, dict):
+                          location = location.get("path", "")
+                      issues.append((severity.lower(), label[:100], str(location)[:110]))
+                  for key, val in value.items():
+                      if isinstance(val, (list, dict)):
+                          walk(val, keypath + "." + key)
+              elif isinstance(value, list):
+                  for index, val in enumerate(value):
+                      walk(val, keypath + "[" + str(index) + "]")
+
+          walk(report)
+          print("Score and policy fields:", metrics[:50])
+          print("Finding counts:", dict(by_severity))
+          print("First 35 findings (severity, rule, file only):")
+          for issue in issues[:35]:
+              print(" -", issue)
+          PY
+
       - name: Publish evidence artifact (including failure cases)
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
