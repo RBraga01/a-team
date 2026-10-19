@@ -9,23 +9,32 @@ Detailed guide formerly in the root README. Start with the [quick start](../READ
 The project's scope declaration. The orchestrator reads it once to decide which agents and skills are relevant. Fill it out before running `/orchestrate init`.
 
 Key sections:
-- **Primary programming languages** — controls which language-specialist agents survive pruning
+- **Primary programming languages** — controls which language-specialist agents become active
 - **Tech stack** — controls database-reviewer, e2e-runner, etc.
 - **Communication tools** — controls chief-of-staff
 - **Scope boundaries** — autonomous loops, E2E tests, documentation needs
 - **Special constraints** — domain-specific guardrails enforced across all agents
 
-### Pruning
+### Logical pruning (non-destructive)
 
-The orchestrator deletes agent files and skill folders that don't apply to the declared scope. A Python-only project loses `go-reviewer`, `rust-reviewer`. A project with no E2E requirement loses `e2e-runner`. The workspace is leaner and agents no longer encounter context that doesn't apply to them.
+**No agent or skill file is deleted during initialization.** The orchestrator evaluates `INIT.md`, then passes an explicit list of selected agents and skills to the deterministic compiler:
 
-After pruning, `.agent-sync/TEAM.md` records what was kept and why. This file is the source of truth for the active roster.
+```bash
+python scripts/roster.py init --agents "orchestrator,planner,code-reviewer" --skills "using-a-team,verification-before-completion,writing-plans"
+python scripts/roster.py verify
+```
+
+The lists above are *examples*; the real selection must cover the intended project scope. `TEAM.md` lists **all** installed agents and skills as active or inactive, and `ROUTING.md` contains exactly the eligible active agents. Matching fingerprints prevent stale or partial state from being trusted. The mandatory `orchestrator`, `using-a-team`, and `verification-before-completion` cannot be deactivated.
+
+On supported hosts, `PreToolUse` blocks direct `Agent`/`Task` dispatch and `Skill` invocation for inactive components. It rejects missing, legacy, or inconsistent roster state (except the bootstrap orchestrator and meta-skills required to repair it). Because inactive files remain discoverable, the orchestrator **must verify** the roster before routing any task. This hook does not prove enforcement in every CLI or block indirect textual requests.
+
+Reinitializing an existing roster requires explicit approval and `init --replace`. The compiler refuses replacement while file claims are in progress. Do not edit the roster or routing file independently.
 
 ### ROUTING.md
 
 Generated during init. Two sections:
 
-1. **Task routing table** — maps task types to agents based on the declared stack (e.g., all `.py` changes route to `python-reviewer`).
+1. **Eligible Agents** — exactly the active profiles from TEAM.md; task routing must pick only from these names.
 2. **File Claims table** — starts empty; populated at dispatch time to prevent parallel agents from colliding on the same source files.
 
 ---
@@ -41,7 +50,7 @@ The `PostToolUse` hook fires after every `Write` or `Edit`, reminding: use `code
 ### Session Start Checklist (enforced by the meta-skill)
 
 1. Is `INIT.md` present? If not → fill it out first.
-2. Is `.agent-sync/TEAM.md` present? If not → run `/orchestrate init` first.
+2. Does `python scripts/roster.py verify` pass? If not → run `/orchestrate init` or repair/reinitialize the roster.
 3. What is the current task? → identify which skills and agents apply before starting.
 
 ---
@@ -53,7 +62,7 @@ The orchestrator operates as a stateless machine. It never assumes what happened
 ### `/orchestrate morning`
 
 1. Reads `TASKS.md` — selects up to 3 tasks for today respecting `depends_on` constraints.
-2. Assigns each task to the correct agent using `ROUTING.md`.
+2. Assigns tasks only to active agents from the verified `TEAM.md`/`ROUTING.md` roster.
 3. Writes `DAILY.md` Sections 1 + 2 (intent + execution plan).
 4. **Presents the plan. Stops. Waits for explicit human approval.**
 5. On approval: dispatches the first wave — all tasks with no dependencies.

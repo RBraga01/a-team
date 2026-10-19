@@ -8,7 +8,7 @@ Invoke the Lead Orchestrator.
 
 **Usage:**
 ```
-/orchestrate init          Initialize team from INIT.md; prune irrelevant agents and skills
+/orchestrate init          Initialize team from INIT.md; mark inactive agents/skills without removing files
 /orchestrate morning       Plan today's tasks from TASKS.md backlog
 /orchestrate tick          Process completed task results and dispatch dependents
 /orchestrate report        Compile end-of-day telemetry
@@ -16,7 +16,7 @@ Invoke the Lead Orchestrator.
 
 **What the orchestrator does:**
 
-- `init`: Reads INIT.md, evaluates every agent and skill, deletes irrelevant ones, writes `.agent-sync/TEAM.md` and `.agent-sync/ROUTING.md`.
+- `init`: Reads INIT.md, evaluates every agent and skill, keeps all original files, compiles an active/inactive roster with `python scripts/roster.py init --agents ... --skills ...`, then runs `python scripts/roster.py verify`. Existing rosters require explicit user approval and `--replace`; never delete files during init.
 - `morning`: Reads TASKS.md, selects up to 3 tasks for today, presents plan, waits for approval, dispatches first wave.
 - `tick`: Reads completed results, marks tasks done, dispatches dependents, adds Veto Buffer entries.
 - `report`: Compiles Evening Telemetry section in DAILY.md.

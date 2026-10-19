@@ -13,6 +13,14 @@ YOU DO NOT HAVE A CHOICE. YOU MUST USE IT.
 Skipping a mandatory skill to save time is not allowed.
 </HARD-GATE>
 
+## Project roster eligibility
+
+On any project that uses `/orchestrate init`, all installed agent and skill files stay on disk. **Discoverability does not mean activation.** The active set is recorded in `.agent-sync/TEAM.md` and the eligible routing table in `.agent-sync/ROUTING.md`.
+
+Before dispatching an A Team specialist or invoking a project-scoped skill, run `python scripts/roster.py verify` and `python scripts/roster.py check Agent <name>` or `check Skill <name>`. If the required specialist is inactive, STOP and request an approved reinitialization; do not invoke it merely because its file is installed. Missing, stale and legacy roster formats are invalid and block specialist dispatch. The orchestrator and bootstrap meta-skills remain available for roster repair.
+
+The `PreToolUse` guard blocks direct Agent/Skill tool calls on supported hosts; text-only/third-party dispatch still requires explicit roster checks.
+
 ## Before ANY Code Is Written
 
 | Situation | Required Skill/Agent |
