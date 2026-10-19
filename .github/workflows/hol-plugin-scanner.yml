@@ -97,6 +97,21 @@ jobs:
           print("Finding counts:", dict(by_severity))
           findings = report.get("findings") or []
           print("Unique top-level findings:", len(findings))
+          rule_counts = collections.Counter(
+              (str(item.get("severity")), str(item.get("ruleId")))
+              for item in findings if isinstance(item, dict)
+          )
+          print("Distinct rules (severity, id, occurrences):")
+          for (severity, rule), count in rule_counts.most_common(45):
+              print(" -", severity, rule, count)
+          print("First 60 medium-or-higher unique finding locations:")
+          high_priority = [
+              item for item in findings if isinstance(item, dict)
+              and item.get("severity") in {"critical", "high", "medium"}
+          ]
+          for finding in high_priority[:60]:
+              print(" -", finding.get("ruleId"), finding.get("filePath"), str(finding.get("title", ""))[:100])
+
           print("Finding shape sample:", sorted(findings[0]) if findings and isinstance(findings[0], dict) else "none")
           for finding in findings[:12]:
               if not isinstance(finding, dict):
