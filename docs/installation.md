@@ -137,7 +137,7 @@ Installing only places the files. These steps make the team operational.
 
 Tick the boxes for:
 
-- Primary languages (Go, Python, Kotlin, Swift, etc.) — controls which language reviewers survive pruning
+- Primary languages (Go, Python, Kotlin, Swift, etc.) — controls which language reviewers are active
 - Tech stack (database, infra, CI/CD) — controls reviewers like the database and infra agents
 - Compliance scope (GDPR, PCI-DSS, etc.) — configures the compliance reviewer
 - Which AI platforms are active
@@ -148,14 +148,14 @@ Tick the boxes for:
 /orchestrate init
 ```
 
-The orchestrator reads `INIT.md`, prunes agents and skills outside your declared scope, and generates:
+The orchestrator reads `INIT.md`, marks agents and skills as active/inactive **without deleting files**, and uses `scripts/roster.py` to generate:
 
-- `.agent-sync/TEAM.md` — the permanent record of the active roster (and why each agent was kept)
-- `.agent-sync/ROUTING.md` — the task routing table plus an empty file-claims table
+- `.agent-sync/TEAM.md` — exhaustive active/inactive roster, status and fingerprint
+- `.agent-sync/ROUTING.md` — only eligible active agents, matching fingerprint, and an empty file-claims table
 
-### 3. Review the pruned roster
+### 3. Review the logical roster
 
-Open `.agent-sync/TEAM.md` and confirm nothing you need was removed. **Restore any agent that was incorrectly pruned** before doing real work — this is the single most common post-install gap.
+Run `python scripts/roster.py verify` and inspect `.agent-sync/TEAM.md` for active/inactive agent and skill selections. No profiles are deleted. To reactivate a component, approve a new explicit selection and use `scripts/roster.py init --replace` after clearing outstanding file claims. Do not edit TEAM.md or ROUTING.md independently.
 
 ### 4. Start the first session
 

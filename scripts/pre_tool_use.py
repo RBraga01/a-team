@@ -88,6 +88,30 @@ def _is_env_access(tool_name: str, tool_input: dict) -> bool:
 
 
 # ---------------------------------------------------------------------------
+# Logical team eligibility — direct Agent/Skill dispatch only
+# ---------------------------------------------------------------------------
+
+def _eligible_dispatch(tool_name: str, tool_input: dict) -> bool:
+    # Do not pretend we can intercept indirect prompts or every host's native UI.
+    if tool_name in ("Agent", "Task"):
+        kind = "Agent"
+        identity = tool_input.get("subagent_type") or tool_input.get("agent_type") or tool_input.get("agent")
+    elif tool_name == "Skill":
+        kind = "Skill"
+        identity = tool_input.get("skill") or tool_input.get("name")
+    else:
+        return True
+    if not isinstance(identity, str) or not identity.strip():
+        return False
+    try:
+        from .roster import may_dispatch
+    except ImportError:
+        from roster import may_dispatch
+    allowed, _reason = may_dispatch(Path.cwd(), kind, identity)
+    return allowed
+
+
+# ---------------------------------------------------------------------------
 # Logging
 # ---------------------------------------------------------------------------
 
@@ -132,6 +156,10 @@ def main() -> None:
         if _is_destructive(cmd):
             print("BLOQUEADO: comando destrutivo detectado e cancelado.", file=sys.stderr)
             sys.exit(2)
+
+    if not _eligible_dispatch(tool_name, tool_input):
+        print("BLOQUEADO: agente ou skill fora do roster ativo do A Team.", file=sys.stderr)
+        sys.exit(2)
 
     _log(data)
     sys.exit(0)

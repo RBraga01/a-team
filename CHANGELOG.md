@@ -8,6 +8,18 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- **Approved logical pruning (issue #34):** `/orchestrate init` no longer deletes
+  agents or skills. The new `scripts/roster.py` compiles exhaustive active/inactive
+  `TEAM.md` and eligible-agent `ROUTING.md` state with matching fingerprints;
+  existing rosters require explicit `--replace` and cannot be replaced while
+  file claims are in progress.
+- Direct A Team Agent/Skill invocations are checked by the project `PreToolUse`
+  guard on supporting hosts; incomplete or stale state fails closed. Offline
+  regressions cover non-destructive init, inactive dispatch, state drift and
+  safe reactivation. Runtime enforcement in every CLI remains unverified.
+
 ## [1.4.1] — 2026-10-16
 
 ### Added

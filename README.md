@@ -14,7 +14,7 @@
 
 **[→ Visual overview & live demo](https://rbraga01.github.io/a-team/)**
 
-**Recorded first session** (Windows disposable Python project, 2026-10-19; excerpts from [init](docs/validation/claude-init-2026-10-19.txt) and [morning](docs/validation/claude-morning-2026-10-19.txt)):
+**Recorded first session (before logical pruning)** (Windows disposable Python project, 2026-10-19; excerpts from [init](docs/validation/claude-init-2026-10-19.txt) and [morning](docs/validation/claude-morning-2026-10-19.txt)):
 
 ```text
 npx --yes @anthropic-ai/claude-code -p '/orchestrate init' --model sonnet --max-turns 12 --max-budget-usd 1 --permission-mode acceptEdits --permission-prompts none --output-format text
@@ -134,9 +134,9 @@ cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
 
-Then fill out `INIT.md` to describe **what already exists** — languages, frameworks, current test coverage, known technical debt. The orchestrator uses this to prune irrelevant agents; accuracy here matters more than on a greenfield project.
+Then fill out `INIT.md` to describe **what already exists** — languages, frameworks, current test coverage, known technical debt. The orchestrator uses this to select an active roster **without deleting the other agents/skills**; accuracy matters more than on a greenfield project.
 
-After running `/orchestrate init`, review `.agent-sync/TEAM.md` before doing any work. Restore any agent that was incorrectly pruned. Start the first session with `/orchestrate morning` to let the orchestrator read the repo state before touching anything.
+After running `/orchestrate init`, review `.agent-sync/TEAM.md` before doing any work. Agents and skills stay installed: reactivate an incorrect selection with explicit reinitialization, not manual file restoration. Start the first session with `/orchestrate morning` to let the orchestrator read the repo state before touching anything.
 
 > **Note:** For existing projects, Bash and PowerShell installers now merge missing files into existing folders without overwriting conflicts. Existing `.claude/settings.json`, `CLAUDE.md` and `AGENTS.md` are preserved — merge A Team policies and permissions manually after installation.
 
@@ -162,9 +162,9 @@ Takes about 5 minutes.
 /orchestrate init
 ```
 
-The orchestrator reads `INIT.md`, prunes irrelevant agents and skills, and generates:
-- `.agent-sync/TEAM.md` — permanent record of the active roster
-- `.agent-sync/ROUTING.md` — task routing table + file claims table
+The orchestrator reads `INIT.md`, selects active agents and skills **logically**, and retains every installed profile. It runs `python scripts/roster.py init` and `verify`, generating:
+- `.agent-sync/TEAM.md` — exhaustive active/inactive roster with a fingerprint
+- `.agent-sync/ROUTING.md` — eligible **active** agents and file claims
 
 ### 3. Start working
 
@@ -280,7 +280,7 @@ copilot plugin install RBraga01/a-team
 ## Command Reference
 
 ```
-/orchestrate init       Read INIT.md, prune team, generate TEAM.md + ROUTING.md
+/orchestrate init       Read INIT.md, select active team (no deletions), generate TEAM.md + ROUTING.md
 /orchestrate morning    Plan today's tasks (requires human approval before dispatch)
 /orchestrate tick       Process completed task results, dispatch unblocked tasks
 /orchestrate report     End-of-day telemetry
@@ -319,9 +319,9 @@ MIT — see [LICENSE](LICENSE). You are free to use, modify, and distribute A Te
 
 ## Adding a New Agent
 
-1. Create `.claude/agents/<name>.md` with the frontmatter (`name`, `description`, `allowedTools`, `model`) and instructions.
-2. Add the agent to `.agent-sync/TEAM.md` (active roster).
-3. Add a routing rule in `.agent-sync/ROUTING.md`.
+1. Create `.claude/agents/<name>.md` with native frontmatter (`name`, `description`, `tools`, `model`) and instructions.
+2. Run `python scripts/sync_plugin_agents.py` if this is part of the distributed A Team package.
+3. Ask for approval to reinitialize the project with `scripts/roster.py init --replace` using explicit active agent/skill lists; **never edit TEAM.md and ROUTING.md separately**, and never delete profiles for pruning.
 4. Add the trigger condition to `skills/using-a-team/SKILL.md`.
 5. Add a session-start check to `hooks/session-start.md` if the agent has a mandatory trigger.
 
