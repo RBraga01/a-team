@@ -1,3 +1,7 @@
+---
+description: Investigate a failure and identify its root cause before fixing it.
+---
+
 # /debug
 
 Systematic root-cause debugging. Enforces the Iron Law — no fixes without investigation first.

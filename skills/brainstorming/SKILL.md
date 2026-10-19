@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Use BEFORE any creative work — creating features, building components, adding functionality. Explores user intent, requirements, and design before implementation. Hard-gated: no code until user approves the spec.
+description: "Use BEFORE any creative work — creating features, building components, adding functionality. Explores user intent, requirements, and design before implementation. Hard-gated: no code until user approves the spec."
 ---
 
 # Brainstorming Ideas Into Designs

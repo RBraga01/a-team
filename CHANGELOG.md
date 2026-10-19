@@ -111,7 +111,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - New `.copilot-plugin/hooks/hooks.json` carrying `SessionStart`, `PreToolUse`,
   `PostToolUse`, and `SessionEnd` hooks — full enforcement parity with Claude Code's
   `.claude/settings.json` (not just SessionStart like Codex CLI today).
-- Install command: `copilot plugin install RBraga01/a-team:.copilot-plugin`.
+- Install command: `copilot plugin install RBraga01/a-team`.
 - No new agents, skills, or rules — purely additive platform plumbing.
 
 ### Changed

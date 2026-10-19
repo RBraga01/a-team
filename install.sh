@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_URL="${A_TEAM_REPO_URL:-https://github.com/RBraga01/a-team.git}"
 DEST="${1:-$PWD}"
-DIRS=(".claude" ".claude-plugin" ".codex-plugin" ".cursor-plugin" ".copilot-plugin" ".opencode" "skills" "hooks" "templates" "scripts" "assets")
+DIRS=(".claude" ".claude-plugin" ".codex-plugin" ".cursor-plugin" ".copilot-plugin" "com.github.copilot" ".opencode" "skills" "hooks" "templates" "scripts" "assets")
 
 RESET="\033[0m"; BOLD="\033[1m"; GREEN="\033[32m"; BLUE="\033[34m"; RED="\033[31m"; DIM="\033[2m"
 
@@ -19,6 +19,7 @@ echo ""
 
 # -- Preflight checks --
 command -v git >/dev/null 2>&1 || { echo -e "${RED}Error: git is required but not installed.${RESET}"; exit 1; }
+command -v python3 >/dev/null 2>&1 && python3 -c 'import sys; sys.exit(sys.version_info < (3, 9))' >/dev/null 2>&1 || { echo -e "${RED}Error: Python 3.9+ must be available as python3 for hooks.${RESET}"; exit 1; }
 [ -d "$DEST" ]              || { echo -e "${RED}Error: destination '$DEST' does not exist.${RESET}"; exit 1; }
 
 # -- Sparse clone into temp dir --
@@ -75,7 +76,7 @@ fi
 
 # -- Smoke check: verify hook scripts are present --
 echo ""
-HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md" "plugin.json" "hooks/hooks.json")
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/session_start.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" "com.github.copilot/hooks/hooks.json" "com.github.copilot/agents/orchestrator.agent.md" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md" "plugin.json" "hooks/hooks.json")
 MISSING_COUNT=0
 for script in "${HOOK_SCRIPTS[@]}"; do
   if [ ! -f "$DEST/$script" ]; then

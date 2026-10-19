@@ -14,7 +14,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -84,6 +84,55 @@ test('marketplace.json a-team entry matches .claude-plugin/plugin.json version',
   )
 })
 
+test('Claude marketplace external packs use GitHub source objects', () => {
+  const market = readJson(join(ROOT, '.claude-plugin', 'marketplace.json'))
+  for (const entry of market.plugins.filter((plugin) => plugin.name !== 'a-team')) {
+    assert.deepEqual(entry.source, { source: 'github', repo: `RBraga01/${entry.name}` })
+  }
+})
+
+test('Claude plugin registers all canonical agents and project commands', () => {
+  const manifest = readJson(join(ROOT, '.claude-plugin', 'plugin.json'))
+  const agentNames = readdirSync(join(ROOT, '.claude', 'agents')).filter((name) => name.endsWith('.md')).sort()
+  const pluginNames = readdirSync(join(ROOT, 'agents')).filter((name) => name.endsWith('.md')).sort()
+  assert.deepEqual(pluginNames, agentNames)
+  for (const name of agentNames) {
+    const normalize = (content) => content.replace(/\r\n/g, '\n').split('\n').map((line) => line.trimEnd()).join('\n')
+    assert.equal(normalize(readFileSync(join(ROOT, 'agents', name), 'utf8')),
+      normalize(readFileSync(join(ROOT, '.claude', 'agents', name), 'utf8')))
+  }
+  assert.equal(manifest.commands, './.claude/commands/')
+})
+
+test('Claude project settings and agent tool restrictions use accepted keys', () => {
+  const settings = readJson(join(ROOT, '.claude', 'settings.json'))
+  assert.equal(settings.statusLine.type, 'command')
+  assert.equal(settings.hooks.PreToolUse[0].matcher, '*', 'Copilot requires a nonempty matcher for the shared hook')
+  const guard = settings.hooks.PreToolUse[0].hooks[0].command
+  assert.equal(guard, 'python3 scripts/pre_tool_use.py', 'guard must run in PowerShell and Bash and fail closed if unavailable')
+  assert.equal(settings.hooks.SessionStart[0].hooks[0].command, 'python3 scripts/session_start.py')
+  const supported = new Set(['Read', 'Glob', 'Grep', 'Write', 'Edit', 'Bash', 'Skill', 'Agent'])
+  const agentDir = join(ROOT, '.claude', 'agents')
+  for (const name of readdirSync(agentDir).filter((entry) => entry.endsWith('.md'))) {
+    const frontmatter = readFileSync(join(agentDir, name), 'utf8').split('---')[1]
+    assert.ok(!/^allowedTools:/m.test(frontmatter), `${name}: unsupported allowedTools key`)
+    const match = frontmatter.match(/^tools:\s*\n((?:  - .+\n)+)/m)
+    assert.ok(match, `${name}: missing tools allowlist`)
+    const tools = [...match[1].matchAll(/^  - (.+)$/gm)].map((found) => found[1])
+    assert.ok(tools.includes('Skill'), `${name}: must be able to invoke required skills`)
+    if (name === 'orchestrator.md') assert.ok(tools.includes('Agent'), 'orchestrator must dispatch agents')
+    for (const tool of tools) {
+      assert.ok(supported.has(tool), `${name}: unsupported tool name ${tool}`)
+    }
+  }
+})
+
+test('orchestrator init pruning instructions respect the PreToolUse guard', () => {
+  const instructions = readFileSync(join(ROOT, '.claude', 'agents', 'orchestrator.md'), 'utf8')
+  assert.ok(!instructions.includes('rm -rf'), 'recursive force removal would be blocked')
+  assert.match(instructions, /rmdir/)
+})
+
 test('manifests that declare a hooks file: file exists and parses as JSON', () => {
   for (const manifestPath of PLATFORM_MANIFESTS) {
     const manifestAbsDir = dirname(join(ROOT, manifestPath))
@@ -105,18 +154,34 @@ test('manifests that declare a hooks file: file exists and parses as JSON', () =
   }
 })
 
-test('GitHub Copilot CLI install command points to the plugin directory', () => {
+test('GitHub Copilot CLI install command uses the portable repository root', () => {
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
   const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8')
-  const installCommand = 'copilot plugin install RBraga01/a-team:.copilot-plugin'
+  assert.match(readme, /copilot plugin install RBraga01\/a-team(?:\s|`|$)/m)
+  assert.match(changelog, /copilot plugin install RBraga01\/a-team(?:\s|`|$)/m)
+  assert.doesNotMatch(readme, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
+})
 
-  assert.match(readme, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
-  assert.match(changelog, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
-  assert.ok(
-    existsSync(join(ROOT, '.copilot-plugin', 'plugin.json')),
-    `${installCommand} must resolve to a directory containing plugin.json`,
-  )
-  assert.doesNotMatch(readme, /copilot plugin install RBraga01\/a-team:a-team/)
+test('Copilot portable package has synced native agents and hooks', () => {
+  const source = join(ROOT, '.claude', 'agents')
+  const output = join(ROOT, 'com.github.copilot', 'agents')
+  const sourceNames = readdirSync(source).filter((name) => name.endsWith('.md')).sort()
+  const outputNames = readdirSync(output).filter((name) => name.endsWith('.agent.md')).sort()
+  assert.equal(sourceNames.length, 26)
+  assert.deepEqual(outputNames, sourceNames.map((name) => name.replace(/\.md$/, '.agent.md')))
+  for (const name of outputNames) {
+    const content = readFileSync(join(output, name), 'utf8')
+    assert.match(content, /^---\nname: [a-z0-9-]+\ndescription: ".+"\ntools: \[[^\n]+\]\n---\n/s)
+  }
+  const hooks = readJson(join(ROOT, 'com.github.copilot', 'hooks', 'hooks.json'))
+  assert.deepEqual(Object.keys(hooks.hooks).sort(), ['PostToolUse', 'PreToolUse', 'SessionEnd', 'SessionStart'].sort())
+})
+
+test('skill descriptions containing colon-space are valid YAML strings', () => {
+  for (const name of ['brainstorming', 'incident-response']) {
+    const content = readFileSync(join(ROOT, 'skills', name, 'SKILL.md'), 'utf8')
+    assert.match(content, /^---\r?\nname: [^\r\n]+\r?\ndescription: "[^"\r\n]+"\r?\n---/)
+  }
 })
 
 test('GitHub Copilot CLI manifest component paths resolve inside the repository', () => {
@@ -198,4 +263,13 @@ test('portable manifest and Codex overlay use a single root hooks file', () => {
   assert.match(JSON.stringify(hooks), /PLUGIN_ROOT/)
   assert.ok(!existsSync(join(ROOT, '.codex-plugin', 'hooks', 'hooks.json')),
     'old duplicate Codex hooks file should not be shipped')
+})
+
+test('Codex marketplace advertises the repository-root plugin', () => {
+  const market = readJson(join(ROOT, '.agents', 'plugins', 'marketplace.json'))
+  const plugin = market.plugins.find((entry) => entry.name === 'a-team')
+  assert.ok(plugin)
+  assert.equal(plugin.source.source, 'local')
+  assert.equal(plugin.source.path, './')
+  assert.equal(plugin.policy.installation, 'AVAILABLE')
 })

@@ -1,3 +1,7 @@
+---
+description: Review changed code for correctness, security and maintainability.
+---
+
 # /code-review
 
 Review staged and recent code changes for quality, security, and correctness.

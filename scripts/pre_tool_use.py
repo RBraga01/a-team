@@ -72,9 +72,10 @@ _ENV_BASH_PATTERNS = [
 
 def _is_env_access(tool_name: str, tool_input: dict) -> bool:
     if tool_name in ("Read", "Edit", "MultiEdit", "Write"):
-        path = tool_input.get("file_path", "")
-        if ".env" in path and not any(path.endswith(s) for s in _ENV_SAFE_SUFFIXES):
-            return True
+        for key in ("file_path", "path", "filePath"):
+            path = tool_input.get(key, "")
+            if isinstance(path, str) and ".env" in path and not any(path.endswith(s) for s in _ENV_SAFE_SUFFIXES):
+                return True
 
     if tool_name == "Bash":
         cmd = tool_input.get("command", "")
@@ -101,7 +102,8 @@ def _log(data: dict) -> None:
                 existing = json.loads(log_path.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, ValueError):
                 pass
-        existing.append(data)
+        # Record the event type only. Tool arguments can contain secrets or user content.
+        existing.append({"tool_name": data.get("tool_name", "")})
         log_path.write_text(json.dumps(existing, indent=2), encoding="utf-8")
     except Exception:
         pass
@@ -129,7 +131,6 @@ def main() -> None:
         cmd = tool_input.get("command", "")
         if _is_destructive(cmd):
             print("BLOQUEADO: comando destrutivo detectado e cancelado.", file=sys.stderr)
-            print(f"Comando: {cmd[:120]}", file=sys.stderr)
             sys.exit(2)
 
     _log(data)

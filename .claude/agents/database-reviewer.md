@@ -1,9 +1,10 @@
 ---
 name: database-reviewer
 description: PostgreSQL database specialist for query optimization, schema design, security, and performance. Use PROACTIVELY when writing SQL, creating migrations, designing schemas, or troubleshooting database performance.
-allowedTools:
-  - read
-  - shell
+tools:
+  - Read
+  - Bash
+  - Skill
 model: sonnet
 ---
 

@@ -1,0 +1,22 @@
+The orchestrator is running `/orchestrate init` in the background. It will delete the agents and skills that don't fit the Python-only CLI scope in `INIT.md`. It will also write `.agent-sync/TEAM.md` and `.agent-sync/ROUTING.md`. I'll report the kept and pruned lists when it finishes.
+
+`/orchestrate init` is only partly done. The orchestrator wrote `.agent-sync/TEAM.md` and `.agent-sync/ROUTING.md`, but it deleted nothing. The project's safety hook (`scripts/pre_tool_use.py`) blocked the `rm` as destructive, and the orchestrator didn't try to get around it. `TEAM.md` marks pruning as INCOMPLETE. `ROUTING.md` sends no work to the pruned items and has an empty File Claims table.
+
+**Keep (11 agents):** orchestrator, architect, planner, code-reviewer, security-reviewer, tdd-guide, debugger, build-error-resolver, refactor-cleaner, python-reviewer, harness-optimizer.
+
+**Keep (15 skills):** using-a-team, verification-before-completion, brainstorming, writing-plans, executing-plans, subagent-driven-development, dispatching-parallel-agents, test-driven-development, systematic-debugging, five-whys, architecture-audit, using-git-worktrees, smart-init, writing-skills, skill-duplication-audit.
+
+**Still to prune (15 agents):**
+- Other languages: go-, rust-, typescript-, kotlin-, swift- and flutter-reviewer.
+- Out of scope per `INIT.md`: database-reviewer, e2e-runner, chief-of-staff, loop-operator, infra-reviewer, compliance-reviewer, ai-reviewer.
+- Not needed yet: performance-profiler, doc-updater.
+
+**Still to prune (5 skills):** api-contract-first, incident-response, data-migration, performance-audit, finishing-a-development-branch.
+
+**Decision for you:** pruning needs one of two things.
+- You delete the files yourself.
+- You approve an exception to the hook, and I run the deletions.
+
+The files are the 15 `.claude/agents/<name>.md` files, the 5 `skills/<name>/SKILL.md` files, and then their 5 empty folders. All of them are in the git baseline, so they can be restored.
+
+Which do you want?

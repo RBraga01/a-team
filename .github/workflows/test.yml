@@ -6,6 +6,8 @@ on:
   pull_request:
     paths:
       - 'skills/**'
+      - 'agents/**'
+      - '.agents/**'
       - '.claude/agents/**'
       - '.claude/rules/**'
       - 'tests/**'
@@ -16,13 +18,15 @@ on:
       - '.codex-plugin/**'
       - '.cursor-plugin/**'
       - '.copilot-plugin/**'
+      - 'com.github.copilot/**'
       - '.opencode/**'
       - 'assets/**'
       - 'README.md'
       - 'plugin.json'
       - 'hooks/**'
       - 'docs/installation.md'
-      - 'docs/installation.md'
+      - 'docs/index.html'
+      - 'docs/host-validation*.md'
       - '.github/workflows/test.yml'
   workflow_dispatch:
     inputs:
@@ -57,6 +61,15 @@ jobs:
       - name: Check manifests and Bash installation
         working-directory: tests
         run: node --test lib/plugin-manifests.test.js lib/installers.test.js lib/opencode-commands.test.js
+
+      - name: Check generated plugin agents
+        run: python scripts/sync_plugin_agents.py --check
+
+      - name: Check Python guards and consistency
+        run: |
+          python -m pip install pytest
+          python -m pytest -q tests
+          python scripts/check_consistency.py
 
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:

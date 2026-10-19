@@ -1,6 +1,6 @@
 ---
 name: incident-response
-description: Production incident playbook. Use immediately when production is degraded or down. Five phases: detect, contain, diagnose, resolve, post-mortem. Prevents the chaos of uncoordinated response and ensures every incident produces lasting improvements.
+description: "Production incident playbook. Use immediately when production is degraded or down. Five phases: detect, contain, diagnose, resolve, post-mortem. Prevents the chaos of uncoordinated response and ensures every incident produces lasting improvements."
 ---
 
 # Incident Response

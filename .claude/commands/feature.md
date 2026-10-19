@@ -1,3 +1,7 @@
+---
+description: Run the feature workflow from design through implementation and review.
+---
+
 # /feature
 
 Full feature development workflow from brainstorming to merged code.

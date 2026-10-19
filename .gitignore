@@ -25,6 +25,8 @@ Thumbs.db
 tests/node_modules/
 tests/reports/
 tests/transcripts/
+__pycache__/
+*.pyc
 
 # Logs
 *.log
@@ -32,6 +34,7 @@ bash-commands.log
 
 # A Team runtime files — not committed
 .agent-sync/metrics/
+.agent-sync/logs/
 .agent-sync/current-task.json
 .agent-sync/queue/stale/
 .agent-sync/watcher.pid

@@ -1,3 +1,7 @@
+---
+description: Run or maintain end-to-end tests for critical user flows.
+---
+
 # /e2e
 
 Run, generate, or maintain end-to-end tests for critical user flows.

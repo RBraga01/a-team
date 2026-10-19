@@ -1,3 +1,7 @@
+---
+description: Audit changed code and dependencies for security risks.
+---
+
 # /security-review
 
 Run a focused security audit on current code changes.

@@ -2,6 +2,7 @@
   "name": "a-team",
   "description": "Universal multi-agent infrastructure: 26 specialist agents, 20 enforced workflow skills, and a lead orchestrator",
   "version": "1.4.1",
+  "commands": "./.claude/commands/",
   "author": {
     "name": "RBraga01",
     "url": "https://github.com/RBraga01"

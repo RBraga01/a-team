@@ -1,3 +1,7 @@
+---
+description: Repair build and type errors with minimal changes.
+---
+
 # /build-fix
 
 Diagnose and fix build errors or TypeScript type errors with minimal code changes.

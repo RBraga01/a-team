@@ -1,6 +1,7 @@
 {
   "model": "claude-sonnet-4-6",
   "statusLine": {
+    "type": "command",
     "command": "python scripts/status.py 2>/dev/null || python3 scripts/status.py 2>/dev/null || py scripts/status.py 2>/dev/null || echo '⚡ A Team'"
   },
   "permissions": {
@@ -116,11 +117,11 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "if test -f scripts/pre_tool_use.py; then python scripts/pre_tool_use.py 2>/dev/null || python3 scripts/pre_tool_use.py 2>/dev/null; else echo '[A Team] WARNING: security gate inactive (scripts/pre_tool_use.py missing — re-run installer)'; fi"
+            "command": "python3 scripts/pre_tool_use.py"
           }
         ]
       }
@@ -130,15 +131,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cat \"skills/using-a-team/SKILL.md\" 2>/dev/null || cat \"hooks/session-start.md\" 2>/dev/null || echo '[A Team] Session started. Run /orchestrate init if INIT.md and .agent-sync/TEAM.md are missing.'"
-          },
-          {
-            "type": "command",
-            "command": "for f in scripts/pre_tool_use.py scripts/watcher.py scripts/status.py scripts/metrics.py scripts/session_export.py; do test -f \"$f\" || echo \"[A Team] WARNING: $f not found — enforcement inactive. Re-run the installer.\"; done"
-          },
-          {
-            "type": "command",
-            "command": "if test -f scripts/watcher.py; then (python scripts/watcher.py >/dev/null 2>&1 || python3 scripts/watcher.py >/dev/null 2>&1) & fi"
+            "command": "python3 scripts/session_start.py"
           }
         ]
       }
@@ -159,11 +152,11 @@
         "hooks": [
           {
             "type": "command",
-            "command": "test -f scripts/metrics.py && (python scripts/metrics.py session_end 2>/dev/null || python3 scripts/metrics.py session_end 2>/dev/null) || true"
+            "command": "python3 scripts/metrics.py session_end"
           },
           {
             "type": "command",
-            "command": "test -f scripts/session_export.py && (python scripts/session_export.py 2>/dev/null || python3 scripts/session_export.py 2>/dev/null) || true"
+            "command": "python3 scripts/session_export.py"
           }
         ]
       }
