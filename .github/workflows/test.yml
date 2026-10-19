@@ -16,6 +16,7 @@ on:
       - '.codex-plugin/**'
       - '.cursor-plugin/**'
       - '.copilot-plugin/**'
+      - 'com.github.copilot/**'
       - '.opencode/**'
       - 'assets/**'
       - 'README.md'
@@ -57,6 +58,9 @@ jobs:
       - name: Check manifests and Bash installation
         working-directory: tests
         run: node --test lib/plugin-manifests.test.js lib/installers.test.js lib/opencode-commands.test.js
+
+      - name: Check generated Copilot agents
+        run: python scripts/sync_copilot_agents.py --check
 
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:

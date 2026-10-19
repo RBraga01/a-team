@@ -14,7 +14,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
 import { join, dirname, normalize } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -105,18 +105,34 @@ test('manifests that declare a hooks file: file exists and parses as JSON', () =
   }
 })
 
-test('GitHub Copilot CLI install command points to the plugin directory', () => {
+test('GitHub Copilot CLI install command uses the portable repository root', () => {
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8')
   const changelog = readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8')
-  const installCommand = 'copilot plugin install RBraga01/a-team:.copilot-plugin'
+  assert.match(readme, /copilot plugin install RBraga01\/a-team(?:\s|`|$)/m)
+  assert.match(changelog, /copilot plugin install RBraga01\/a-team(?:\s|`|$)/m)
+  assert.doesNotMatch(readme, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
+})
 
-  assert.match(readme, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
-  assert.match(changelog, /copilot plugin install RBraga01\/a-team:\.copilot-plugin/)
-  assert.ok(
-    existsSync(join(ROOT, '.copilot-plugin', 'plugin.json')),
-    `${installCommand} must resolve to a directory containing plugin.json`,
-  )
-  assert.doesNotMatch(readme, /copilot plugin install RBraga01\/a-team:a-team/)
+test('Copilot portable package has synced native agents and hooks', () => {
+  const source = join(ROOT, '.claude', 'agents')
+  const output = join(ROOT, 'com.github.copilot', 'agents')
+  const sourceNames = readdirSync(source).filter((name) => name.endsWith('.md')).sort()
+  const outputNames = readdirSync(output).filter((name) => name.endsWith('.agent.md')).sort()
+  assert.equal(sourceNames.length, 26)
+  assert.deepEqual(outputNames, sourceNames.map((name) => name.replace(/\.md$/, '.agent.md')))
+  for (const name of outputNames) {
+    const content = readFileSync(join(output, name), 'utf8')
+    assert.match(content, /^---\nname: [a-z0-9-]+\ndescription: ".+"\n---\n/s)
+  }
+  const hooks = readJson(join(ROOT, 'com.github.copilot', 'hooks', 'hooks.json'))
+  assert.deepEqual(Object.keys(hooks.hooks).sort(), ['PostToolUse', 'PreToolUse', 'SessionEnd', 'SessionStart'].sort())
+})
+
+test('skill descriptions containing colon-space are valid YAML strings', () => {
+  for (const name of ['brainstorming', 'incident-response']) {
+    const content = readFileSync(join(ROOT, 'skills', name, 'SKILL.md'), 'utf8')
+    assert.match(content, /^---\r?\nname: [^\r\n]+\r?\ndescription: "[^"\r\n]+"\r?\n---/)
+  }
 })
 
 test('GitHub Copilot CLI manifest component paths resolve inside the repository', () => {

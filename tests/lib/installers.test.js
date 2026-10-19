@@ -17,6 +17,8 @@ const expectedPaths = [
   '.codex-plugin/plugin.json',
   '.cursor-plugin/plugin.json',
   '.copilot-plugin/plugin.json',
+  'com.github.copilot/agents/orchestrator.agent.md',
+  'com.github.copilot/hooks/hooks.json',
   '.opencode/commands/orchestrate.md',
   'assets/ATeam_full.png',
   'skills',

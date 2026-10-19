@@ -72,7 +72,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/RBraga01/a-team/main/install
 
 ```bash
 gh repo clone RBraga01/a-team -- --depth 1
-cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
+cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/com.github.copilot a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets your-project/
 cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json your-project/
 cp -n a-team/INIT_TEMPLATE.md your-project/INIT.md
 rm -rf a-team
@@ -86,8 +86,8 @@ rm -rf a-team
 git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
-cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../your-project/
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
+cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets ../your-project/
 cp -n AGENTS.md CLAUDE.md plugin.json ../your-project/
 cp -n INIT_TEMPLATE.md ../your-project/INIT.md
 cd .. && rm -rf a-team
@@ -99,8 +99,8 @@ cd .. && rm -rf a-team
 git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
-Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
+Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,com.github.copilot,.opencode,skills,hooks,templates,scripts,assets ..\your-project\
 foreach ($f in 'AGENTS.md','CLAUDE.md','plugin.json','INIT_TEMPLATE.md') {
   $target = if ($f -eq 'INIT_TEMPLATE.md') { 'INIT.md' } else { $f }
   if (-not (Test-Path "..\\your-project\\$target")) { Copy-Item $f "..\\your-project\\$target" }
@@ -114,7 +114,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 
 1. Go to [github.com/RBraga01/a-team](https://github.com/RBraga01/a-team)
 2. Click **Code → Download ZIP**
-3. Extract and copy `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/`, `assets/` into your project root
+3. Extract and copy `.claude/`, `.claude-plugin/`, `.codex-plugin/`, `.cursor-plugin/`, `.copilot-plugin/`, `com.github.copilot/`, `.opencode/`, `skills/`, `hooks/`, `templates/`, `scripts/`, `assets/` into your project root
 4. Copy `AGENTS.md`, `CLAUDE.md` and root `plugin.json` only when they do not already exist; otherwise review and merge instructions manually. Copy `INIT_TEMPLATE.md` as `INIT.md` when absent.
 
 ---
@@ -124,7 +124,7 @@ cd .. ; Remove-Item a-team -Recurse -Force
 If the project is already in progress, use `cp -rn` (no-clobber) when copying the folders so your existing files are not overwritten:
 
 ```bash
-cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -rn a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/com.github.copilot a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
 cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json ./
 cp -n a-team/INIT_TEMPLATE.md ./INIT.md
 ```
@@ -239,10 +239,10 @@ A Team distributes definitions for five tools. Shared state in `.agent-sync/` is
 | **Claude Code** | `.claude/agents/` | `skills/` | `.claude/rules/` | project settings | `.claude/commands/` |
 | **Codex CLI** | Not declared by this plugin | `./skills/` | `AGENTS.md` as project instructions | `SessionStart` declared | Not declared |
 | **Cursor** | `./.claude/agents/` | `./skills/` | `./.claude/rules/` | `sessionStart` declared | Not declared |
-| **GitHub Copilot CLI** | `../.claude/agents/`* | `../skills/`* | Not declared | Four events declared* | Not declared |
+| **GitHub Copilot CLI** | `com.github.copilot/agents/` | root `skills/` | Not declared | Four events declared* | Not declared |
 | **OpenCode** | No A Team-native agents bundled | Host-discovered or manual | Not declared | Not declared | `.opencode/commands/` |
 
-*Copilot uses a separate legacy plugin installed from `.copilot-plugin/`. Whether its sibling component paths remain available after installation has **not** been verified; do not assume those hooks are active.*
+*Copilot CLI 1.0.98 installed the repository-root plugin and discovered all 20 skills on Windows. The 26 native agent files and four hook events are packaged; their runtime execution has not yet been verified.*
 
 ### Running multiple CLIs on the same project
 
@@ -262,12 +262,12 @@ All CLIs share `.agent-sync/` (DAILY.md, ROUTING.md, TEAM.md, results/). This me
 
 **OpenCode** receives A Team's command aliases in `.opencode/commands/`. This distribution does not bundle OpenCode-native agent or hook definitions; this is not a limitation of the OpenCode platform itself.
 
-**GitHub Copilot CLI** has a legacy manifest declaring agents, skills and four hook events. Its installation command is valid, but package-relative component loading and enforcement parity have **not** been demonstrated on a real Copilot CLI session.
+**GitHub Copilot CLI** loads the portable root plugin. Copilot-specific agents and hooks are under `com.github.copilot/`; 20 skills loaded in a Windows CLI install. An authenticated session is still needed to confirm agent invocation and hook execution.
 
 Install:
 
 ```bash
-copilot plugin install RBraga01/a-team:.copilot-plugin
+copilot plugin install RBraga01/a-team
 ```
 
 ---

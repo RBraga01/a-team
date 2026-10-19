@@ -8,7 +8,7 @@ set -euo pipefail
 
 REPO_URL="${A_TEAM_REPO_URL:-https://github.com/RBraga01/a-team.git}"
 DEST="${1:-$PWD}"
-DIRS=(".claude" ".claude-plugin" ".codex-plugin" ".cursor-plugin" ".copilot-plugin" ".opencode" "skills" "hooks" "templates" "scripts" "assets")
+DIRS=(".claude" ".claude-plugin" ".codex-plugin" ".cursor-plugin" ".copilot-plugin" "com.github.copilot" ".opencode" "skills" "hooks" "templates" "scripts" "assets")
 
 RESET="\033[0m"; BOLD="\033[1m"; GREEN="\033[32m"; BLUE="\033[34m"; RED="\033[31m"; DIM="\033[2m"
 
@@ -75,7 +75,7 @@ fi
 
 # -- Smoke check: verify hook scripts are present --
 echo ""
-HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md" "plugin.json" "hooks/hooks.json")
+HOOK_SCRIPTS=("scripts/pre_tool_use.py" "scripts/watcher.py" "scripts/status.py" "scripts/metrics.py" "scripts/session_export.py" ".claude-plugin/plugin.json" ".codex-plugin/plugin.json" ".cursor-plugin/plugin.json" ".copilot-plugin/plugin.json" "com.github.copilot/hooks/hooks.json" "com.github.copilot/agents/orchestrator.agent.md" ".opencode/commands/orchestrate.md" "assets/ATeam_full.png" "AGENTS.md" "CLAUDE.md" "plugin.json" "hooks/hooks.json")
 MISSING_COUNT=0
 for script in "${HOOK_SCRIPTS[@]}"; do
   if [ ! -f "$DEST/$script" ]; then

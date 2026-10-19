@@ -15,7 +15,7 @@ test('OpenCode project slash-command roster is complete', () => {
 
 for (const name of expected) {
   test(`OpenCode /${name} has native command metadata and forwards user arguments`, () => {
-    const source = readFileSync(join(DIR, name + '.md'), 'utf8')
+    const source = readFileSync(join(DIR, name + '.md'), 'utf8').replace(/\r\n/g, '\n')
     assert.match(source, /^---\n(description: [^\n]+)\n---\n/)
     assert.ok(source.includes('$ARGUMENTS'), 'CLI arguments must not be lost')
     assert.doesNotMatch(source, /\binvokes?\b[^\n]*native agent/i)

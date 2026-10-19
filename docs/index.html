@@ -734,8 +734,8 @@ footer p { font-size:.8rem; color:var(--muted); }
 <!-- ══════════ PLATFORMS ══════════ -->
 <section class="section reveal">
   <div class="section-tag">Compatibility</div>
-  <h2>Works on every major AI coding platform</h2>
-  <p class="section-sub">Same agents. Same rules. Same standards. Your whole team, whatever tool they use.</p>
+  <h2>Integrations for five AI coding platforms</h2>
+  <p class="section-sub">Shared project files and platform-specific integrations; activation and hook support vary by host.</p>
   <div class="platforms-grid">
 
     <!-- Claude Code / Anthropic -->
@@ -744,8 +744,8 @@ footer p { font-size:.8rem; color:var(--muted); }
         <img src="https://cdn.simpleicons.org/anthropic/CC785C" width="38" height="38" alt="Anthropic">
       </div>
       <h3>Claude Code</h3>
-      <p>Full support — hooks, slash commands, native sub-agent dispatch, worktrees</p>
-      <span class="plat-badge badge-full">Full Support</span>
+      <p>Project agents, skills, commands and hooks; authenticated runtime validation pending</p>
+      <span class="plat-badge badge-full">Integration available</span>
     </div>
 
     <!-- Codex CLI / OpenAI -->
@@ -754,8 +754,8 @@ footer p { font-size:.8rem; color:var(--muted); }
         <img src="./assets/icons/openai.svg" width="36" height="36" alt="OpenAI">
       </div>
       <h3>Codex CLI</h3>
-      <p>All agents and skills load via plugin manifest — rules and session hook included</p>
-      <span class="plat-badge badge-full">Full Support</span>
+      <p>20 skills declared; project AGENTS.md supplies instructions. Native specialist agents are not packaged.</p>
+      <span class="plat-badge badge-full">Validation pending</span>
     </div>
 
     <!-- Cursor -->
@@ -764,8 +764,8 @@ footer p { font-size:.8rem; color:var(--muted); }
         <img src="https://cdn.simpleicons.org/cursor/ffffff" width="36" height="36" alt="Cursor">
       </div>
       <h3>Cursor</h3>
-      <p>Skills and rules loaded via plugin; agents available on demand across projects</p>
-      <span class="plat-badge badge-strong">Strong Support</span>
+      <p>Agent, skill, rule and hook paths declared; IDE registration still requires testing</p>
+      <span class="plat-badge badge-strong">Validation pending</span>
     </div>
 
     <!-- GitHub Copilot CLI -->
@@ -774,8 +774,8 @@ footer p { font-size:.8rem; color:var(--muted); }
         <img src="https://cdn.simpleicons.org/github/ffffff" width="36" height="36" alt="GitHub">
       </div>
       <h3>Copilot CLI</h3>
-      <p>Agents, skills, and hooks load through the Copilot CLI plugin manifest</p>
-      <span class="plat-badge badge-full">Full Support</span>
+      <p>Windows CLI installation loaded 20 skills; 26 agent files and four hooks packaged. Runtime checks pending.</p>
+      <span class="plat-badge badge-full">Partial validation</span>
     </div>
 
     <!-- OpenCode -->
@@ -792,8 +792,8 @@ footer p { font-size:.8rem; color:var(--muted); }
         </svg>
       </div>
       <h3>OpenCode</h3>
-      <p>All 10 command aliases available; open-source and self-hostable</p>
-      <span class="plat-badge badge-good">Good Support</span>
+      <p>10 project command definitions; interactive discovery and execution require validation</p>
+      <span class="plat-badge badge-good">Validation pending</span>
     </div>
 
   </div>
@@ -830,7 +830,7 @@ footer p { font-size:.8rem; color:var(--muted); }
     <div class="tab-pane" id="tab-ghcli">
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code>gh repo clone RBraga01/a-team -- --depth 1
-cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
+cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/com.github.copilot a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
 cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
 cp -n a-team/INIT_TEMPLATE.md INIT.md
 rm -rf a-team</code></pre></div>
@@ -843,8 +843,8 @@ rm -rf a-team</code></pre></div>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 \
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
-cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets ../
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
+cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets ../
 cp -n AGENTS.md CLAUDE.md ../
 cp -n INIT_TEMPLATE.md ../INIT.md
 cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
@@ -853,8 +853,8 @@ cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
           <pre><code>git clone --filter=blob:none --sparse --depth 1 `
   https://github.com/RBraga01/a-team.git
 cd a-team
-git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin .opencode skills hooks templates scripts assets
-Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,.opencode,skills,hooks,templates,scripts,assets ..\
+git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
+Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,com.github.copilot,.opencode,skills,hooks,templates,scripts,assets ..\
 # Existing AGENTS.md/CLAUDE.md/INIT.md must not be replaced
 foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
   $dest = if ($f -eq 'INIT_TEMPLATE.md') { '..\\INIT.md' } else { "..\\$f" }
@@ -869,7 +869,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <li>Go to <a href="https://github.com/RBraga01/a-team" target="_blank" rel="noopener" style="color:var(--blue)">github.com/RBraga01/a-team</a></li>
         <li>Click <strong>Code → Download ZIP</strong></li>
         <li>Extract the archive</li>
-        <li>Copy all shared and platform directories (<code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code>, <code>scripts/</code>, <code>.claude-plugin/</code>, <code>.codex-plugin/</code>, <code>.cursor-plugin/</code>, <code>.copilot-plugin/</code>, <code>.opencode/</code>, <code>assets/</code>) into your project root</li>
+        <li>Copy all shared and platform directories (<code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code>, <code>scripts/</code>, <code>.claude-plugin/</code>, <code>.codex-plugin/</code>, <code>.cursor-plugin/</code>, <code>.copilot-plugin/</code>, <code>com.github.copilot/</code>, <code>.opencode/</code>, <code>assets/</code>) into your project root</li>
         <li>Copy <code>INIT_TEMPLATE.md</code> as <code>INIT.md</code>, and copy root <code>AGENTS.md</code>/<code>CLAUDE.md</code> only if those files are absent</li>
       </ol>
       <p class="install-note">No git or command line required. Works on any OS.</p>

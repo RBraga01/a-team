@@ -9,7 +9,7 @@ param(
 )
 
 $RepoUrl  = if ($env:A_TEAM_REPO_URL) { $env:A_TEAM_REPO_URL } else { "https://github.com/RBraga01/a-team.git" }
-$Dirs     = @(".claude", ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".copilot-plugin", ".opencode", "skills", "hooks", "templates", "scripts", "assets")
+$Dirs     = @(".claude", ".claude-plugin", ".codex-plugin", ".cursor-plugin", ".copilot-plugin", "com.github.copilot", ".opencode", "skills", "hooks", "templates", "scripts", "assets")
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
@@ -123,7 +123,7 @@ Remove-Item $Tmp -Recurse -Force
 
 # -- Smoke check: verify hook scripts are present --
 Write-Host ""
-$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md","plugin.json","hooks/hooks.json")
+$HookScripts = @("scripts/pre_tool_use.py","scripts/watcher.py","scripts/status.py","scripts/metrics.py","scripts/session_export.py",".claude-plugin/plugin.json",".codex-plugin/plugin.json",".cursor-plugin/plugin.json",".copilot-plugin/plugin.json","com.github.copilot/hooks/hooks.json","com.github.copilot/agents/orchestrator.agent.md",".opencode/commands/orchestrate.md","assets/ATeam_full.png","AGENTS.md","CLAUDE.md","plugin.json","hooks/hooks.json")
 $MissingCount = 0
 foreach ($script in $HookScripts) {
     $scriptPath = Join-Path $Destination $script

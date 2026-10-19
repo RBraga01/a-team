@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "bash": "printf '%s\\n' '{\"additionalContext\":\"[A Team] Read AGENTS.md and use /orchestrate init if .agent-sync/TEAM.md is missing. The project installer is required for hook scripts.\"}'",
+        "powershell": "Write-Output '{\"additionalContext\":\"[A Team] Read AGENTS.md and use /orchestrate init if .agent-sync/TEAM.md is missing. The project installer is required for hook scripts.\"}'"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "bash": "if test -f scripts/pre_tool_use.py; then python3 scripts/pre_tool_use.py; else printf '%s\\n' '[A Team] WARNING: project guard absent; run install.sh' >&2; fi",
+        "powershell": "if (Test-Path scripts/pre_tool_use.py) { python scripts/pre_tool_use.py; exit $LASTEXITCODE } else { [Console]::Error.WriteLine('[A Team] WARNING: project guard absent; run install.ps1') }"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "bash": "printf '%s\\n' '{\"additionalContext\":\"[A Team] Verify modified code and request a code review before committing.\"}'",
+        "powershell": "Write-Output '{\"additionalContext\":\"[A Team] Verify modified code and request a code review before committing.\"}'"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "type": "command",
+        "bash": "if test -f scripts/metrics.py; then python3 scripts/metrics.py session_end; fi",
+        "powershell": "if (Test-Path scripts/metrics.py) { python scripts/metrics.py session_end }"
+      }
+    ]
+  }
+}
