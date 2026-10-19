@@ -1,6 +1,7 @@
 import json
 import subprocess
 import sys
+from uuid import uuid4
 from pathlib import Path
 
 from scripts.pre_tool_use import _is_env_access, _log
@@ -22,7 +23,8 @@ def test_guard_log_does_not_retain_tool_arguments(tmp_path, monkeypatch):
 
 
 def test_rejected_command_never_appears_in_stderr_or_log(tmp_path):
-    secret = "secret-value-should-not-be-logged"
+    # A unique synthetic marker checks redaction without a credential-like literal in source.
+    secret = "redaction-" + uuid4().hex
     command = f"rm -rf /tmp/example --token={secret}"
     script = Path(__file__).resolve().parents[1] / "scripts" / "pre_tool_use.py"
     result = subprocess.run(
