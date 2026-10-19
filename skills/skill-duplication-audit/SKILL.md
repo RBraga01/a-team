@@ -1,5 +1,6 @@
 ---
 name: skill-duplication-audit
+description: "Audit overlapping skills across A Team and builder packs; identify redundant or conflicting guidance."
 version: v0.1
 state: Approved
 owner: Miguel
