@@ -46,6 +46,7 @@ def test_direct_agent_and_skill_dispatch_allowed_only_if_active(project):
     assert not may_dispatch(project, "Agent", "security-reviewer")[0]
     assert may_dispatch(project, "Skill", "writing-plans")[0]
     assert not may_dispatch(project, "Skill", "data-migration")[0]
+    assert not may_dispatch(project, "Skill", "smart-init")[0]  # Inactive after init.
     assert may_dispatch(project, "Agent", "general-purpose")[0]
 
 
@@ -157,3 +158,14 @@ def test_pretool_hook_blocks_when_legacy_roster_exists(project):
         cwd=project, text=True, capture_output=True, check=False,
     )
     assert result.returncode == 2
+
+
+def test_symlinked_roster_destination_is_rejected(project):
+    target = project / "not-a-roster.md"
+    target.write_text("DO NOT OVERWRITE", encoding="utf-8")
+    state = project / ".agent-sync"
+    state.mkdir()
+    (state / "TEAM.md").symlink_to(target)
+    with pytest.raises(RosterError, match="symlink"):
+        initialize(project)
+    assert target.read_text(encoding="utf-8") == "DO NOT OVERWRITE"

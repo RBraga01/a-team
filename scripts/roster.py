@@ -140,6 +140,8 @@ def create(root: Path, selected_agents: set[str], selected_skills: set[str], *, 
         raise RosterError("Unknown selected component")
     state_dir = root / ".agent-sync"
     team_path, route_path = state_dir / "TEAM.md", state_dir / "ROUTING.md"
+    if state_dir.is_symlink() or team_path.is_symlink() or route_path.is_symlink():
+        raise RosterError("Refusing to write a roster through a symlink")
     if (team_path.exists() or route_path.exists()) and not replace:
         raise RosterError("Existing roster found; require explicit --replace for reinitialization")
     if route_path.is_file() and _has_in_progress_claims(route_path.read_text(encoding="utf-8")):
@@ -192,8 +194,16 @@ def may_dispatch(root: Path, kind: str, identifier: str) -> tuple[bool, str]:
     elif kind == "Skill":
         if name not in skill_names and not identifier.startswith(("a-team:", "a-team@")):
             return True, "External skill; outside A Team project roster"
-        if name in {"using-a-team", "smart-init"}:
-            return True, "Bootstrap and repair meta-skill permitted"
+        if name == "using-a-team":
+            return True, "Mandatory meta-skill permitted for roster repair"
+        if name == "smart-init":
+            try:
+                selected = load(root)
+            except (OSError, RosterError):
+                return True, "Bootstrap meta-skill permitted for roster repair"
+            return (name in selected.skills), (
+                "Active bootstrap skill" if name in selected.skills else "Inactive in A Team roster"
+            )
     else:
         return False, "Unsupported dispatch kind"
     try:
