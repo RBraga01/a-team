@@ -59,8 +59,8 @@ jobs:
         working-directory: tests
         run: node --test lib/plugin-manifests.test.js lib/installers.test.js lib/opencode-commands.test.js
 
-      - name: Check generated Copilot agents
-        run: python scripts/sync_copilot_agents.py --check
+      - name: Check generated plugin agents
+        run: python scripts/sync_plugin_agents.py --check
 
   # ── Validate the Windows PowerShell installer on Windows ───────────────────
   installer-windows:

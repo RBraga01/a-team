@@ -1,6 +1,6 @@
-"""Generate Copilot-native agent files from the canonical Claude profiles.
+"""Generate plugin agent files from the canonical Claude project profiles.
 
-Run ``python scripts/sync_copilot_agents.py`` after changing a source profile.
+Run ``python scripts/sync_plugin_agents.py`` after changing a source profile.
 ``--check`` verifies the committed copies without writing files.
 """
 
@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / ".claude" / "agents"
 TARGET = ROOT / "com.github.copilot" / "agents"
+CLAUDE_TARGET = ROOT / "agents"
 
 
 def convert(path: Path) -> str:
@@ -50,20 +51,32 @@ def main() -> int:
     }
     if len(expected) != 26:
         raise ValueError(f"Expected 26 canonical agents, got {len(expected)}")
+    claude_expected = {
+        path.name: "\n".join(line.rstrip() for line in path.read_text(encoding="utf-8").splitlines()) + "\n"
+        for path in sorted(SOURCE.glob("*.md"))
+    }
     actual = {path.name: path.read_text(encoding="utf-8") for path in TARGET.glob("*.agent.md")} if TARGET.exists() else {}
+    claude_actual = {path.name: path.read_text(encoding="utf-8") for path in CLAUDE_TARGET.glob("*.md")} if CLAUDE_TARGET.exists() else {}
     if args.check:
         changed = [name for name, content in expected.items() if actual.get(name) != content]
         extra = set(actual) - set(expected)
-        if changed or extra:
-            print(f"Copilot agents out of sync: changed={changed}, extra={sorted(extra)}")
+        claude_changed = [name for name, content in claude_expected.items() if claude_actual.get(name) != content]
+        claude_extra = set(claude_actual) - set(claude_expected)
+        if changed or extra or claude_changed or claude_extra:
+            print(f"Plugin agents out of sync: copilot={changed}, claude={claude_changed}, extra={sorted(extra | claude_extra)}")
             return 1
     else:
         TARGET.mkdir(parents=True, exist_ok=True)
+        CLAUDE_TARGET.mkdir(parents=True, exist_ok=True)
         for name, content in expected.items():
             (TARGET / name).write_text(content, encoding="utf-8", newline="\n")
+        for name, content in claude_expected.items():
+            (CLAUDE_TARGET / name).write_text(content, encoding="utf-8", newline="\n")
         for name in set(actual) - set(expected):
             (TARGET / name).unlink()
-    print(f"Copilot agents synced: {len(expected)}")
+        for name in set(claude_actual) - set(claude_expected):
+            (CLAUDE_TARGET / name).unlink()
+    print(f"Plugin agents synced: {len(expected)} Copilot, {len(claude_expected)} Claude")
     return 0
 
 

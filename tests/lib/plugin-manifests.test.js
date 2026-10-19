@@ -94,7 +94,13 @@ test('Claude marketplace external packs use GitHub source objects', () => {
 test('Claude plugin registers all canonical agents and project commands', () => {
   const manifest = readJson(join(ROOT, '.claude-plugin', 'plugin.json'))
   const agentNames = readdirSync(join(ROOT, '.claude', 'agents')).filter((name) => name.endsWith('.md')).sort()
-  assert.deepEqual(manifest.agents.slice().sort(), agentNames.map((name) => `./.claude/agents/${name}`))
+  const pluginNames = readdirSync(join(ROOT, 'agents')).filter((name) => name.endsWith('.md')).sort()
+  assert.deepEqual(pluginNames, agentNames)
+  for (const name of agentNames) {
+    const normalize = (content) => content.replace(/\r\n/g, '\n').split('\n').map((line) => line.trimEnd()).join('\n')
+    assert.equal(normalize(readFileSync(join(ROOT, 'agents', name), 'utf8')),
+      normalize(readFileSync(join(ROOT, '.claude', 'agents', name), 'utf8')))
+  }
   assert.equal(manifest.commands, './.claude/commands/')
 })
 
