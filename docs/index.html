@@ -831,7 +831,7 @@ footer p { font-size:.8rem; color:var(--muted); }
       <div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code>gh repo clone RBraga01/a-team -- --depth 1
 cp -r a-team/.claude a-team/.claude-plugin a-team/.codex-plugin a-team/.cursor-plugin a-team/.copilot-plugin a-team/com.github.copilot a-team/.opencode a-team/skills a-team/hooks a-team/templates a-team/scripts a-team/assets ./
-cp -n a-team/AGENTS.md a-team/CLAUDE.md ./
+cp -n a-team/AGENTS.md a-team/CLAUDE.md a-team/plugin.json ./
 cp -n a-team/INIT_TEMPLATE.md INIT.md
 rm -rf a-team</code></pre></div>
       <p class="install-note">Requires the <a href="https://cli.github.com" target="_blank" rel="noopener" style="color:var(--blue)">GitHub CLI</a>. Shallow clone — only the latest commit.</p>
@@ -845,7 +845,7 @@ rm -rf a-team</code></pre></div>
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
 cp -r .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets ../
-cp -n AGENTS.md CLAUDE.md ../
+cp -n AGENTS.md CLAUDE.md plugin.json ../
 cp -n INIT_TEMPLATE.md ../INIT.md
 cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
       <div class="os-row"><span class="os-label">Windows PowerShell</span>
@@ -855,8 +855,8 @@ cd .. &amp;&amp; rm -rf a-team</code></pre></div></div>
 cd a-team
 git sparse-checkout set .claude .claude-plugin .codex-plugin .cursor-plugin .copilot-plugin com.github.copilot .opencode skills hooks templates scripts assets
 Copy-Item -Recurse .claude,.claude-plugin,.codex-plugin,.cursor-plugin,.copilot-plugin,com.github.copilot,.opencode,skills,hooks,templates,scripts,assets ..\
-# Existing AGENTS.md/CLAUDE.md/INIT.md must not be replaced
-foreach ($f in 'AGENTS.md','CLAUDE.md','INIT_TEMPLATE.md') {
+# Existing AGENTS.md/CLAUDE.md/plugin.json/INIT.md must not be replaced
+foreach ($f in 'AGENTS.md','CLAUDE.md','plugin.json','INIT_TEMPLATE.md') {
   $dest = if ($f -eq 'INIT_TEMPLATE.md') { '..\\INIT.md' } else { "..\\$f" }
   if (-not (Test-Path $dest)) { Copy-Item $f $dest }
 }
@@ -870,7 +870,7 @@ cd .. ; Remove-Item a-team -Recurse -Force</code></pre></div></div>
         <li>Click <strong>Code → Download ZIP</strong></li>
         <li>Extract the archive</li>
         <li>Copy all shared and platform directories (<code>.claude/</code>, <code>skills/</code>, <code>hooks/</code>, <code>templates/</code>, <code>scripts/</code>, <code>.claude-plugin/</code>, <code>.codex-plugin/</code>, <code>.cursor-plugin/</code>, <code>.copilot-plugin/</code>, <code>com.github.copilot/</code>, <code>.opencode/</code>, <code>assets/</code>) into your project root</li>
-        <li>Copy <code>INIT_TEMPLATE.md</code> as <code>INIT.md</code>, and copy root <code>AGENTS.md</code>/<code>CLAUDE.md</code> only if those files are absent</li>
+        <li>Copy <code>INIT_TEMPLATE.md</code> as <code>INIT.md</code>, and copy root <code>AGENTS.md</code>, <code>CLAUDE.md</code> and <code>plugin.json</code> only if those files are absent</li>
       </ol>
       <p class="install-note">No git or command line required. Works on any OS.</p>
     </div>
