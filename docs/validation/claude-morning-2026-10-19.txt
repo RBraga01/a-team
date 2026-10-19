@@ -1,0 +1,17 @@
+I've written today's plan to `.agent-sync/DAILY.md` and dispatched nothing. The morning plan needs your approval first.
+
+**Backlog:** `TASKS.md` has one task. The repo is at `master` ffa6398 with two commits and nothing in flight.
+
+| ID | Task | Agent | Depends on | Wave |
+|----|------|-------|-----------|------|
+| TASK-001 | Implementation plan for Python `add(a, b)` returning the sum of two integers. Planning only, no code. | planner (with the `writing-plans` skill) | none | 1 |
+| TASK-002 | Review of the TASK-001 plan | code-reviewer | TASK-001 | 2 |
+
+TASK-002 is my addition. It isn't in `TASKS.md`, so tell me if you'd rather skip it. Both tasks stay within `INIT.md`: Python only, inside this directory, no external commands or services, and plan only.
+
+**Veto Buffer item VB-001:** the `init` pruning is still incomplete. The PreToolUse guard blocked deleting the 14 pruned agent files listed in `TEAM.md`, such as `go-reviewer` and `e2e-runner`. They're still on disk, and I'm treating them as inactive and won't route work to them. You can pick one of three options:
+- Delete them by hand.
+- Approve a guard exception.
+- Keep them.
+
+Reply "approve" and I'll dispatch Wave 1, the planner on TASK-001. Wave 2 follows once the plan exists. I can also drop TASK-002 first if you prefer.

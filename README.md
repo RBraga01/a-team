@@ -14,11 +14,14 @@
 
 **[→ Visual overview & live demo](https://rbraga01.github.io/a-team/)**
 
-**Illustrative first session** (expected workflow, not a recorded terminal capture):
+**Recorded first session** (Windows disposable Python project, 2026-10-19; excerpts from [init](docs/validation/claude-init-2026-10-19.txt) and [morning](docs/validation/claude-morning-2026-10-19.txt)):
 
 ```text
-/orchestrate init      → reads INIT.md; creates .agent-sync/TEAM.md and ROUTING.md
-/orchestrate morning   → reads TASKS.md; proposes up to 3 tasks; pauses for approval
+npx --yes @anthropic-ai/claude-code -p '/orchestrate init' --model sonnet --max-turns 12 --max-budget-usd 1 --permission-mode acceptEdits --permission-prompts none --output-format text
+`/orchestrate init` is only partly done. The orchestrator wrote `.agent-sync/TEAM.md` and `.agent-sync/ROUTING.md`, but it deleted nothing.
+
+npx --yes @anthropic-ai/claude-code -p '/orchestrate morning' --model sonnet --max-turns 12 --max-budget-usd 1 --permission-mode acceptEdits --permission-prompts none --output-format text
+I've written today's plan to `.agent-sync/DAILY.md` and dispatched nothing. The morning plan needs your approval first.
 ```
 
 [Getting started](docs/getting-started.md) · [Full documentation](docs/README.md)**
