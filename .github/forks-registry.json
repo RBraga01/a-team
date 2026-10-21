@@ -48,5 +48,15 @@
     "followup_sent": true,
     "followup_sent_at": "2026-08-04T11:18:34.475Z",
     "featured": false
+  },
+  {
+    "username": "Fishkin095",
+    "forked_at": "2026-10-21T09:16:30Z",
+    "welcomed_at": "2026-10-21T09:16:43.734Z",
+    "welcome_issue_number": 46,
+    "starred_at_welcome": false,
+    "followup_sent": false,
+    "followup_sent_at": null,
+    "featured": false
   }
 ]
