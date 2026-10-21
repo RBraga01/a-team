@@ -247,8 +247,14 @@ test('Codex and Cursor component paths stay inside the distribution root', () =>
   assert.equal(portable.$schema, 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json')
   assert.equal(portable.name, 'a-team')
   const codex = readJson(join(ROOT, '.codex-plugin/plugin.json'))
-  assert.equal(codex.interface.composerIcon, './assets/ATeam_full.png')
-  assert.ok(existsSync(join(ROOT, codex.interface.composerIcon)))
+  assert.equal(codex.interface.composerIcon, './assets/icon.svg')
+  assert.equal(codex.interface.logo, codex.interface.composerIcon)
+  const iconPath = join(ROOT, codex.interface.composerIcon)
+  assert.ok(existsSync(iconPath), 'Codex icon must exist in the plugin root')
+  const icon = readFileSync(iconPath, 'utf8')
+  assert.match(icon, /<svg[^>]*viewBox="0 0 512 512"/, 'Icon must be square and scalable')
+  assert.ok(Buffer.byteLength(icon) < 50 * 1024, 'Icon must stay below HOL 50 KB target')
+  assert.doesNotMatch(icon, /<(script|image|foreignObject)\b|data:/i, 'SVG must not embed scripts or raster images')
 })
 
 test('portable manifest and Codex overlay use a single root hooks file', () => {
