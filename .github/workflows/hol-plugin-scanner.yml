@@ -6,6 +6,7 @@ on:
     paths:
       - 'plugin.json'
       - '.codex-plugin/**'
+      - 'assets/**'
       - '.claude-plugin/**'
       - '.agents/**'
       - 'skills/**'
