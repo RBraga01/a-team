@@ -3,31 +3,8 @@ name: A Team Tests
 on:
   push:
     branches: [main, master]
+  # Required jobs must run for every PR; path filters leave skipped checks pending.
   pull_request:
-    paths:
-      - 'skills/**'
-      - 'agents/**'
-      - '.agents/**'
-      - '.claude/agents/**'
-      - '.claude/rules/**'
-      - 'tests/**'
-      - 'scripts/**'
-      - 'install.sh'
-      - 'install.ps1'
-      - '.claude-plugin/**'
-      - '.codex-plugin/**'
-      - '.cursor-plugin/**'
-      - '.copilot-plugin/**'
-      - 'com.github.copilot/**'
-      - '.opencode/**'
-      - 'assets/**'
-      - 'README.md'
-      - 'plugin.json'
-      - 'hooks/**'
-      - 'docs/installation.md'
-      - 'docs/index.html'
-      - 'docs/host-validation*.md'
-      - '.github/workflows/test.yml'
   workflow_dispatch:
     inputs:
       mode:
@@ -36,6 +13,9 @@ on:
         default: 'replay'
         type: choice
         options: [replay, record]
+
+permissions:
+  contents: read
 
 jobs:
   # ── Unit tests (offline, no API key needed) ─────────────────────────────────
