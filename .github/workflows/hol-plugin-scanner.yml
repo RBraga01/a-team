@@ -38,7 +38,7 @@ jobs:
 
       - name: HOL AI Plugin Scanner (offline)
         id: scanner
-        uses: hashgraph-online/ai-plugin-scanner-action@caba2e96aa8ad2feb6cf6fca52442b52e22e779f # v1.2.635
+        uses: hashgraph-online/ai-plugin-scanner-action@8db741c699f3554e9c7f4947e8954f9190332e6b # v1.2.801
         with:
           plugin_dir: "."
           mode: scan
